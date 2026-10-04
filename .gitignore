@@ -1,0 +1,16 @@
+node_modules/
+dist/
+www/
+ios/build/
+ios/App/Pods/
+ios/App/App/public/
+ios/capacitor-cordova-ios-plugins/
+android/.gradle/
+android/.idea/
+android/build/
+android/app/build/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+package-lock.json
+.DS_Store
+*.log

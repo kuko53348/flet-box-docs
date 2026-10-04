@@ -1,0 +1,10 @@
+{
+  "appId": "com.fletbox.flet.box.docs",
+  "appName": "flet-box-docs",
+  "webDir": "www",
+  "backgroundColor": "#1a1a2e",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https"
+  }
+}

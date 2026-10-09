@@ -128,6 +128,7 @@ export const CATEGORIES = [
       { name: "Accordion", path: "docs/widget/Accordion.md", hint: "Collapsible sections" },
       { name: "Carousel", path: "docs/widget/Carousel.md", hint: "A rotating slideshow" },
       { name: "Inspector", path: "docs/widget/Inspector.md", hint: "A dev tool to inspect widgets" },
+      { name: "Ads", path: "docs/widget/Ads.md", hint: "Reserve an ad slot container" },
     ],
   },
   {

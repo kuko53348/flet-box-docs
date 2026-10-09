@@ -13,6 +13,7 @@ import {
   colors,
 } from "flet-box";
 import { CATEGORIES, ALL_DOCS, getCategory } from "./database/catalog.js";
+import { AdMobDemoScreen } from "./screens/AdMobDemoScreen.js";
 
 // Documentation lives in ./docs (copied from the flet-box repository). Paths
 // are relative to the document so the app also works from a subdirectory and
@@ -57,7 +58,7 @@ const iconChip = (name, color, size = 40) =>
   });
 
 const App = () => {
-  // view: "home" | "category" | "doc"
+  // view: "home" | "category" | "doc" | "admob"
   const [viewState, setView] = useState("view", "home");
   const [catState, setCat] = useState("category", "");
   const [contentState, setContent] = useState(
@@ -107,6 +108,11 @@ const App = () => {
   const goHome = () => {
     setSearch("");
     setView("home");
+  };
+
+  const openAdDemo = () => {
+    setSearch("");
+    setView("admob");
   };
 
   // Delegated on document so it survives the tree rebuilds, and registered once
@@ -281,6 +287,38 @@ const App = () => {
 
           children: CATEGORIES.map(cardFor),
         }),
+
+        Container({
+          maxWidth: "380px",
+          cursor: "pointer",
+          padding: 18,
+          gap: 12,
+          backgroundColor: colors.primary + "14",
+          borderRadius: 16,
+          border: `1px solid ${colors.primary}66`,
+          onClick: openAdDemo,
+          child: Row({
+            gap: 12,
+            alignItems: "center",
+            children: [
+              iconChip("campaign", colors.primary, 44),
+              Column({
+                flex: 1,
+                gap: 2,
+                children: [
+                  Text({ text: "Demo AdMob", weight: "bold", size: 16, color: colors.text }),
+                  Text({
+                    text: "Banner, interstitial y rewarded · verlo en Android",
+                    size: 11,
+                    color: colors.primary,
+                    weight: "bold",
+                  }),
+                ],
+              }),
+              Icon({ name: "chevron_right", color: colors.primary, size: 22 }),
+            ],
+          }),
+        }),
       ],
     });
 
@@ -433,7 +471,25 @@ const App = () => {
     ],
   });
 
-  const body = view === "doc" ? docView : view === "category" ? categoryView : homeView;
+  const body =
+    view === "doc"
+      ? docView
+      : view === "category"
+        ? categoryView
+        : view === "admob"
+          ? Column({
+            width: "100%",
+            height: "100vh",
+            children: [
+              topBar("Demo AdMob", "Anuncios de prueba en Android", { onBack: goHome }),
+              Container({
+                flex: 1,
+                overflow: "auto",
+                child: AdMobDemoScreen({ onBack: goHome }),
+              }),
+            ],
+          })
+          : homeView;
 
   return Container({
     width: "100%",

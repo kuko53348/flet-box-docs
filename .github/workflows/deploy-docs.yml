@@ -1,0 +1,73 @@
+name: Deploy docs
+
+# Builds the flet-box documentation site and publishes it to GitHub Pages so it
+# is the official, always-up-to-date docs at:
+#   https://kuko53348.github.io/flet-box-docs/
+# Enable once: repo Settings -> Pages -> Source = "GitHub Actions".
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer push cancels the in-flight one.
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout docs app
+        uses: actions/checkout@v4
+
+      # flet-box is not published on npm yet, so pull the framework source and
+      # install it as a local file dependency (see "Point flet-box at checkout").
+      # Both repos are public, so no token is required. If you publish the
+      # package to npm later, delete this step and the npm pkg set step, and the
+      # plain `npm install` below will resolve flet-box from the registry.
+      - name: Checkout flet-box framework
+        uses: actions/checkout@v4
+        with:
+          repository: kuko53348/flet-box
+          ref: refactory
+          path: vendor/flet-box
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Point flet-box at the local checkout
+        run: npm pkg set dependencies.flet-box=file:vendor/flet-box
+
+      # package-lock.json is gitignored, so use `npm install` (not `npm ci`).
+      - name: Install dependencies
+        run: npm install
+
+      # `npm run build` = flet-box createBundle www && node scripts/copy-docs.mjs www
+      - name: Build docs site
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: www
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

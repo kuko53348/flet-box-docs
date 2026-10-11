@@ -1,0 +1,10 @@
+{
+  "update": {
+    "url": "https://kuko53348.github.io/flet-box-docs/",
+    "mode": "prompt",
+    "channel": "stable",
+    "mandatory": false,
+    "minNativeVersion": "0.0.0",
+    "notes": ""
+  }
+}

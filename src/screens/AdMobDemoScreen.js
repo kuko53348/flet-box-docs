@@ -48,6 +48,7 @@ export const AdMobDemoScreen = ({ onBack }) => {
     interstitialId: TEST_INTERSTITIAL_ID,
     rewardedId: TEST_REWARDED_ID,
     isTesting: true,
+    autoInitialize: true,
     position: "top",
     size: "ADAPTIVE_BANNER",
     margin: 12,

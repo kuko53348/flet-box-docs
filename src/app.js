@@ -144,7 +144,7 @@ const App = () => {
   const topBar = (title, subtitle, { onBack, backIcon = "arrow_back" } = {}) =>
     Container({
       width: "100%",
-      padding: "12px 16px",
+      padding: "calc(12px + env(safe-area-inset-top, 0px)) 16px 12px 16px",
       backgroundColor: colors.surface,
       borderBottom: `1px solid ${colors.border}`,
       child: Row({

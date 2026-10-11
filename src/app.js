@@ -279,46 +279,51 @@ const App = () => {
             }),
           ],
         }),
-        Row({
-          wrap: "wrap",
+        Column({
           gap: 16,
           alignItems: "center",
-          justifyContent: "center",
-
-          children: CATEGORIES.map(cardFor),
-        }),
-
-        Container({
-          maxWidth: "380px",
-          cursor: "pointer",
-          padding: 18,
-          gap: 12,
-          backgroundColor: colors.primary + "14",
-          borderRadius: 16,
-          border: `1px solid ${colors.primary}66`,
-          onClick: openAdDemo,
-          child: Row({
-            gap: 12,
-            alignItems: "center",
-            children: [
-              iconChip("campaign", colors.primary, 44),
-              Column({
-                flex: 1,
-                gap: 2,
+          children: [
+            Row({
+              wrap: "wrap",
+              gap: 16,
+              alignItems: "center",
+              justifyContent: "center",
+              children: CATEGORIES.map(cardFor),
+            }),
+            Container({
+              maxWidth: "380px",
+              cursor: "pointer",
+              padding: 18,
+              gap: 12,
+              backgroundColor: colors.primary + "14",
+              borderRadius: 16,
+              border: `1px solid ${colors.primary}66`,
+              onClick: openAdDemo,
+              child: Row({
+                gap: 12,
+                alignItems: "center",
                 children: [
-                  Text({ text: "Demo AdMob", weight: "bold", size: 16, color: colors.text }),
-                  Text({
-                    text: "Banner, interstitial y rewarded · verlo en Android",
-                    size: 11,
-                    color: colors.primary,
-                    weight: "bold",
+                  iconChip("campaign", colors.primary, 44),
+                  Column({
+                    flex: 1,
+                    gap: 2,
+                    children: [
+                      Text({ text: "Demo AdMob", weight: "bold", size: 16, color: colors.text }),
+                      Text({
+                        text: "Banner, interstitial y rewarded · verlo en Android",
+                        size: 11,
+                        color: colors.primary,
+                        weight: "bold",
+                      }),
+                    ],
                   }),
+                  Icon({ name: "chevron_right", color: colors.primary, size: 22 }),
                 ],
               }),
-              Icon({ name: "chevron_right", color: colors.primary, size: 22 }),
-            ],
-          }),
+            }),
+          ],
         }),
+
       ],
     });
 
@@ -474,22 +479,7 @@ const App = () => {
   const body =
     view === "doc"
       ? docView
-      : view === "category"
-        ? categoryView
-        : view === "admob"
-          ? Column({
-            width: "100%",
-            height: "100vh",
-            children: [
-              topBar("Demo AdMob", "Anuncios de prueba en Android", { onBack: goHome }),
-              Container({
-                flex: 1,
-                overflow: "auto",
-                child: AdMobDemoScreen({ onBack: goHome }),
-              }),
-            ],
-          })
-          : homeView;
+      : categoryView;
 
   return Container({
     width: "100%",

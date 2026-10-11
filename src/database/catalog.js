@@ -20,9 +20,9 @@ export const CATEGORIES = [
       { name: "Build your first app", path: "docs/guides/first-app.md", hint: "Step-by-step starter" },
       { name: "Syntax philosophy", path: "docs/guides/syntax-philosophy.md", hint: "Why the API looks like this" },
       { name: "Widget book: start here", path: "docs/widget/START_HERE.md", hint: "First page of the widget book" },
-      { name: "Widget book index",
+      { name: "Widget book index", path: "docs/widget/README.md", hint: "The reading path" },
       { name: "Online updates (OTA)", path: "docs/guides/online-updates.md", hint: "Ship updates without the store" },
-      { name: "Widget structure", path: "docs/guides/widget-structure.md", hint: "Contract every widget must follow" }, path: "docs/widget/README.md", hint: "The reading path" },
+      { name: "Widget structure", path: "docs/guides/widget-structure.md", hint: "Contract every widget must follow" },
     ],
   },
   {
@@ -240,20 +240,7 @@ export const CATEGORIES = [
       { name: "Agents guide", path: "docs/AGENTS.md", hint: "Notes for AI agents" },
     ],
   },
-];
-
-// Flat list of every document, tagged with its category — used by global search.
-export const ALL_DOCS = CATEGORIES.flatMap((cat) =>
-  cat.items.map((item) => ({
-    ...item,
-    categoryId: cat.id,
-    categoryTitle: cat.title,
-    categoryColor: cat.color,
-    categoryIcon: cat.icon,
-  })),
-);
-
-export const getCategory = (id) => CATEGORIES.find((c) => c.id === id),
+,
   {
     id: "ads",
     title: "Ads",
@@ -278,4 +265,17 @@ export const getCategory = (id) => CATEGORIES.find((c) => c.id === id),
       { name: "ParallaxBox", path: "docs/widget/ParallaxBox.md", hint: "Parallax scroll/tilt effect" },
     ],
   },
-]
+];
+
+// Flat list of every document, tagged with its category — used by global search.
+export const ALL_DOCS = CATEGORIES.flatMap((cat) =>
+  cat.items.map((item) => ({
+    ...item,
+    categoryId: cat.id,
+    categoryTitle: cat.title,
+    categoryColor: cat.color,
+    categoryIcon: cat.icon,
+  })),
+);
+
+export const getCategory = (id) => CATEGORIES.find((c) => c.id === id);

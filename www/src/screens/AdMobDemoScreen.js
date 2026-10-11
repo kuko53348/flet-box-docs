@@ -13,7 +13,16 @@ import {
   Text,
   colors,
 } from "flet-box";
-import { AdMob as NativeAdmob } from "@capacitor-community/admob";
+
+// El plugin nativo de AdMob solo existe dentro de un shell Capacitor. Un import
+// estático del bare specifier rompe la carga de la app en web (el navegador no
+// puede resolverlo sin un import map), así que se carga de forma diferida y solo
+// en plataforma nativa. En web el widget AdMob degrada a su placeholder.
+if (globalThis.Capacitor?.isNativePlatform?.()) {
+  import("@capacitor-community/admob").catch((error) => {
+    console.warn("[AdMobDemo] no se pudo cargar el plugin nativo:", error);
+  });
+}
 
 const TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
 const TEST_INTERSTITIAL_ID = "ca-app-pub-3940256099942544/1033173712";
@@ -43,7 +52,6 @@ const statusLine = (text) => {
 
 export const AdMobDemoScreen = ({ onBack }) => {
   const ad = AdMob({
-    plugin: NativeAdmob,
     adId: TEST_BANNER_ID,
     interstitialId: TEST_INTERSTITIAL_ID,
     rewardedId: TEST_REWARDED_ID,

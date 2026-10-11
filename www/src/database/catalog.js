@@ -240,7 +240,6 @@ export const CATEGORIES = [
       { name: "Agents guide", path: "docs/AGENTS.md", hint: "Notes for AI agents" },
     ],
   },
-,
   {
     id: "ads",
     title: "Ads",

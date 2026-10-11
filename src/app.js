@@ -158,11 +158,11 @@ const App = () => {
               icon: backIcon,
               color: colors.text,
               onPress: onBack,
-              style: { minWidth: 40, padding: 8 },
+              minWidth: 40, padding: 8
             })
             : iconChip("auto_stories", colors.primary, 38),
           Column({
-            style: { flex: 1 },
+            flex: 1,
             gap: 2,
             children: [
               Text({ text: title, weight: "bold", size: 17, color: colors.text }),
@@ -246,7 +246,7 @@ const App = () => {
               children: [
                 iconChip(doc.categoryIcon, doc.categoryColor, 34),
                 Column({
-                  style: { flex: 1 },
+                  flex: 1,
                   gap: 2,
                   children: [
                     Text({ text: doc.name, weight: "bold", size: 14, color: colors.text }),
@@ -408,7 +408,7 @@ const App = () => {
                   borderRadius: 12,
                   backgroundColor: colors.surface,
                   border: `1px solid ${colors.border}`,
-                  style: { cursor: "pointer" },
+                  cursor: "pointer",
                   onClick: () => openDoc({ ...item, categoryId: category.id }),
                   child: Row({
                     gap: 12,
@@ -416,7 +416,7 @@ const App = () => {
                     children: [
                       iconChip(category.icon, category.color, 36),
                       Column({
-                        style: { flex: 1 },
+                        flex: 1,
                         gap: 2,
                         children: [
                           Text({ text: item.name, weight: "bold", size: 14.5, color: colors.text }),

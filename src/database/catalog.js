@@ -20,7 +20,9 @@ export const CATEGORIES = [
       { name: "Build your first app", path: "docs/guides/first-app.md", hint: "Step-by-step starter" },
       { name: "Syntax philosophy", path: "docs/guides/syntax-philosophy.md", hint: "Why the API looks like this" },
       { name: "Widget book: start here", path: "docs/widget/START_HERE.md", hint: "First page of the widget book" },
-      { name: "Widget book index", path: "docs/widget/README.md", hint: "The reading path" },
+      { name: "Widget book index",
+      { name: "Online updates (OTA)", path: "docs/guides/online-updates.md", hint: "Ship updates without the store" },
+      { name: "Widget structure", path: "docs/guides/widget-structure.md", hint: "Contract every widget must follow" }, path: "docs/widget/README.md", hint: "The reading path" },
     ],
   },
   {
@@ -251,4 +253,29 @@ export const ALL_DOCS = CATEGORIES.flatMap((cat) =>
   })),
 );
 
-export const getCategory = (id) => CATEGORIES.find((c) => c.id === id);
+export const getCategory = (id) => CATEGORIES.find((c) => c.id === id),
+  {
+    id: "ads",
+    title: "Ads",
+    icon: "campaign",
+    color: "#2563eb",
+    description: "AdSense and AdMob integrations for FletBox.",
+    items: [
+      { name: "AdMob", path: "docs/widget/AdMob.md", hint: "Capacitor AdMob banner/interstitial/rewarded" },
+      { name: "AdSense", path: "docs/widget/AdSense.md", hint: "Google AdSense banner for web" },
+    ],
+  },
+  {
+    id: "animations",
+    title: "Animations & Effects",
+    icon: "auto_awesome",
+    color: "#a855f7",
+    description: "Animated UI primitives and visual effects.",
+    items: [
+      { name: "AnimatedBox", path: "docs/widget/AnimatedBox.md", hint: "Animate transform, opacity and color" },
+      { name: "AnimatedText", path: "docs/widget/AnimatedText.md", hint: "Typewriter, fade, slide, scale and blur" },
+      { name: "MatrixRain", path: "docs/widget/MatrixRain.md", hint: "Matrix digital rain background" },
+      { name: "ParallaxBox", path: "docs/widget/ParallaxBox.md", hint: "Parallax scroll/tilt effect" },
+    ],
+  },
+]

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="./src/assets/fonts/icons.css">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./src/assets/icon-192.png" sizes="192x192" type="image/png">
+
+    <title>flet-box-docs</title>
+    <meta name="description" content="flet-box-docs built with Flet-Box.">
+    <meta name="keywords" content="fletbox, framework, ui, javascript, animations, gradients">
+    <meta name="author" content="Your name">
+    <link rel="apple-touch-icon" href="./src/assets/icon-192.png">
+    <meta property="og:title" content="flet-box-docs">
+    <meta property="og:description" content="flet-box-docs built with Flet-Box.">
+    <meta property="og:type" content="website">
+
+    <meta name="theme-color" content="#1a1a2e">
+
+    <style>
+        * {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "flet-box": "./node_modules/flet-box/src/index.js"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.log('Service Worker registration error', err));
+        }
+    </script>
+    <script type="module" src="./loader.js"></script>
+</body>
+
+</html>

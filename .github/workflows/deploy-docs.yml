@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout docs app
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # flet-box is not published on npm yet, so pull the framework source and
       # install it as a local file dependency (see "Point flet-box at checkout").
@@ -34,13 +34,13 @@ jobs:
       # package to npm later, delete this step and the npm pkg set step, and the
       # plain `npm install` below will resolve flet-box from the registry.
       - name: Checkout flet-box framework
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: kuko53348/flet-box
           ref: refactory
           path: vendor/flet-box
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 20
 
@@ -56,7 +56,7 @@ jobs:
         run: npm run build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: www
 
@@ -70,4 +70,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

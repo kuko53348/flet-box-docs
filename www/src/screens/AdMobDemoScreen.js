@@ -1,26 +1,25 @@
 // screens/AdMobDemoScreen.js
-// Demo del widget AdMob de FletBox sobre @capacitor-community/admob (Capacitor 8).
-// El banner se pide con unidades de prueba de Google; en el emulador con GMS
-// verás un banner "Test Ad". Los botones disparan interstitial y rewarded.
+// Demo of the FletBox AdMob widget on top of @capacitor-community/admob
+// (Capacitor 8). The banner requests Google test units; on a GMS emulator you
+// will see a "Test Ad" banner. The buttons fire interstitial and rewarded.
+
 import {
   AdMob,
   Button,
-  Column,
   Container,
   Divider,
-  Icon,
-  Row,
   Text,
   colors,
 } from "flet-box";
+import { card, page } from "../components/ui.js";
 
-// El plugin nativo de AdMob solo existe dentro de un shell Capacitor. Un import
-// estático del bare specifier rompe la carga de la app en web (el navegador no
-// puede resolverlo sin un import map), así que se carga de forma diferida y solo
-// en plataforma nativa. En web el widget AdMob degrada a su placeholder.
+// The native AdMob plugin only exists inside a Capacitor shell. A static
+// import of the bare specifier would break the app on the web (the browser
+// cannot resolve it without an import map), so it is loaded lazily and only
+// on native. On the web the AdMob widget degrades to its placeholder.
 if (globalThis.Capacitor?.isNativePlatform?.()) {
   import("@capacitor-community/admob").catch((error) => {
-    console.warn("[AdMobDemo] no se pudo cargar el plugin nativo:", error);
+    console.warn("[AdMobDemo] could not load the native plugin:", error);
   });
 }
 
@@ -28,8 +27,9 @@ const TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111";
 const TEST_INTERSTITIAL_ID = "ca-app-pub-3940256099942544/1033173712";
 const TEST_REWARDED_ID = "ca-app-pub-3940256099942544/5224354917";
 
-// Referencias al widget más reciente y al texto de estado. Se actualizan en cada
-// render sin provocar re-renders, así el banner no se reinicia al tocar botones.
+// References to the most recent widget and the status text. They are updated
+// on every render without triggering re-renders, so the banner is not reset
+// when the buttons are tapped.
 let adWidgetRef = null;
 let statusWidgetRef = null;
 
@@ -50,7 +50,7 @@ const statusLine = (text) => {
   return el;
 };
 
-export const AdMobDemoScreen = ({ onBack }) => {
+export const AdMobDemoScreen = () => {
   const ad = AdMob({
     adId: TEST_BANNER_ID,
     interstitialId: TEST_INTERSTITIAL_ID,
@@ -63,113 +63,68 @@ export const AdMobDemoScreen = ({ onBack }) => {
     autoShow: true,
     width: "100%",
     height: 66,
-    label: "Banner de prueba",
+    label: "Test banner",
     bgColor: "#101428",
     borderColor: "#2c3e66",
     color: "#8ab4f8",
-    onLoaded: () => setStatus("Banner activo · test ad", "#22c55e"),
+    onLoaded: () => setStatus("Banner active · test ad", "#22c55e"),
     onFailed: (error) => setStatus(`Error: ${error.message}`, "#ef4444"),
-    onDismissed: () => setStatus("Anuncio cerrado", colors.textSecondary),
+    onDismissed: () => setStatus("Ad dismissed", colors.textSecondary),
   });
   adWidgetRef = ad;
 
-  const runAd = (kind, preparingMsg, runningMsg) =>
-    () => {
-      setStatus(preparingMsg, colors.info);
-      const promise =
-        kind === "interstitial"
-          ? adWidgetRef.showInterstitial()
-          : kind === "rewarded"
-            ? adWidgetRef.showRewarded()
-            : Promise.resolve(null);
-      promise.then(() => {
-        setStatus(runningMsg, "#22c55e");
-      });
-    };
+  const runAd = (kind, preparingMsg, runningMsg) => () => {
+    setStatus(preparingMsg, colors.info);
+    const promise =
+      kind === "interstitial"
+        ? adWidgetRef.showInterstitial()
+        : kind === "rewarded"
+          ? adWidgetRef.showRewarded()
+          : Promise.resolve(null);
+    promise.then(() => {
+      setStatus(runningMsg, "#22c55e");
+    });
+  };
 
-  return Container({
-    flex: 1,
-    padding: 4,
-    backgroundColor: colors.background,
-    child: Column({
-      gap: 16,
-      padding: "16px 16px 40px 16px",
-      children: [
-        // Reserva un hueco arriba para el banner nativo (overlay top).
-        Container({
-          height: 66,
-          child: ad,
-        }),
+  return page([
+    // Reserve a slot at the top for the native banner (top overlay).
+    Container({ width: "100%", height: 66, child: ad }),
 
-        Row({
-          gap: 12,
-          alignItems: "center",
-          children: [
-            Container({
-              width: 44,
-              height: 44,
-              borderRadius: 14,
-              backgroundColor: colors.primary + "1f",
-              alignItems: "center",
-              justifyContent: "center",
-              child: Icon({ name: "campaign", color: colors.primary, size: 24 }),
-            }),
-            Column({
-              gap: 2,
-              children: [
-                Text({ text: "Demo AdMob", weight: "bold", size: 20, color: colors.text }),
-                Text({
-                  text: "Unidades de prueba de Google · Capacitor Android",
-                  size: 12,
-                  color: colors.textSecondary,
-                }),
-              ],
-            }),
-          ],
-        }),
+    card([
+      statusLine("Requesting banner…"),
+      Divider({ color: colors.border }),
+      Button({
+        text: "Show interstitial",
+        iconRight: "ads_click",
+        bgColor: colors.primary,
+        color: "#ffffff",
+        padding: "12px 20px",
+        fullWidth: true,
+        onPress: runAd(
+          "interstitial",
+          "Loading interstitial…",
+          "Interstitial dismissed · test ad",
+        ),
+      }),
+      Button({
+        text: "Show rewarded",
+        iconRight: "emoji_events",
+        variant: "outlined",
+        color: colors.primary,
+        padding: "12px 20px",
+        fullWidth: true,
+        onPress: runAd("rewarded", "Loading rewarded…", "Reward ready · test ad"),
+      }),
+    ]),
 
-        statusLine("Solicitando banner…"),
-
-        Divider({ color: colors.border }),
-
-        Column({
-          gap: 10,
-          children: [
-            Button({
-              text: "Mostrar interstitial",
-              iconRight: "ads_click",
-              bgColor: colors.primary,
-              color: "#ffffff",
-              padding: "12px 20px",
-              fullWidth: true,
-              onPress: runAd("interstitial", "Cargando interstitial…", "Interstitial cerrado · test ad"),
-            }),
-            Button({
-              text: "Mostrar rewarded",
-              iconRight: "emoji_events",
-              variant: "outlined",
-              color: colors.primary,
-              padding: "12px 20px",
-              fullWidth: true,
-              onPress: runAd("rewarded", "Cargando rewarded…", "Recompensa lista · test ad"),
-            }),
-          ],
-        }),
-
-        Text({
-          text: "Para publicar: sustituye estas unidades por las tuyas en AdMob y cambia isTesting a false.",
-          size: 11.5,
-          color: colors.textSecondary,
-          lineHeight: 1.6,
-          align: "center",
-        }),
-
-        onBack
-          ? Button({ text: "← Volver", variant: "text", color: colors.textSecondary, fullWidth: true, onPress: onBack })
-          : null,
-      ],
+    Text({
+      text: "To publish: replace these units with your own AdMob units and set isTesting to false.",
+      size: 11.5,
+      color: colors.textSecondary,
+      lineHeight: 1.6,
+      align: "center",
     }),
-  });
+  ]);
 };
 
 export default AdMobDemoScreen;

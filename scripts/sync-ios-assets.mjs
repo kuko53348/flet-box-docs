@@ -76,15 +76,33 @@ for (const slot of iconSlots) {
 // LaunchScreen.storyboard stretches the "Splash" image with scaleAspectFill, so
 // a square brand image covers every screen. Each file keeps the dimensions the
 // template ships with, which the asset catalog scales per device.
+// The app icon (logo flattened on the brand color) is centred at ~30% of the
+// side with rounded corners. The corner radius is 24dp at the mdpi baseline, so
+// the ratio comes from a 96px icon: 24 / 96.
 const splashContents = await readContents(splashSet);
 const splashSlots = splashContents.images.filter((image) => image.filename);
+const ICON_SCALE = 0.3;
+const BORDER_RADIUS_RATIO = 24 / 96;
 
 for (const slot of splashSlots) {
   const target = path.join(splashSet, slot.filename);
   const metadata = await sharp(target).metadata();
   const side = metadata.width && metadata.width === metadata.height ? metadata.width : 2732;
-  const badge = await sharp(logo)
-    .resize(Math.round(side * 0.3), Math.round(side * 0.3), { fit: "contain" })
+  const iconSize = Math.round(side * ICON_SCALE);
+  const radius = Math.min(
+    Math.round(iconSize * BORDER_RADIUS_RATIO),
+    Math.floor(iconSize / 2),
+  );
+  const tile = await sharp(logo)
+    .resize(iconSize, iconSize, { fit: "contain" })
+    .flatten({ background })
+    .png()
+    .toBuffer();
+  const mask = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}"><rect width="${iconSize}" height="${iconSize}" rx="${radius}" ry="${radius}"/></svg>`,
+  );
+  const badge = await sharp(tile)
+    .composite([{ input: mask, blend: "dest-in" }])
     .png()
     .toBuffer();
   const splash = await sharp({

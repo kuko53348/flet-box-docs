@@ -12,6 +12,7 @@ import {
   Text,
   colors,
   goTo,
+  padding,
   useQueryParams,
 } from "flet-box";
 import { CATEGORIES, ALL_DOCS, getCategory } from "../database/catalog.js";
@@ -36,7 +37,9 @@ const renderIndex = () => {
   // Live content area: swapped on every keystroke, never re-rendered.
   const content = Container({
     width: "100%",
+    bgColor: "transparent",
     gap: 10,
+    padding: padding({ top: 8, bottom: 16 }),
     child: categoryGrid(),
   });
 
@@ -153,6 +156,8 @@ const emptyState = (title, subtitle) =>
 const renderCategory = (category) => {
   const content = Container({
     width: "100%",
+    bgColor: "transparent",
+    padding: padding({ top: 8, bottom: 16 }),
     gap: 10,
     child: categoryList(category, category.items),
   });
@@ -166,10 +171,10 @@ const renderCategory = (category) => {
       const query = value.trim().toLowerCase();
       const items = query
         ? category.items.filter(
-            (item) =>
-              item.name.toLowerCase().includes(query) ||
-              (item.hint || "").toLowerCase().includes(query),
-          )
+          (item) =>
+            item.name.toLowerCase().includes(query) ||
+            (item.hint || "").toLowerCase().includes(query),
+        )
         : category.items;
       content.replaceChildren(
         items.length

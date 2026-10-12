@@ -9,6 +9,18 @@ import { goTo } from "flet-box";
 
 export const DOCS_DIR = "docs/";
 
+// Base URL of the deployed app, snapshotted at load time. The Router rewrites
+// the address bar with absolute routes (e.g. "/doc?path=…"), so on a subpath
+// deployment — GitHub Pages project sites live at /<repo>/ — a plain relative
+// fetch("docs/widget/ListView.md") would resolve against the origin root and
+// 404. Anchoring fetches to this snapshot keeps them under the real app base.
+const APP_BASE_URL =
+  typeof window !== "undefined" ? new URL(".", window.location.href) : null;
+
+// Absolute URL for a document path, rooted at the app base when available.
+export const docUrl = (path) =>
+  APP_BASE_URL ? new URL(path, APP_BASE_URL).href : path;
+
 // Path of the document currently on screen. Kept in this module (outside any
 // render) because the body is rebuilt on navigation while the click listener
 // below is registered once.

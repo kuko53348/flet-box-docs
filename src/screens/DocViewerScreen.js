@@ -3,7 +3,7 @@
 // resolves its cross-links through the app Router (see lib/docs.js).
 
 import { Markdown, colors, useQueryParams } from "flet-box";
-import { bindDocLinks, setCurrentDocPath } from "../lib/docs.js";
+import { bindDocLinks, docUrl, setCurrentDocPath } from "../lib/docs.js";
 import { page } from "../components/ui.js";
 
 export const DocViewerScreen = () => {
@@ -34,7 +34,7 @@ export const DocViewerScreen = () => {
   if (!docPath) {
     apply("# Not found\n\nNo document was requested.");
   } else {
-    fetch(docPath)
+    fetch(docUrl(docPath))
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load ${docPath}`);
         return res.text();

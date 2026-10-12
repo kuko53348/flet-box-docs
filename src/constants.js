@@ -1,8 +1,8 @@
 // constants.js
 // Central place for the URLs and versions shown throughout the app. Keep the
-// two v1.0.0 entries in sync with package.json / the framework release.
+// framework version in sync with the installed `flet-box` package.
 
-export const FRAMEWORK_VERSION = "1.0.1";
+export const FRAMEWORK_VERSION = "1.0.2";
 export const APP_VERSION = "1.0.0";
 
 export const GITHUB_URL = "https://github.com/kuko53348/flet-box";

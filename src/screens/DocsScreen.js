@@ -1,6 +1,6 @@
 // screens/DocsScreen.js
-// Route "/docs": the documentation index (search + category grid) and, when
-// the ?id= query is present, a single category's doc list. All search
+// Route "/documentation": the documentation index (search + category grid) and,
+// when the ?id= query is present, a single category's doc list. All search
 // filtering mutates the DOM in place so the input keeps focus while typing.
 
 import {
@@ -204,6 +204,6 @@ const categoryList = (category, items) =>
   });
 
 const goToCategory = (id) =>
-  goTo(id ? `/docs?id=${encodeURIComponent(id)}` : "/docs");
+  goTo(id ? `/documentation?id=${encodeURIComponent(id)}` : "/documentation");
 
 export default DocsScreen;

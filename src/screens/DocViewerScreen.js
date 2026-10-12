@@ -2,9 +2,8 @@
 // Route "/doc?path=&name=&cat=..". Renders a single markdown document and
 // resolves its cross-links through the app Router (see lib/docs.js).
 
-import { Markdown, colors, useQueryParams } from "flet-box";
+import { Column, Markdown, colors, useQueryParams } from "flet-box";
 import { bindDocLinks, docUrl, setCurrentDocPath } from "../lib/docs.js";
-import { page } from "../components/ui.js";
 
 export const DocViewerScreen = () => {
   bindDocLinks();
@@ -19,7 +18,7 @@ export const DocViewerScreen = () => {
   // surfaces and no decorative wrapper.
   const markdown = Markdown({
     text: "# Loading…",
-    padding: 12,
+    padding: 0,
     fontSize: 15,
     lineHeight: 1.7,
     color: colors.text,
@@ -47,7 +46,13 @@ export const DocViewerScreen = () => {
       });
   }
 
-  return page([markdown]);
+  // The document's own first heading supplies the top space, so the wrapper
+  // only pads the sides and keeps a long code block clear of the bottom bar.
+  return Column({
+    width: "100%",
+    padding: "4px 16px 48px 16px",
+    child: markdown,
+  });
 };
 
 export default DocViewerScreen;

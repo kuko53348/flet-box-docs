@@ -17,13 +17,14 @@ import {
   section,
 } from "../components/ui.js";
 
-// Initials avatar used as the identity card's leading node.
+// Initials avatar used as the identity card's leading node. The accent is
+// deepened so the white initials keep contrast; the bright primary is not.
 const avatar = (initials) =>
   Container({
     width: 46,
     height: 46,
     borderRadius: 15,
-    backgroundColor: colors.primary,
+    backgroundColor: "#0a6f78",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
@@ -32,33 +33,40 @@ const avatar = (initials) =>
 
 export const DeveloperScreen = () =>
   page([
-    card(
-      Column({
-        gap: 14,
-        children: [
-          Row({
+    section({
+      title: "Profiles",
+      children: [
+        card(
+          Column({
             gap: 14,
-            alignItems: "center",
             children: [
-              avatar("ku"),
-              Column({
-                gap: 3,
+              Row({
+                gap: 14,
+                alignItems: "center",
                 children: [
-                  Text({ text: DEVELOPER.handle, weight: "bold", size: 16, color: colors.text }),
-                  Text({ text: DEVELOPER.role, size: 12, color: colors.textSecondary }),
+                  avatar("ku"),
+                  Column({
+                    gap: 3,
+                    children: [
+                      Text({ text: DEVELOPER.handle, weight: "bold", size: 16, color: "#ffffff" }),
+                      Text({ text: DEVELOPER.role, size: 12, color: "#ffffff" }),
+                    ],
+                  }),
                 ],
+              }),
+              Text({
+                text: DEVELOPER.bio,
+                size: 13,
+                lineHeight: 1.6,
+                color: "#ffffff",
               }),
             ],
           }),
-          Text({
-            text: DEVELOPER.bio,
-            size: 13,
-            lineHeight: 1.6,
-            color: colors.textSecondary,
-          }),
-        ],
-      }),
-    ),
+        ),
+      ],
+    }),
+
+
 
     section({
       title: "Profiles",
@@ -93,11 +101,6 @@ export const DeveloperScreen = () =>
       ],
     }),
 
-    banner({
-      icon: "favorite",
-      title: "Get involved",
-      text: "FletBox is open source. Star the repository, report issues and send pull requests — every contribution helps the framework grow.",
-    }),
 
     Text({
       text: `Maintained by ${DEVELOPER.handle}`,

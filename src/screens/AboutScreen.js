@@ -27,7 +27,7 @@ const HIGHLIGHTS = [
   ["phone_iphone", "Android & iOS", "Capacitor packaging turns the same app into native builds."],
 ];
 
-const TECH = ["Vanilla JS", "Web APIs", "ESM", "Capacitor", "esbuild", "Node ≥ 18"];
+const TECH = ["Vanilla JS", "Web APIs", "ESM", "Capacitor", "esbuild", "Node ≥ 20.9"];
 
 export const AboutScreen = () =>
   page([

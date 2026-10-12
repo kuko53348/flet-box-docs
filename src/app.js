@@ -19,12 +19,11 @@ import {
   Text,
   colors,
   getCurrentPath,
-  getTheme,
   goTo,
-  toggleTheme,
   useQueryParams,
 } from "flet-box";
 
+import { applyTheme } from "./theme.js";
 import { getCategory } from "./database/catalog.js";
 import {
   APP_VERSION,
@@ -47,9 +46,12 @@ import { NotFoundScreen } from "./screens/NotFoundScreen.js";
 bindDocLinks();
 
 // ---------- Routes ----------
+// The documentation index lives at /documentation, not /docs: a root-level
+// docs/ folder holds the markdown, so a /docs route would resolve to that
+// directory and 404 on refresh or deep link instead of reaching the SPA.
 const ROUTES = {
   "/": HomeScreen,
-  "/docs": DocsScreen,
+  "/documentation": DocsScreen,
   "/doc": DocViewerScreen,
   "/about": AboutScreen,
   "/developer": DeveloperScreen,
@@ -67,7 +69,7 @@ const ROUTE_TITLES = {
 const resolveTitle = () => {
   const path = getCurrentPath();
 
-  if (path === "/docs") {
+  if (path === "/documentation") {
     const { id } = useQueryParams();
     const category = id ? getCategory(id) : null;
     return category ? category.title : "Documentation";
@@ -87,9 +89,9 @@ const backTarget = () => {
   const path = getCurrentPath();
   if (path === "/doc") {
     const { cat } = useQueryParams();
-    return cat ? `/docs?id=${encodeURIComponent(cat)}` : "/docs";
+    return cat ? `/documentation?id=${encodeURIComponent(cat)}` : "/documentation";
   }
-  if (path === "/docs" && useQueryParams().id) return "/docs";
+  if (path === "/documentation" && useQueryParams().id) return "/documentation";
   if (path === "/admob") return "/";
   return null;
 };
@@ -114,13 +116,6 @@ const appBar = () => {
         }),
     actions: [
       Icon({
-        name: getTheme() === "dark" ? "light_mode" : "dark_mode",
-        size: 22,
-        color: colors.textSecondary,
-        cursor: "pointer",
-        onclick: () => toggleTheme(),
-      }),
-      Icon({
         name: "code",
         size: 22,
         color: colors.textSecondary,
@@ -140,7 +135,7 @@ const bottomBar = () =>
     child: BottomNavigation({
       items: [
         { icon: "home", label: "Home", route: "/" },
-        { icon: "menu_book", label: "Docs", route: "/docs" },
+        { icon: "menu_book", label: "Docs", route: "/documentation" },
         { icon: "info", label: "About", route: "/about" },
         { icon: "code", label: "Developer", route: "/developer" },
       ],
@@ -154,6 +149,10 @@ const bottomBar = () =>
   });
 
 // ---------- Drawer ----------
+// Deep teal for the drawer's accent surfaces: `colors.primary` is too bright
+// for white text (2.3:1), and this keeps the same identity at 5.9:1.
+const DRAWER_ACCENT = "#0a6f78";
+
 // The Drawer is appended to <body> (not to the scaffold subtree), so the
 // scaffold cannot dispose it for us. Keep the latest instance in a module
 // variable and tear it down fully before building a new one on re-render.
@@ -172,7 +171,7 @@ const drawerHeader = () =>
   Container({
     width: "100%",
     padding: "calc(20px + env(safe-area-inset-top, 0px)) 20px 20px 20px",
-    backgroundColor: colors.primary,
+    backgroundColor: DRAWER_ACCENT,
     child: Column({
       gap: 10,
       children: [
@@ -184,7 +183,7 @@ const drawerHeader = () =>
               width: 40,
               height: 40,
               borderRadius: 12,
-              backgroundColor: "rgba(255,255,255,0.22)",
+              backgroundColor: "rgba(255,255,255,0.18)",
               alignItems: "center",
               justifyContent: "center",
               child: Icon({ name: "auto_awesome", size: 22, color: "#ffffff" }),
@@ -195,22 +194,46 @@ const drawerHeader = () =>
         Text({
           text: "Documentation & guides",
           size: 12,
-          color: "rgba(255,255,255,0.9)",
+          color: "rgba(255, 255, 255, 0.78)",
         }),
         Text({
           text: `Framework v${FRAMEWORK_VERSION}`,
           size: 11,
-          color: "rgba(255,255,255,0.75)",
+          color: "rgba(255, 255, 255, 0.62)",
         }),
       ],
     }),
   });
 
 const drawerBody = () => [
-  DrawerItem({ icon: "home", label: "Home", route: "/" }),
-  DrawerItem({ icon: "menu_book", label: "Documentation", route: "/docs" }),
-  DrawerItem({ icon: "info", label: "About", route: "/about" }),
-  DrawerItem({ icon: "code", label: "Developer", route: "/developer" }),
+  DrawerItem({
+    icon: "home",
+    label: "Home",
+    route: "/",
+    unselectedColor: "#ffffff",
+    selectedColor: "#ffffff",
+  }),
+  DrawerItem({
+    icon: "menu_book",
+    label: "Documentation",
+    route: "/documentation",
+    unselectedColor: "#ffffff",
+    selectedColor: "#ffffff",
+  }),
+  DrawerItem({
+    icon: "info",
+    label: "About",
+    route: "/about",
+    unselectedColor: "#ffffff",
+    selectedColor: "#ffffff",
+  }),
+  DrawerItem({
+    icon: "code",
+    label: "Developer",
+    route: "/developer",
+    unselectedColor: "#ffffff",
+    selectedColor: "#ffffff",
+  }),
 ];
 
 const drawerFooter = () =>
@@ -224,7 +247,7 @@ const drawerFooter = () =>
         Button({
           text: "View on GitHub",
           icon: "code",
-          bgColor: colors.primary,
+          bgColor: DRAWER_ACCENT,
           color: "#ffffff",
           fullWidth: true,
           padding: "10px 16px",
@@ -234,7 +257,7 @@ const drawerFooter = () =>
           text: `Docs app v${APP_VERSION} · by ${DEVELOPER.handle}`,
           size: 11,
           align: "center",
-          color: colors.textDisabled,
+          color: "rgba(255, 255, 255, 0.62)",
         }),
       ],
     }),
@@ -269,4 +292,5 @@ const App = () =>
     }),
   });
 
+applyTheme();
 runApp(App, "root");

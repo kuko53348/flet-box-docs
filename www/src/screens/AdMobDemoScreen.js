@@ -12,6 +12,7 @@ import {
   colors,
 } from "flet-box";
 import { card, page } from "../components/ui.js";
+import { onPrimary } from "../theme.js";
 
 // The native AdMob plugin only exists inside a Capacitor shell. A static
 // import of the bare specifier would break the app on the web (the browser
@@ -64,11 +65,11 @@ export const AdMobDemoScreen = () => {
     width: "100%",
     height: 66,
     label: "Test banner",
-    bgColor: "#101428",
-    borderColor: "#2c3e66",
-    color: "#8ab4f8",
-    onLoaded: () => setStatus("Banner active · test ad", "#22c55e"),
-    onFailed: (error) => setStatus(`Error: ${error.message}`, "#ef4444"),
+    bgColor: colors.gray100,
+    borderColor: colors.border,
+    color: colors.primary,
+    onLoaded: () => setStatus("Banner active · test ad", colors.success),
+    onFailed: (error) => setStatus(`Error: ${error.message}`, colors.danger),
     onDismissed: () => setStatus("Ad dismissed", colors.textSecondary),
   });
   adWidgetRef = ad;
@@ -82,7 +83,7 @@ export const AdMobDemoScreen = () => {
           ? adWidgetRef.showRewarded()
           : Promise.resolve(null);
     promise.then(() => {
-      setStatus(runningMsg, "#22c55e");
+      setStatus(runningMsg, colors.success);
     });
   };
 
@@ -97,7 +98,7 @@ export const AdMobDemoScreen = () => {
         text: "Show interstitial",
         iconRight: "ads_click",
         bgColor: colors.primary,
-        color: "#ffffff",
+        color: onPrimary,
         padding: "12px 20px",
         fullWidth: true,
         onPress: runAd(

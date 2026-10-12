@@ -4,6 +4,7 @@
 import { Button, Container, Icon, Row, Text, colors, goTo } from "flet-box";
 import { ALL_DOCS, CATEGORIES } from "../database/catalog.js";
 import { APP_VERSION, FRAMEWORK_VERSION, GITHUB_URL } from "../constants.js";
+import { onPrimary } from "../theme.js";
 import {
   intro,
   openExternal,
@@ -12,7 +13,7 @@ import {
   section,
 } from "../components/ui.js";
 
-const openCategory = (id) => goTo(`/docs?id=${encodeURIComponent(id)}`);
+const openCategory = (id) => goTo(`/documentation?id=${encodeURIComponent(id)}`);
 
 export const HomeScreen = () =>
   page([
@@ -28,7 +29,7 @@ export const HomeScreen = () =>
           text: "Get started",
           icon: "rocket_launch",
           bgColor: colors.primary,
-          color: "#ffffff",
+          color: onPrimary,
           padding: "10px 18px",
           onPress: () => openCategory("start"),
         }),
@@ -84,7 +85,7 @@ export const HomeScreen = () =>
           icon: "menu_book",
           title: "Documentation",
           subtitle: "Browse every widget, guide and service in this app.",
-          onPress: () => goTo("/docs"),
+          onPress: () => goTo("/documentation"),
         }),
         rowCard({
           icon: "info",

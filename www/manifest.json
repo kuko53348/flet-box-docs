@@ -1,13 +1,13 @@
 {
-  "name": "flet-box-docs",
-  "short_name": "flet-box-doc",
-  "description": "flet-box-docs built with Flet-Box",
+  "name": "FletBox Docs",
+  "short_name": "FletBox Docs",
+  "description": "Documentation for FletBox, a zero-dependency declarative UI framework for vanilla JavaScript.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay"],
-  "theme_color": "#1a1a2e",
-  "background_color": "#1a1a2e",
+  "theme_color": "#0b1120",
+  "background_color": "#0b1120",
   "orientation": "any",
   "icons": [
     {

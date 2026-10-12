@@ -16,7 +16,7 @@ import {
 export const openExternal = (url) => {
   const target =
     typeof globalThis.Capacitor?.isNativePlatform === "function" &&
-    globalThis.Capacitor.isNativePlatform()
+      globalThis.Capacitor.isNativePlatform()
       ? "_system"
       : "_blank";
   window.open(url, target, "noopener,noreferrer");
@@ -69,17 +69,17 @@ export const banner = ({ icon, iconNode, title, text, actions } = {}) =>
         children: [
           iconNode || iconChip(icon, colors.primary, 46),
           Column({
-            flex: 1,
+
             gap: 3,
             children: [
               Text({ text: title, weight: "bold", size: 19, color: colors.text }),
               text
                 ? Text({
-                    text,
-                    size: 12.5,
-                    color: colors.textSecondary,
-                    lineHeight: 1.5,
-                  })
+                  text,
+                  size: 12.5,
+                  color: colors.textSecondary,
+                  lineHeight: 1.5,
+                })
                 : null,
             ].filter(Boolean),
           }),
@@ -96,11 +96,11 @@ export const sectionTitle = (text, subtitle) =>
       Text({ text, weight: "bold", size: 18, color: colors.text }),
       subtitle
         ? Text({
-            text: subtitle,
-            size: 13,
-            color: colors.textSecondary,
-            lineHeight: 1.5,
-          })
+          text: subtitle,
+          size: 13,
+          color: colors.textSecondary,
+          lineHeight: 1.5,
+        })
         : null,
     ].filter(Boolean),
   });
@@ -145,11 +145,11 @@ export const rowCard = ({ icon, title, subtitle, onPress, trailing = "chevron_ri
             Text({ text: title, weight: "bold", size: 14.5, color: colors.text }),
             subtitle
               ? Text({
-                  text: subtitle,
-                  size: 11.5,
-                  color: colors.textSecondary,
-                  lineHeight: 1.4,
-                })
+                text: subtitle,
+                size: 11.5,
+                color: colors.textSecondary,
+                lineHeight: 1.4,
+              })
               : null,
           ].filter(Boolean),
         }),

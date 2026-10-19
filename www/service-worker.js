@@ -1,8 +1,13 @@
 // service-worker.js - PWA offline support
-const CACHE_NAME = 'fletbox-v2';
+const CACHE_NAME = 'fletbox-v3';
+// Deployment prefix: a worker's own URL always sits at the app root, so on a
+// GitHub Pages project site this is '/flet-box-docs/' and at the origin root
+// it is '/'. Hard-coded '/' paths would miss every precache entry under a
+// subpath and the offline navigation fallback would never hit.
+const BASE = new URL('./', self.location).pathname;
 // The shipped (baked-in) shell, precached so the app opens with no connection.
 // loader.js owns a SEPARATE cache ('fletbox-ota') for downloaded bundles.
-const PRECACHE = ['/', '/index.html', '/loader.js', '/config.json', '/src/app.js'];
+const PRECACHE = [BASE, `${BASE}index.html`, `${BASE}404.html`, `${BASE}loader.js`, `${BASE}config.json`, `${BASE}src/app.js`];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -83,7 +88,11 @@ self.addEventListener('fetch', event => {
         const cached = await cache.match(req);
         if (cached) return cached;
         if (req.mode === 'navigate') {
-          const shell = await cache.match('/index.html');
+          // 404.html is the fallback copy with absolute references, so it also
+          // boots correctly when served for a deep offline URL.
+          const shell =
+            (await cache.match(`${BASE}404.html`)) ||
+            (await cache.match(`${BASE}index.html`));
           if (shell) return shell;
         }
         return Response.error();

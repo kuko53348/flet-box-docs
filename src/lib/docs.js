@@ -5,21 +5,21 @@
 // resolve them against the page URL, request the raw .md and 404. Instead of
 // letting that happen we intercept the click and route through the app Router.
 
-import { goTo } from "flet-box";
+import { getBasePath, goTo } from "flet-box";
 
 export const DOCS_DIR = "docs/";
 
-// Base URL of the deployed app, snapshotted at load time. The Router rewrites
-// the address bar with absolute routes (e.g. "/doc?path=…"), so on a subpath
-// deployment — GitHub Pages project sites live at /<repo>/ — a plain relative
-// fetch("docs/widget/ListView.md") would resolve against the origin root and
-// 404. Anchoring fetches to this snapshot keeps them under the real app base.
-const APP_BASE_URL =
-  typeof window !== "undefined" ? new URL(".", window.location.href) : null;
-
-// Absolute URL for a document path, rooted at the app base when available.
+// Absolute URL for a document path, rooted at the deployed app base.
+//
+// The address bar is not a usable anchor: GitHub Pages serves this site under
+// /flet-box-docs/, the router rewrites it with app-relative routes, and an SPA
+// fallback entry can even land on a deep folder that has no docs/ next to it.
+// The router knows the real deployment prefix, and asking it per call matters
+// because the prefix is only resolved when the app boots.
 export const docUrl = (path) =>
-  APP_BASE_URL ? new URL(path, APP_BASE_URL).href : path;
+  typeof window === "undefined"
+    ? path
+    : new URL(path, `${window.location.origin}${getBasePath()}/`).href;
 
 // Path of the document currently on screen. Kept in this module (outside any
 // render) because the body is rebuilt on navigation while the click listener

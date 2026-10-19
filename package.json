@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "bash run.sh",
-    "build": "flet-box createBundle www && node scripts/copy-docs.mjs www",
+    "build": "flet-box createBundle www && node scripts/copy-docs.mjs www && node scripts/spa-fallback.mjs www",
     "copy-docs": "node scripts/copy-docs.mjs www",
     "start": "npm run dev",
     "android:init": "npm run build && cap add android",

@@ -1,117 +1,126 @@
 # ListTile
 
-## Overview
-`ListTile` renders a `<div>` row made of three parts: an optional `leftItem`, a center column of up to three text lines (`title`, `subtitle`, `description`), and an optional `rightItem`. Internally it composes `Row`, `Column`, and `Text`. Pass `onPress` to make the tile tappable (pointer cursor plus a hover background); `selected` and `disabled` change its appearance.
+A single row with leading, title, subtitle, and trailing slots. It is the standard building block for settings, contacts, and menus.
 
-## When to use
-- Build a settings or menu row with a leading icon, a title, supporting text, and a trailing control.
-- Render tappable rows inside a `ListView`, `Column`, or `Card`.
+## When to use it
 
-## Import
+Use it for any list row that needs an icon or avatar plus primary and secondary text.
 
-```javascript
-import { ListTile } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { ListTile } from "flet-box";
 
-ListTile({ title: "Home" });
+const tile = ListTile({
+  title: "Settings",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | string | — | Primary line. Rendered as a `Text` (size 16, `colors.primary`). |
-| `subtitle` | string | — | Second line. `Text` size 13, `colors.textSecondary`. |
-| `description` | string | — | Third line. `Text` size 12, `colors.textDisabled`. |
-| `leftItem` | Widget | — | Leading slot (e.g. an `Icon` or `Avatar`), placed before the text. |
-| `rightItem` | Widget | — | Trailing slot (e.g. a chevron), placed after the text. |
-| `onPress` | function | — | Click handler. Makes the tile interactive (pointer cursor + hover). Ignored when `disabled`. |
-| `selected` | boolean | `false` | Selected state: uses `selectedBgColor` and renders the title at weight 600. |
-| `disabled` | boolean | `false` | Dims the tile (opacity 0.6) and ignores `onPress`. |
-| `divider` | boolean | `false` | Appends a 1px `colors.border` line under the tile. |
-| `paddingHorizontal` | number | `16` | Left/right inner padding in pixels. |
-| `paddingVertical` | number | `12` | Top/bottom inner padding in pixels. |
-| `gap` | number | `12` | Space between the leading slot, the text column, and the trailing slot. |
-| `elevation` | number | `0` | When greater than 0, adds a `box-shadow` and a hover lift. |
-| `borderRadius` | number | `0` | Corner radius in pixels. |
-| `bgColor` | Color | `colors.surface` | Background when not selected. |
-| `selectedBgColor` | Color | `` `${colors.primary}20` `` | Background when `selected`. |
-| `hoverColor` | Color | `colors.border` | Background on hover (interactive and not selected). |
-| `titleProps / subtitleProps / descriptionProps` | object | `{}` | Extra props forwarded to each line's `Text`. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `leftItem` | `Widget` | The `leftItem` value for the widget. |
+| `title` | `string \| Widget` | Title text shown in the header. |
+| `subtitle` | `string \| Widget` | The `subtitle` value for the widget. |
+| `description` | `string \| Widget` | The `description` value for the widget. |
+| `titleProps` | `Partial<TextProps>` | The `titleProps` value for the widget. |
+| `subtitleProps` | `Partial<TextProps>` | The `subtitleProps` value for the widget. |
+| `descriptionProps` | `Partial<TextProps>` | The `descriptionProps` value for the widget. |
+| `rightItem` | `Widget` | The `rightItem` value for the widget. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `selected` | `boolean` | Current selected state. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `divider` | `boolean` | The `divider` value for the widget. |
+| `paddingHorizontal` | `number` | The `paddingHorizontal` value for the widget. |
+| `paddingVertical` | `number` | The `paddingVertical` value for the widget. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `selectedBgColor` | `Color` | Background color for the selected. |
+| `hoverColor` | `Color` | Color used for the hover. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
 
-These are the props specific to `ListTile`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
+
+```javascript
+import { ListTile } from "flet-box";
+
+const tile = ListTile({
+  title: "Notifications",
+  subtitle: "Email and push alerts",
+  onPress: () => console.log("open notifications"),
+});
+```
+
+### Full
 
 ```javascript
 import { Avatar, Icon, ListTile } from "flet-box";
 
-ListTile({
-  leftItem: Avatar({ name: "Jane Doe", size: 40 }),
-  title: "Jane Doe",
-  subtitle: "jane@example.com",
+const tile = ListTile({
+  leftItem: Avatar({ name: "Ada Lovelace", size: 40 }),
+  title: "Ada Lovelace",
+  subtitle: "Product designer",
   rightItem: Icon({ name: "chevron_right" }),
+  selected: true,
+  selectedBgColor: "#eff6ff",
+  divider: true,
+  paddingHorizontal: 16,
+  paddingVertical: 12,
   onPress: () => console.log("open profile"),
 });
 ```
 
-### Full example
+## Tips
 
-```javascript
-import { Column, Icon, ListTile, colors } from "flet-box";
+- leftItem and rightItem accept any widget, so you can drop in an Avatar or Switch.
+- Set selected: true with selectedBgColor to highlight the active row.
 
-Column({
-  children: [
-    ListTile({
-      leftItem: Icon({ name: "notifications" }),
-      title: "Notifications",
-      subtitle: "Push and email",
-      rightItem: Icon({ name: "chevron_right" }),
-      divider: true,
-      onPress: () => console.log("notifications"),
-    }),
-    ListTile({
-      leftItem: Icon({ name: "lock" }),
-      title: "Privacy",
-      description: "Manage your data",
-      selected: true,
-      elevation: 2,
-      borderRadius: 8,
-      hoverColor: colors.gray100,
-      titleProps: { size: 18 },
-      onPress: () => console.log("privacy"),
-    }),
-  ],
-});
-```
+## Accessibility
 
-## Notes
+- Keep the title short and descriptive; it becomes the row's accessible label.
 
-- The leading and trailing slots are named `leftItem` and `rightItem` — not `leading`/`trailing`.
-- The tile composes a `Row` (`leftItem` · text `Column` · `rightItem`); the text column holds up to three `Text` lines built from `title`, `subtitle`, and `description`.
-- It is interactive only when `onPress` is set and `disabled` is false; that adds the pointer cursor and the `hoverColor` hover background.
-- `disabled` sets opacity 0.6, a default cursor, and ignores `onPress`.
-- `divider: true` changes what is returned: the tile is wrapped in a flex-column container with a 1px `colors.border` line beneath it.
-- `elevation > 0` builds a real `box-shadow` (`0 Npx 2Npx rgba(0,0,0,0.1)`) and a hover lift — unlike `Card`, this shadow does render.
-- When neither `bgColor` nor `selectedBgColor` is passed, the tile subscribes to theme changes and recolors itself; the subscription is torn down on cleanup.
-- Icons require the Material Icons font (see [Icon](Icon.md)).
+## Behavior
+
+- divider draws a separator under the row; disabled blocks interaction and dims the tile.
+- onPress fires when the row is tapped, unless disabled is true.
 
 ## Related widgets
+
 - [ListView](ListView.md)
 - [Avatar](Avatar.md)
-- [Icon](Icon.md)
-- [Divider](Divider.md)
 - [Card](Card.md)
-- [Text](Text.md)
 
 ---
 

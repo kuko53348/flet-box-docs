@@ -1,123 +1,139 @@
 # Tooltip
 
-## Overview
-`Tooltip` attaches a hover/focus hint bubble to an existing widget. It is a decorator, not a container: it returns the `child` you passed in — the very same element — augmented with `showTooltip()`, `hideTooltip()`, `updateContent()`, and `updatePosition()` methods. The bubble itself is a `position: fixed` div that is created lazily on first show and appended to `document.body`, positioned next to the child with an optional CSS-triangle arrow. It returns `null` when no `child` is given.
+Wraps a child widget and shows a labeled overlay bubble on hover or focus. The bubble is rendered as a portal on document.body so it is never clipped.
 
-## When to use
-- Explain an icon-only [Button](Button.md) or [Icon](Icon.md) on hover.
-- Show a short hint for form fields on focus.
-- Add context that shouldn't take permanent screen space.
+## When to use it
 
-## Import
+Use it to explain icons, buttons, or dense fields that cannot fit a visible label.
+
+## Quick start
 
 ```javascript
-import { Tooltip } from "flet-box";
+import { Button, Tooltip, clipboard } from "flet-box";
+
+const tip = Tooltip({
+  text: "Copy to clipboard",
+  child: Button({ text: "Copy" }),
+});
 ```
 
-## Basic example
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
-The smallest useful version. Start here if this widget is new to you.
+## Props
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | Visible text content. |
+| `child` | `Widget` | A single child widget. Alias: `children` for a list. |
+| `position` | `'top' \| 'bottom' \| 'left' \| 'right'` | CSS `position` value, or `stack` for centered stacking. |
+| `delay` | `number` | Delay before the animation starts, in milliseconds. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `textColor` | `Color` | Color of the button label. |
+| `fontSize` | `number` | Size of the font. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `offset` | `number` | The `offset` value for the widget. |
+| `showArrow` | `boolean` | Controls whether the arrow is shown. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `maxWidth` | `number` | Maximum width the widget may grow to. |
+| `textAlign` | `'left' \| 'center' \| 'right'` | The `textAlign` value for the widget. |
+| `zIndex` | `number` | Index used for the z. |
+| `animationDuration` | `number` | Duration for the animation, in milliseconds. |
+| `arrowSize` | `number` | Size of the arrow. |
+| `borderColor` | `Color` | Color used for the border. |
+| `borderWidth` | `number` | Width of the border. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
+
+## Examples
+
+### Everyday
 
 ```javascript
 import { Icon, Tooltip } from "flet-box";
 
-Tooltip({ text: "Refresh data", child: Icon({ name: "refresh" }) });
-```
-
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | string | — | Tooltip message. Required in practice — an empty bubble otherwise. |
-| `child` | element | — | The widget the tooltip is attached to. Required; `Tooltip` returns `null` without it. |
-| `position` | `'top'`, `'bottom'`, `'left'`, `'right'` | `'top'` | Which side of the child the bubble appears on (arrow included). |
-| `delay` | number (ms) | `300` | Hover/focus time before the tooltip appears. |
-| `bgColor` | Color | `colors.secondary` | Bubble background (also colors the arrow). |
-| `textColor` | Color | `'#ffffff'` | Message color. |
-| `fontSize` | number | `12` | Message font size in pixels. |
-| `padding` | string | `'6px 10px'` | Bubble inner padding. |
-| `borderRadius` | number or string | `6` | Bubble corner radius in pixels. |
-| `offset` | number | `8` | Gap between child and bubble, in pixels. |
-| `showArrow` | boolean | `true` | Renders the triangular pointer. |
-| `disabled` | boolean | `false` | When `true`, `showTooltip()` does nothing. |
-| `maxWidth` | number | `200` | Bubble maximum width in pixels. |
-| `textAlign` | string | `'center'` | Message alignment. |
-| `zIndex` | number | `9999` | Bubble stacking order. |
-| `animationDuration` | number (ms) | `200` | Fade-in/out duration. |
-| `arrowSize` | number | `6` | Arrow half-width in pixels. |
-| `borderColor` | Color | `'transparent'` | Bubble border color (needs `borderWidth > 0`). |
-| `borderWidth` | number | `0` | Bubble border width; `0` means no border. |
-| `shadow` | string | `'0 2px 8px rgba(0,0,0,0.15)'` | Bubble CSS box-shadow. |
-
-`Tooltip` returns your `child` unchanged (plus the methods below), so [common props](COMMON_PROPS.md) apply to the child element as usual — style the child directly, not through `Tooltip`. Unrecognized `Tooltip` props are ignored.
-
-## Instance methods
-
-The returned child element exposes:
-
-- `showTooltip()` — schedules the tooltip to appear after `delay` ms (no-op when `disabled` or already visible). Creates and appends the bubble to `document.body` on first use.
-- `hideTooltip()` — cancels a pending show and fades the bubble out.
-- `updateContent(newText)` — changes the message; updates the live bubble immediately if it exists.
-- `updatePosition()` — repositions the bubble next to the child (only while visible).
-- `_cleanup()` — (framework hook) removes the bubble from the DOM and detaches all listeners.
-
-## Examples
-
-### Everyday example
-
-```javascript
-import { Button, Row, Tooltip } from "flet-box";
-
-Row({
-  gap: 8,
-  children: [
-    Tooltip({ text: "Save document", child: Button({ icon: "save", variant: "outlined" }) }),
-    Tooltip({ text: "Print", position: "bottom", child: Button({ icon: "print", variant: "outlined" }) }),
-  ],
-});
-```
-
-### Full example
-
-```javascript
-import { Icon, Tooltip, colors } from "flet-box";
-
-const hint = Tooltip({
-  text: "Downloads are paused on metered connections",
-  child: Icon({ name: "help_outline", size: 20, color: colors.textSecondary }),
-  position: "right",
+const tip = Tooltip({
+  text: "Adds the item to your cart",
+  position: "bottom",
   delay: 150,
-  bgColor: colors.gray800,
-  textColor: "#ffffff",
-  fontSize: 13,
-  padding: "8px 12px",
-  borderRadius: 8,
-  maxWidth: 240,
-  offset: 10,
-  arrowSize: 5,
-  showArrow: true,
-  animationDuration: 150,
+  child: Icon({ name: "shopping_cart" }),
 });
-
-// hint.showTooltip();                 // show programmatically (after `delay`)
-// hint.updateContent("New message");  // change the text
-// hint.hideTooltip();                 // hide
 ```
 
-## Notes
+### Full
 
-- Show triggers are `mouseenter` and `focus`; hide triggers are `mouseleave` and `blur`. The bubble also hides on any window scroll or resize so it never floats away from its target.
-- The bubble is `pointer-events: none` — it can never intercept clicks.
-- Positioning is clamped to stay at least 10px inside the viewport, so edge-of-screen children still get a fully visible tooltip.
-- The bubble div is only created the first time the tooltip is shown, and lives in `document.body` afterwards (hidden between shows). `_cleanup()` removes it.
-- Because `Tooltip` returns the child itself, you can keep using it as a normal widget anywhere in your tree.
+```javascript
+import { Button, Tooltip, rgba } from "flet-box";
+
+const tip = Tooltip({
+  text: "Only visible to workspace admins",
+  child: Button({ text: "Share", variant: "outlined" }),
+  position: "right",
+  delay: 300,
+  offset: 12,
+  maxWidth: 240,
+  bgColor: "#111827",
+  textColor: "#f9fafb",
+  showArrow: true,
+  textAlign: "left",
+  borderRadius: 8,
+  shadow: "0 4px 12px rgba(0,0,0,0.25)",
+  animationDuration: 180,
+});
+```
+
+## Tips
+
+- Attach it to any widget via child; the tooltip is a separate portal, so overflow
+- hidden ancestors do not cut it off.
+- delay controls how long the pointer must rest before the tooltip appears; lower it
+- for dense toolbars, raise it for error-prone hints.
+- The bubble is clamped to the viewport edges, so top/left placements can sit slightly
+- inside the window bounds.
+
+## Accessibility
+
+- The wrapped child keeps its focus handlers, so keyboard users tabbing onto it get
+- the same tooltip as mouse hover.
+
+## Behavior
+
+- The tooltip hides itself on window scroll or resize and removes its body portal plus
+- listeners on unmount.
+- The wrapped child gains showTooltip, hideTooltip, updateContent, and updatePosition
+- helpers for imperative control.
 
 ## Related widgets
-- [Icon](Icon.md)
+
 - [Button](Button.md)
+- [Icon](Icon.md)
 - [Text](Text.md)
-- [SnackBar](SnackBar.md)
-- [Badge](Badge.md)
 
 ---
 

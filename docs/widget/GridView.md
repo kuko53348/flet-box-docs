@@ -1,116 +1,134 @@
 # GridView
 
-## Overview
-`GridView` renders a virtualized, multi-column grid. It is a thin wrapper around `ListView` with `wrapItems: true`: it maps `columns` → `crossAxisCount`, `itemHeight` → `itemSize`, and `spacing` → `gap`, then forwards everything else. That means it shares `ListView`'s virtualization, header/footer/empty slots, infinite scroll, pull-to-refresh, and instance methods.
+Grid layout built on ListView's virtualization. It lays items out in a fixed number of columns and gives every cell the same height.
 
-## When to use
-- Show items in a multi-column grid (a gallery or product grid) while keeping virtualization.
-- You want `ListView`'s infinite scroll or pull-to-refresh in a grid layout.
+## When to use it
 
-## Import
+Use GridView for image galleries, product catalogs, and dashboards of equal-sized tiles.
 
-```javascript
-import { GridView } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
-import { GridView, Text } from "flet-box";
+import { GridView, Text, grid } from "flet-box";
 
-GridView({
+const grid = GridView({
   data: ["A", "B", "C", "D"],
-  columns: 2,
   renderItem: (item) => Text({ text: item }),
 });
 ```
 
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
+
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `columns` | number | `2` | Number of grid columns (maps to `ListView`'s `crossAxisCount`). |
-| `itemHeight` | number | `150` | Cell height in pixels (maps to `itemSize`). |
-| `spacing` | number | `8` | Space between cells in pixels (maps to `gap`). |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `expand` | `boolean \| number` | Lets a flex child grow to fill available space. |
+| `bufferSize` | `number` | How many extra items to render beyond the viewport. |
+| `showsScrollIndicator` | `boolean` | Shows the native scrollbar. |
+| `ListEmptyComponent` | `(() => Widget) \| Widget` | Widget or builder shown when there is no data. |
+| `ListFooterComponent` | `(() => Widget) \| Widget` | Widget or builder rendered below the list content. |
+| `ListHeaderComponent` | `(() => Widget) \| Widget` | Widget or builder rendered above the list content. |
+| `onRefresh` | `(done: () => void) => void` | Pull-to-refresh handler; call the provided `done()` when finished. |
+| `onEndReachedThreshold` | `number` | How close to the end (in items or px) triggers `onEndReached`. |
+| `onEndReached` | `() => void` | Fired when the list scrolls near its end, for infinite loading. |
+| `gap` | `number` | Space between children along the layout axis. |
+| `itemSize` | `number` | Height of each list item. |
+| `width` | `number \| string` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `number \| string` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `renderItem` | `(item: any, index: number) => Widget` | Builds one child from an item: `(item, index) => Widget`. |
+| `data` | `any[]` | Array of values or `{ label, value }` slices. |
+| `columns` | `number` | Number of grid columns. |
+| `spacing` | `number` | Space between grid items. |
+| `itemHeight` | `number` | Height of each grid cell. |
 
-Every other prop is forwarded to `ListView` — `data`, `renderItem`, `height`, `bufferSize`, `onEndReached`, `onEndReachedThreshold`, `onRefresh`, `ListHeaderComponent`/`ListFooterComponent`/`ListEmptyComponent`, and the rest. See [ListView](ListView.md). It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-Because `GridView` returns a `ListView` element, it exposes the same members:
-
-- `updateData(newData)` — intended to replace the dataset and re-render. Currently broken (see the `ListView` Notes).
-- `scrollToIndex(index, animated = true)` — scrolls to a given cell index.
-- `scrollToStart(animated = true)` / `scrollToEnd(animated = true)` — scroll to the top/bottom.
-- `data` (getter is safe) and `refreshing` — reactive properties. The `data` setter shares the `ListView` recursion bug. See [ListView](ListView.md).
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Card, GridView, Text } from "flet-box";
-
-const items = ["One", "Two", "Three", "Four"];
-
-GridView({
-  data: items,
-  columns: 2,
-  itemHeight: 80,
-  spacing: 12,
-  renderItem: (item) => Card({ child: Text({ text: item }) }),
-});
-```
-
-### Full example
-
-```javascript
-import { Card, Column, GridView, Image, Text } from "flet-box";
-
-const gallery = [
-  { url: "/1.jpg", title: "One" },
-  { url: "/2.jpg", title: "Two" },
-];
+import { Card, GridView, Text, grid } from "flet-box";
 
 const grid = GridView({
-  data: gallery,
-  columns: 4,
-  itemHeight: 180,
+  data: products,
+  columns: 3,
   spacing: 12,
-  height: 600,
-  renderItem: (item) =>
-    Card({
-      padding: 0,
-      child: Column({
-        children: [
-          Image({ src: item.url, height: 140, fit: "cover" }),
-          Text({ text: item.title, padding: 8 }),
-        ],
-      }),
-    }),
-  ListHeaderComponent: () => Text({ text: "Gallery", type: "h2" }),
-  onEndReached: () => console.log("load more"),
+  itemHeight: 160,
+  renderItem: (item) => Card({ child: Text({ text: item.name }) }),
 });
-
-grid.scrollToIndex(8);
 ```
 
-## Notes
+### Full
 
-- `GridView` is a wrapper: it calls `ListView` with `wrapItems: true` and translates `columns`/`itemHeight`/`spacing` into `crossAxisCount`/`itemSize`/`gap`. All other props pass straight through.
-- It is virtualized exactly like `ListView` — only visible cells (plus `bufferSize`) are in the DOM, and cells render on mount, not synchronously at construction.
-- `itemHeight` is the full cell height used for the scroll math; make sure it matches what your `renderItem` actually produces.
-- All `ListView` behaviors and caveats apply (`renderItem` is required, `expand` does not change `height`, and so on). See [ListView](ListView.md).
-- It inherits the `ListView` `updateData()`/`data`-setter recursion bug: read `data`, but do not assign it or call `updateData()` — recreate the grid to change the dataset. See [ListView](ListView.md).
+```javascript
+import { Container, GridView, Text, grid } from "flet-box";
+
+const grid = GridView({
+  data: products,
+  columns: 2,
+  spacing: 16,
+  itemHeight: 180,
+  gap: 16,
+  height: 480,
+  showsScrollIndicator: true,
+  onEndReached: () => loadMore(),
+  ListEmptyComponent: () => Text({ text: "No products" }),
+  renderItem: (item) => Container({
+    bgColor: "#ffffff",
+    borderRadius: 12,
+    child: Text({ text: item.name }),
+  }),
+});
+```
+
+## Tips
+
+- `columns` sets the number of columns and `spacing` sets the gap between cells.
+- `itemHeight` fixes each cell's height, which is what makes virtualization possible.
+- It accepts the same `data` and `renderItem` contract as ListView.
+
+## Accessibility
+
+- Announce the grid's purpose with a heading and keep each tile's tap target large enough to hit.
+
+## Behavior
+
+- GridView is implemented as ListView with grid wrapping enabled, so it shares the same scrolling and update APIs.
+- Rows outside the viewport are removed, so keep per-tile state out of the DOM and in widget state when needed.
 
 ## Related widgets
+
 - [ListView](ListView.md)
+- [Container](Container.md)
 - [Card](Card.md)
 - [Image](Image.md)
-- [ListTile](ListTile.md)
-- [Column](Column.md)
 
 ---
 

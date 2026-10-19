@@ -1,122 +1,129 @@
 # Pagination
 
-## Overview
-`Pagination` renders a page navigator as a centered, wrapping `Row` of [Button](Button.md) widgets: optional first/prev icons, a sliding window of up to `maxButtons` numbered pages (active one filled in `color` and disabled), `...` ellipses plus jump buttons for the edges, optional next/last icons, and an optional summary like `Page 1 of 10 (1-10 of 95)`. It is computed from `totalItems / pageSize`; when there is only one page (or none) it returns `null`. Clicking a page fires `onPageChange(page)`.
+Pagination renders page controls derived from totalItems and pageSize, with optional first/last and prev/next buttons. It reports the chosen page through onPageChange.
 
-## When to use
-- Split a long list, table, or search result into pages.
-- Give users direct jumps (first/last, numbered pages) instead of infinite scroll.
-- Pair with [DataTable](DataTable.md) or [ListView](ListView.md) slices of a larger dataset.
+## When to use it
 
-## Import
+Use it under long lists or tables so users can move through paged results.
 
-```javascript
-import { Pagination } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Pagination } from "flet-box";
 
-Pagination({ totalItems: 100, onPageChange: (page) => console.log("page", page) });
-```
-
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `totalItems` | number | `0` | Total number of records. `totalPages = ceil(totalItems / pageSize)`; with 1 page or fewer the widget returns `null`. |
-| `pageSize` | number | `10` | Records per page. |
-| `currentPage` | number | `1` | Initial active page, clamped to `1`–`totalPages`. |
-| `onPageChange` | `(page: number) => void` | — | Fires with the new page number on every valid navigation click. |
-| `showFirstLast` | boolean | `true` | Adds `first_page` / `last_page` icon buttons. |
-| `showPrevNext` | boolean | `true` | Adds `chevron_left` / `chevron_right` icon buttons. |
-| `maxButtons` | number | `5` | Size of the sliding window of numbered page buttons. |
-| `variant` | `'filled'`, `'outlined'`, `'text'` | `'outlined'` | Button variant for non-active buttons. |
-| `color` | Color | `colors.primary` | Background of the active page button. |
-| `size` | `'small'`, `'medium'`, `'large'` | `'medium'` | Preset for button box (32/36/42px), font (12/14/16px), icon (16/20/24px), and gap (4/6/8px). |
-| `disabled` | boolean | `false` | Ignores all page changes and disables every button. |
-| `showTotal` | boolean | `true` | Appends the summary text (only when `totalItems > 0`). |
-| `label` | string | `'Page'` | First word of the summary text. |
-
-These are the props specific to `Pagination`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style` — applied to the outer `Row`.
-
-## Examples
-
-### Everyday example
-
-```javascript
-import { Column, Pagination, Text } from "flet-box";
-
-let page = 1;
-
-Column({
-  gap: 12,
-  children: [
-    Text({ text: `Showing page ${page}` }),
-    Pagination({
-      totalItems: 240,
-      pageSize: 24,
-      currentPage: page,
-      onPageChange: (p) => { page = p; console.log("load page", p); },
-    }),
-  ],
+const pages = Pagination({
+  totalItems: 100,
+  pageSize: 10,
+  onPageChange: (page) => console.log(page),
 });
 ```
 
-### Full example
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
+
+## Props
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `totalItems` | `number` | Total number of items to paginate. |
+| `pageSize` | `number` | Number of items per page. |
+| `currentPage` | `number` | Currently active page. |
+| `onPageChange` | `(page: number) => void` | Fired with the new page number. |
+| `showFirstLast` | `boolean` | Shows first and last page buttons. |
+| `showPrevNext` | `boolean` | Shows previous and next page buttons. |
+| `maxButtons` | `number` | Maximum number of page buttons before truncation. |
+| `variant` | `'outlined' \| 'filled' \| 'text'` | Visual variation or style preset. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `size` | `'small' \| 'medium' \| 'large'` | Overall size preset or pixel value, depending on the widget. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `showTotal` | `boolean` | Controls whether the total is shown. |
+| `label` | `string` | Label or caption shown near the control. |
+
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
+
+## Examples
+
+### Everyday
 
 ```javascript
-import { Column, Pagination, colors } from "flet-box";
+import { Pagination } from "flet-box";
 
-const items = Array.from({ length: 487 }, (_, i) => `Item ${i + 1}`);
-let currentPage = 3;
-
-const render = () => {
-  const start = (currentPage - 1) * 50;
-  return Column({
-    gap: 16,
-    children: [
-      // ...your list/table for items.slice(start, start + 50)...
-      Pagination({
-        totalItems: items.length,
-        pageSize: 50,
-        currentPage,
-        maxButtons: 7,
-        variant: "outlined",
-        color: colors.primary,
-        size: "large",
-        showFirstLast: true,
-        showPrevNext: true,
-        showTotal: true,
-        label: "Page",
-        onPageChange: (p) => { currentPage = p; render(); },
-      }),
-    ],
-  });
-};
-
-render();
+const pages = Pagination({
+  totalItems: 248,
+  pageSize: 20,
+  currentPage: 1,
+  showPrevNext: true,
+  showFirstLast: true,
+  onPageChange: (page) => loadPage(page),
+});
 ```
 
-## Notes
+### Full
 
-- The widget is a **snapshot**: clicking updates its internal `current` (so repeat clicks on the same page are ignored) and fires `onPageChange`, but it does not re-render itself. Rebuild `Pagination` with the new `currentPage` in your handler to move the highlight — see the full example.
-- Returns `null` when `ceil(totalItems / pageSize) <= 1`, so guard layouts that expect an element.
-- The active page button is rendered `filled` in `color` and is disabled; all other buttons use `variant` with a transparent background.
-- Edge behavior: when the window doesn't include page 1 (or the last page), an extra button for it is added, separated by a `...` `Text` when there's a gap.
-- Prev/first buttons disable on page 1; next/last disable on the last page. Icon buttons use the Material Icons font (see [Icon](Icon.md)).
-- Summary format is exactly: `` `${label} ${current} of ${totalPages} (${start}-${end} of ${totalItems})` ``.
+```javascript
+import { Pagination } from "flet-box";
+
+const pages = Pagination({
+  totalItems: 512,
+  pageSize: 25,
+  currentPage: 4,
+  maxButtons: 7,
+  variant: "filled",
+  size: "medium",
+  showFirstLast: true,
+  showPrevNext: true,
+  showTotal: true,
+  label: "Rows",
+  color: "#2563eb",
+  onPageChange: (page) => loadPage(page),
+});
+```
+
+## Tips
+
+- Provide totalItems and pageSize; the number of pages is computed for you.
+- Control the active page with currentPage and update it inside onPageChange.
+- Use maxButtons to limit how many page buttons appear before they collapse.
+
+## Accessibility
+
+- Ensure the current page is distinguishable and that controls are reachable by keyboard.
+- Pair pagination with a visible total by enabling showTotal so users know how much data exists.
+
+## Behavior
+
+- Pages are recalculated whenever totalItems, pageSize or currentPage change.
+- onPageChange fires with the new page number when the user navigates.
 
 ## Related widgets
-- [Button](Button.md)
-- [Row](Row.md)
+
 - [DataTable](DataTable.md)
 - [ListView](ListView.md)
-- [Stepper](Stepper.md)
+- [Button](Button.md)
 
 ---
 

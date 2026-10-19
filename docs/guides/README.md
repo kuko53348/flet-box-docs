@@ -9,6 +9,7 @@ This directory is the **conceptual index** of FletBox: how to build apps, set up
 - **[Routing with FletBox](router.md)** — Chapter 9 · fixed paths, dynamic parameters, queries, history, and route subscriptions.
 - **[Frontend services](frontend-services.md)** — Chapter 9 · the practical walkthrough of the three storage layers (`RamStore`, `Session`, `Storage`) and the HTTP client.
 - **[FletBox utilities](utilities.md)** — Chapter 10 · layout/theme/format helpers and validator tools.
+- **[Widget structure](widget-structure.md)** — the canonical, modular shape every widget follows (and how new ones are added).
 
 ## Appendices (Advanced — for shipping)
 
@@ -16,6 +17,7 @@ This directory is the **conceptual index** of FletBox: how to build apps, set up
 - **[Build FletBox for mobile and other platforms](mobile-and-platforms.md)** — package the same frontend for web, PWA, Android (Capacitor), and iOS.
 - **[Compatibility and support](compatibility.md)** — what FletBox ships in, and the platform matrix.
 - **[Add FletBox to an existing page](embedding.md)** — drop one widget into an existing HTML page without rewriting it.
+- **[Ship updates without the store (OTA / online updates)](online-updates.md)** — publish once, then self-update the web bundle from GitHub on every release.
 
 ## Also worth reading
 

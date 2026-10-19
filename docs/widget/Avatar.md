@@ -1,110 +1,113 @@
 # Avatar
 
-## Overview
-`Avatar` renders a `<div>` (inline-flex, centered, `overflow: hidden`) that shows a user's picture, an icon, or their initials. Content is chosen by priority: `src` renders a cover-fit `Image`; otherwise `icon` renders a Material `Icon`; otherwise `name` renders an initials `Text`; otherwise a default `"person"` icon is shown. `shape` controls the corner radius.
+A compact identity chip that shows a profile image, the person's initials, or a fallback icon. It falls back gracefully when no image is available.
 
-## When to use
-- Show a user's profile picture, or fall back to their initials when there is no picture.
-- Represent a person, team, or account in a list, header, or comment.
+## When to use it
 
-## Import
+Reach for it in headers, comments, list rows, and any place a user needs a face.
 
-```javascript
-import { Avatar } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Avatar } from "flet-box";
 
-Avatar({ name: "Jane Doe" });
+const user = Avatar({
+  name: "Ada Lovelace",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `src` | string | — | Image URL. When set, renders a cover-fit `Image`. |
-| `name` | string | — | Full name; its initials are shown when there is no `src`/`icon`. |
-| `icon` | string | — | Material icon name; used when there is no `src`. |
-| `size` | number | `40` | Width and height in pixels. Also scales the initials (`size * 0.4`) and icon (`size * 0.5`). |
-| `fontSize` | number | `16` | Base font-size on the container. |
-| `shape` | `'circle'`, `'rounded'`, `'square'` | `'circle'` | Corner radius: `50%`, `size * 0.2`px, or `0`. |
-| `bgColor` | Color | `colors.primary` | Background color. |
-| `textColor` | Color | `colors.text` | Color of the initials or icon. |
-| `onPress` | function | — | Click handler; adds a pointer cursor and a hover scale. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `src` | `string` | Resource URL for the image, audio, or video. |
+| `name` | `string` | The `name` value for the widget. |
+| `icon` | `string` | Name of the icon to render. |
+| `size` | `number` | Overall size preset or pixel value, depending on the widget. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `textColor` | `Color` | Color of the button label. |
+| `shape` | `'circle' \| 'rounded' \| 'square'` | The `shape` value for the widget. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
 
-These are the props specific to `Avatar`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned element exposes:
-
-- `updateContent(newProps)` — updates `src`/`name`/`icon`/`bgColor`/`size` and rebuilds the inner content (image, icon, or initials) in place.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Avatar, Row, Text } from "flet-box";
+import { Avatar } from "flet-box";
 
-Row({
-  gap: 12,
-  alignItems: "center",
-  children: [
-    Avatar({ src: "/jane.jpg", size: 48 }),
-    Text({ text: "Jane Doe", weight: "bold" }),
-  ],
+const user = Avatar({
+  src: "/avatars/ada.png",
+  name: "Ada Lovelace",
+  size: 48,
+  shape: "circle",
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Avatar, Column, colors } from "flet-box";
+import { Avatar } from "flet-box";
 
-const avatar = Avatar({
-  name: "John Doe",
+const user = Avatar({
+  src: "/avatars/ada.png",
+  name: "Ada Lovelace",
   size: 64,
   shape: "rounded",
-  bgColor: colors.secondary,
+  bgColor: "#2563eb",
   textColor: "#ffffff",
   onPress: () => console.log("open profile"),
 });
-
-Column({
-  gap: 12,
-  alignItems: "center",
-  children: [
-    avatar,
-    Avatar({ icon: "group", size: 48, bgColor: colors.info }),
-    Avatar({ size: 40 }), // no src/icon/name -> default "person" icon
-  ],
-});
-
-// avatar.updateContent({ name: "Alice Smith" }); // initials become "AS"
 ```
 
-## Notes
+## Tips
 
-- Renders a `<div>` with `display: inline-flex`, centered content, and `overflow: hidden`.
-- Content priority is `src` → `icon` → `name` → a default `"person"` icon. Only one is shown.
-- Initials: two or more words take the first initial of the first and last word, uppercased ("John Doe" → "JD"); a single word takes its first character; an empty or missing name yields "?".
-- `shape` sets the radius: `circle` → `50%`, `rounded` → `size * 0.2`px, `square` → `0`.
-- `size` drives width/height and scales the inner content (initials use `size * 0.4`, icons use `size * 0.5`); `fontSize` only sets the container's base font-size.
-- `onPress` adds a pointer cursor and a hover `scale(1.05)` effect.
-- Icons require the Material Icons font (see [Icon](Icon.md)).
+- Provide both src and name so initials render if the image fails.
+- Use shape: "circle" for people and shape: "rounded" for organizations or bots.
+
+## Accessibility
+
+- The name prop is announced as the label, so always give a meaningful name.
+
+## Behavior
+
+- When src is missing or errors, the widget automatically shows initials from name.
+- onPress makes the whole avatar interactive, which is useful for opening profiles.
 
 ## Related widgets
-- [Badge](Badge.md)
-- [Icon](Icon.md)
+
 - [Image](Image.md)
 - [ListTile](ListTile.md)
-- [Text](Text.md)
+- [Card](Card.md)
 
 ---
 

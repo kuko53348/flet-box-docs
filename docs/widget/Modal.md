@@ -1,162 +1,122 @@
 # Modal
 
-## Overview
-`Modal` builds a centered dialog window: a fixed full-screen overlay (`colors.overlay`, `z-index: 9998`) attached to `document.body`, containing a surface panel with an optional header (title + close icon), a scrollable content area, and an optional footer row of action buttons. Like the other overlays, it does **not** return an element — it returns a controller object with `open()`, `close()`, `toggle()`, `destroy()`, and live-update helpers. The panel starts hidden (`opacity: 0`, `visibility: hidden`) and animates in with a scale/fade transition.
+A centered dialog over a dimmed overlay that holds a title, content and a row of actions.
 
-## When to use
-- Focus the user on a self-contained task: a form, a preview, or a detail view.
-- Show content too large for a [SnackBar](SnackBar.md) or [Tooltip](Tooltip.md) but not worth a new page.
-- Drive a multi-step flow with `updateContent()` and `setLoading()` on the same instance.
+## When to use it
 
-## Import
+Use Modal when the user must focus on a task or read something without leaving the page.
 
-```javascript
-import { Modal } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Modal } from "flet-box";
 
-const modal = Modal({
-  title: "Hello",
-  content: "This is a modal built with FletBox.",
+const dialog = Modal({
+  title: "Welcome",
+  content: "Thanks for signing up.",
 });
-
-modal.open();
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | string | — | Header title (18px). The header only renders when `title` or `showCloseButton` is set. |
-| `content` | HTMLElement, string, or array of those | — | Body content. Strings are wrapped in a 14px `Text`. |
-| `actions` | array of elements | `[]` | Footer buttons, right-aligned with an 8px gap. No footer when empty. |
-| `closeOnOverlayClick` | boolean | `true` | Accepted for API compatibility; the overlay click handler is currently disabled in the implementation, so clicking outside does not close the modal. |
-| `closeOnEsc` | boolean | `true` | Close when `Escape` is pressed while open. |
-| `width` | number or string | `480` | Panel width (numbers are pixels). |
-| `minWidth` | number or string | `320` | Panel minimum width. |
-| `maxWidth` | string | `'90%'` | Panel maximum width. |
-| `maxHeight` | string | `'80vh'` | Panel maximum height; the content area scrolls past it. |
-| `backgroundColor` | Color | `colors.surface` | Panel background. |
-| `borderRadius` | number or string | `20` | Panel corner radius (numbers are pixels). |
-| `border` | string | `null` | Full CSS border for the panel; takes precedence over `borderWidth`/`borderColor`. |
-| `borderColor` / `borderWidth` | Color / number | `colors.border` / `1` | Combined into a border when `border` is not set. |
-| `shadow` | string | `null` | Custom CSS box-shadow for the panel. |
-| `elevation` | number `0`–`5` | `3` | Preset panel shadow, used when `shadow` is not set. |
-| `padding` | number or string | `'20px'` | Content-area padding. |
-| `contentBgColor` | Color | `colors.surface` | Content-area background. |
-| `contentElevation` | number | `0` | Optional inset shadow on the content area. |
-| `showCloseButton` | boolean | `true` | Renders the `close` icon in the header (hover-highlighted). |
-| `headerBgColor` | Color | `colors.surface` | Header background. |
-| `headerTextColor` | Color | `null` | Header title and close-icon color; falls back to `colors.text` / `colors.textSecondary`. |
-| `headerBorder` | string or `false` | `null` | Custom header bottom border; `false` removes it. Default is `1px solid colors.border`. |
-| `headerPadding` | string | `null` | Custom header padding (default `'16px 20px'`). |
-| `headerElevation` | number | `0` | Adds a subtle drop shadow under the header. |
-| `footerBgColor` | Color | `colors.surface` | Footer background. |
-| `footerBorder` | string or `false` | `null` | Custom footer top border; `false` removes it. |
-| `footerPadding` | string | `null` | Custom footer padding (default `'12px 20px'`). |
-| `footerElevation` | number | `0` | Adds a subtle shadow above the footer. |
-| `overlayColor` | Color | `colors.overlay` | Backdrop color (`rgba(0,0,0,0.4)` by default). |
-| `zIndex` | number | `9998` | Overlay stacking order. |
-| `onOpen` | function | — | Fires when the modal opens. |
-| `onClose` | function | — | Fires when the modal closes (any cause). |
-
-This widget returns a controller object, not an element, so [common props](COMMON_PROPS.md) do not apply to it; unrecognized props are ignored.
-
-## Instance methods
-
-The returned controller exposes:
-
-- `open()` — fades/scales the modal in and calls `onOpen`. No-op if already open.
-- `close()` — animates out, calls `onClose`, and sets `visibility: hidden` after 300ms. No-op if already closed.
-- `toggle()` — opens if closed, closes if open.
-- `destroy()` — removes the overlay from `document.body` and detaches the Escape listener. The instance is unusable afterwards.
-- `isOpen` — getter for the current state.
-- `updateContent(newContent)` — replaces the body with an element or string (strings become a 14px `Text`).
-- `updateTitle(newTitle)` — replaces the header title text.
-- `updatePadding(newPadding)` — sets content padding (numbers are pixels).
-- `setLoading(loading = true, loadingText = 'Loading...')` — swaps the body for a spinner + text; `setLoading(false)` restores the original `content`.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `title` | `string` | Title text shown in the header. |
+| `content` | `Widget \| string` | Main content of the overlay. |
+| `actions` | `Widget[]` | Widgets rendered in the overlay footer. |
+| `closeOnOverlayClick` | `boolean` | Closes the overlay when the backdrop is clicked. |
+| `closeOnEsc` | `boolean` | Closes the overlay when Escape is pressed. |
+| `width` | `number \| string` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `minWidth` | `number` | Minimum width the widget may shrink to. |
+| `maxWidth` | `number \| string` | Maximum width the widget may grow to. |
+| `maxHeight` | `number \| string` | Maximum height the widget may grow to. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `border` | `string` | The `border` value for the widget. |
+| `borderColor` | `Color` | Color used for the border. |
+| `borderWidth` | `number` | Width of the border. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `contentBgColor` | `Color` | Background color for the content. |
+| `contentElevation` | `number` | Elevation (shadow depth) of the content. |
+| `headerBgColor` | `Color` | Background color of the header row. |
+| `headerTextColor` | `Color` | Text color of the header row. |
+| `headerBorder` | `string \| false` | The `headerBorder` value for the widget. |
+| `headerPadding` | `Padding` | Padding for the header. |
+| `headerElevation` | `number` | Elevation (shadow depth) of the header. |
+| `footerBgColor` | `Color` | Background color for the footer. |
+| `footerBorder` | `string \| false` | The `footerBorder` value for the widget. |
+| `footerPadding` | `Padding` | Padding for the footer. |
+| `footerElevation` | `number` | Elevation (shadow depth) of the footer. |
+| `overlayColor` | `Color` | Color of the dimmed backdrop behind the overlay. |
+| `showCloseButton` | `boolean` | Shows a close button in the header. |
+| `zIndex` | `number` | Index used for the z. |
+| `onOpen` | `() => void` | Fired when the overlay opens. |
+| `onClose` | `() => void` | Fired when the overlay closes. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Button, Modal, Text } from "flet-box";
+import { Modal } from "flet-box";
 
-const modal = Modal({
-  title: "Save changes?",
-  content: Text({ text: "Your edits will be visible to the whole team." }),
-  actions: [
-    Button({ text: "Cancel", variant: "outlined", onPress: () => modal.close() }),
-    Button({ text: "Save", onPress: () => { console.log("saved"); modal.close(); } }),
-  ],
-  onClose: () => console.log("modal closed"),
-});
-
-Button({ text: "Open modal", onPress: () => modal.open() });
-```
-
-### Full example
-
-```javascript
-import { Button, Column, Input, Modal, Text } from "flet-box";
-
-const email = Input({ label: "Email", placeholder: "you@example.com" });
-
-const modal = Modal({
-  title: "Subscribe",
-  width: 520,
-  borderRadius: 24,
-  elevation: 5,
-  overlayColor: "rgba(15, 23, 42, 0.6)",
-  headerBgColor: "#f1f5f9",
-  footerBorder: false,
-  content: Column({
-    gap: 12,
-    children: [
-      Text({ text: "Get the weekly changelog in your inbox.", size: 15 }),
-      email,
-    ],
-  }),
-  actions: [
-    Button({ text: "Not now", variant: "text", onPress: () => modal.close() }),
-    Button({
-      text: "Subscribe",
-      onPress: () => {
-        modal.setLoading(true, "Subscribing...");
-        setTimeout(() => {
-          modal.updateContent(Text({ text: "You're subscribed!", size: 16 }));
-        }, 1200);
-      },
-    }),
-  ],
-  onOpen: () => console.log("open"),
+const profile = Modal({
+  title: "Profile",
+  content: "Update your account details.",
+  closeOnOverlayClick: true,
   onClose: () => console.log("closed"),
 });
-
-modal.open();
 ```
 
-## Notes
+### Full
 
-- The overlay is appended to `document.body` at creation time, hidden. Every `Modal(...)` call adds one overlay div — call `destroy()` when you're done with an instance to avoid leaking them.
-- Opening animates the panel from `scale(0.9)`/`opacity 0` to `scale(1)`/`opacity 1` (0.3s); the overlay fades in with a 0.1s delay. Closing flips `isOpen` to `false` immediately and hides the overlay after a 300ms timeout, once the fade-out finishes.
-- `Escape` closing works via a `document` keydown listener that is added on `open()` and removed on `close()`/`destroy()`.
-- Header and footer only render when they have something to show (`title`/`showCloseButton`, non-empty `actions`).
-- The panel is a flex column: header and footer stay put while the content area (`flex: 1`, `overflow: auto`) scrolls.
+```javascript
+import { Button, Column, Modal, Switch, rgba } from "flet-box";
+
+const settings = Modal({
+  title: "Settings",
+  content: Column({
+    gap: 12,
+    children: [Switch({ label: "Dark mode" }), Switch({ label: "Compact" })],
+  }),
+  actions: [
+    Button({ text: "Cancel", variant: "text" }),
+    Button({ text: "Save", onPress: () => settings.close() }),
+  ],
+  closeOnOverlayClick: false,
+  closeOnEsc: true,
+  width: 480,
+  borderRadius: 16,
+  elevation: 8,
+  overlayColor: "rgba(15, 23, 42, 0.5)",
+  onOpen: () => console.log("opened"),
+  onClose: () => console.log("closed"),
+});
+```
+
+## Tips
+
+- Modal manages its own overlay and appends it to document.body; call the returned open() and close() to control visibility.
+- Use closeOnOverlayClick: false for destructive or data-entry dialogs that should not be dismissed by a stray click.
+
+## Accessibility
+
+- Modal does not move focus automatically; focus the first control or a close button when it opens.
+
+## Behavior
+
+- Returns a controller with open, close, toggle, destroy and an isOpen getter, plus updateContent, updateTitle and setLoading helpers.
+- onOpen and onClose fire on state changes, and closeOnEsc installs an Escape listener that destroy() removes.
 
 ## Related widgets
-- [AlertDialog](AlertDialog.md)
+
 - [BottomSheet](BottomSheet.md)
-- [SnackBar](SnackBar.md)
-- [Button](Button.md)
-- [Container](Container.md)
+- [AlertDialog](AlertDialog.md)
+- [Card](Card.md)
 
 ---
 

@@ -1,96 +1,125 @@
 # Row
 
-## Overview
-`Row` lays out its children horizontally, left to right. It renders a `<div>` with `display: flex` and `flexDirection: row`, and is full-width by default. Use `gap` for spacing and `justifyContent`/`alignItems` to position children along and across the axis.
+Horizontal flex layout that places its children side by side. It is full width and leaves height at auto by default.
 
-## When to use
-- Place widgets side by side (icon + label, label + control).
-- Distribute horizontal space with `justifyContent` (e.g. `"space-between"`).
-- Align children vertically with `alignItems` (alias `align`).
+## When to use it
 
-## Import
+Use Row for toolbars, button groups, and any set of items that should sit in a horizontal line.
 
-```javascript
-import { Row } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Row, Text } from "flet-box";
 
-Row({
+const row = Row({
   gap: 8,
-  children: [Text({ text: "Left" }), Text({ text: "Right" })],
+  children: [
+    Text({ text: "Left" }),
+    Text({ text: "Right" }),
+  ],
 });
 ```
 
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
+
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | array of Widget | — | Child widgets laid out left to right. |
-| `child` | Widget | — | A single child. |
-| `gap` | number | — | Space between children, in pixels. |
-| `justifyContent` | string | — | Main-axis (horizontal) distribution. Alias: `justify`. |
-| `alignItems` | string | — | Cross-axis (vertical) alignment. Alias: `align`. |
-| `width` | Size | `'100%'` | Row width; full width by default. |
-| `height` | Size | `'auto'` | Row height. |
-| `display` | string | `'flex'` | CSS `display`. |
-| `flexDirection` | string | `'row'` | Main-axis direction. |
-| `boxSizing` | string | `'border-box'` | CSS `box-sizing` model. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `gap` | `number \| string` | Space between children along the layout axis. |
+| `justifyContent` | `ContainerProps['justifyContent']` | Aligns children along the main axis (CSS `justify-content`). |
+| `alignItems` | `ContainerProps['alignItems']` | Aligns children across the cross axis (CSS `align-items`). |
+| `wrap` | `boolean \| 'wrap' \| 'nowrap' \| 'wrap-reverse'` | Lets children wrap onto multiple lines. |
+| `children` | `Widget[]` | An array of child widgets. Alias: `child` for a single child. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
 
-These are the props specific to `Row`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Button, Row, Text } from "flet-box";
 
-Row({
+const row = Row({
   gap: 12,
   justifyContent: "space-between",
   alignItems: "center",
   children: [
-    Text({ text: "Account", size: 18, weight: "bold" }),
+    Text({ text: "Update your profile" }),
     Button({ text: "Save", onPress: () => console.log("saved") }),
   ],
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Icon, Row, Text } from "flet-box";
+import { Button, Icon, Row, Text } from "flet-box";
 
-Row({
-  gap: 10,
+const row = Row({
+  gap: 16,
+  justifyContent: "center",
   alignItems: "center",
-  padding: 12,
+  wrap: true,
+  padding: 16,
   bgColor: "#f8fafc",
-  borderRadius: 10,
+  borderRadius: 12,
   children: [
-    Icon({ name: "favorite", color: "#e11d48" }),
-    Text({ text: "Liked by 128 people", size: 14 }),
+    Icon({ name: "person" }),
+    Text({ text: "Jane Doe" }),
+    Button({ text: "Profile", variant: "outlined" }),
   ],
 });
 ```
 
-## Notes
+## Tips
 
-- Full width (`100%`) by default — set `width` to shrink it to content.
-- For vertical stacking, use [Column](Column.md). Add `wrap: "wrap"` to let children flow onto new lines.
+- `justifyContent` distributes free horizontal space and `alignItems` aligns children vertically.
+- Add `wrap: true` when children should flow onto additional lines instead of shrinking.
+- `gap` sets an even space between every child.
+
+## Accessibility
+
+- Keep the DOM order the same as the visual order so keyboard and screen-reader focus follow the layout.
+
+## Behavior
+
+- The element is `display: flex` with `flex-direction: row`; passing `onPress` makes the whole row interactive.
+- Children stay in the order given and can themselves be `expand` containers that share the row's width.
 
 ## Related widgets
+
 - [Column](Column.md)
 - [Container](Container.md)
 - [Stack](Stack.md)
-- [Icon](Icon.md)
-- [Text](Text.md)
+- [Button](Button.md)
 
 ---
 

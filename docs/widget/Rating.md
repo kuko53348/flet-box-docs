@@ -1,101 +1,124 @@
 # Rating
 
-## Overview
-`Rating` renders a row of star (or custom) icons for scoring. It supports mouse and touch, half values, a live value readout, and read-only display. Colors follow the theme by default. The returned element exposes `setValue`/`getValue` and a `value` property.
+A row of star icons that captures or displays a score up to max. It supports half-star selection and an inline numeric readout.
 
-## When to use
-- Collect or display a 1–`max` score (5 by default).
-- Show a read-only rating with `readOnly`.
+## When to use it
 
-## Import
+Use it for product reviews, feedback forms, or any quick qualitative score.
 
-```javascript
-import { Rating } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Rating } from "flet-box";
 
-Rating({ onChange: (value) => console.log("rated:", value) });
+const rating = Rating({
+  value: 4,
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | number | `0` | Current rating (clamped `0`–`max`). |
-| `max` | number | `5` | Number of stars. |
-| `onChange` | `(value: number) => void` | — | Fires when the rating changes. |
-| `readOnly` | boolean | `false` | Display only; disables interaction. |
-| `size` | number | `20` | Star size in pixels. |
-| `activeColor` | Color | `colors.warning` | Filled star color. |
-| `inactiveColor` | Color | `colors.border` | Empty star color. |
-| `iconActive` | string | `'star'` | Material icon for a full star. |
-| `iconInactive` | string | `'star_border'` | Material icon for an empty star. |
-| `iconHalf` | string | `'star_half'` | Material icon for a half star. |
-| `allowHalf` | boolean | `false` | Allow `.5` values. |
-| `gap` | number | `2` | Space between stars. |
-| `showValue` | boolean | `false` | Show the numeric value next to the stars. |
-| `valueColor` | Color | `colors.textSecondary` | Color of the value label. |
-| `valueSize` | number | `size * 0.7` | Font size of the value label. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `value` | `number` | Current value controlled by the widget. |
+| `max` | `number` | Maximum value used to compute the ratio. |
+| `size` | `number` | Overall size preset or pixel value, depending on the widget. |
+| `allowHalf` | `boolean` | Allows half-star ratings. |
+| `activeColor` | `Color` | Color used in the active state. |
+| `inactiveColor` | `Color` | Color used in the inactive state. |
+| `showValue` | `boolean` | Shows the numeric value next to the indicator. |
+| `valueColor` | `Color` | Color used for the value. |
+| `valueSize` | `number` | Size of the value. |
+| `readOnly` | `boolean` | Makes the control read-only. |
+| `gap` | `number` | Space between children along the layout axis. |
+| `iconActive` | `string` | The `iconActive` value for the widget. |
+| `iconInactive` | `string` | The `iconInactive` value for the widget. |
+| `iconHalf` | `string` | The `iconHalf` value for the widget. |
+| `onChange` | `(value: number) => void` | Fired when the value changes. |
 
-These are the props specific to `Rating`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned element exposes:
-
-- `value` — get or set as a property.
-- `setValue(v) / getValue()` — sets or returns the current rating.
-- `updateStars()` — repaints the stars from the current value.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Rating } from "flet-box";
 
-Rating({ value: 4, max: 5, showValue: true, allowHalf: true, onChange: (v) => console.log(v) });
+const rating = Rating({
+  value: 4,
+  max: 5,
+  size: 24,
+  activeColor: "#f59e0b",
+  onChange: (value) => console.log(value),
+});
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Column, Rating, Text } from "flet-box";
+import { Rating } from "flet-box";
 
 const rating = Rating({
-  max: 5,
   value: 3.5,
-  allowHalf: true,
-  showValue: true,
+  max: 5,
   size: 28,
+  allowHalf: true,
+  gap: 4,
   activeColor: "#f59e0b",
-  onChange: (v) => console.log("score:", v),
+  inactiveColor: "#d1d5db",
+  showValue: true,
+  valueColor: "#374151",
+  valueSize: 16,
+  onChange: (value) => console.log("rated", value),
 });
-
-Column({
-  gap: 8,
-  children: [Text({ text: "Rate your experience", weight: "bold" }), rating],
-});
-
-// rating.value = 5;  rating.getValue();
 ```
 
-## Notes
+## Tips
 
-- Uses Material Icons glyphs, so the font must be loaded (see [Icon](Icon.md)).
-- Default colors are theme-aware and update on light/dark changes.
-- Supports mouse hover preview and touch/swipe selection.
+- Set readOnly: true to display an aggregate score that users cannot change.
+- Use allowHalf: true for finer-grained ratings like 3.5 stars.
+
+## Accessibility
+
+- Provide a nearby Text label or showValue so the chosen score is readable, not just stars.
+
+## Behavior
+
+- onChange receives the numeric value each time the user picks a rating.
+- readOnly disables onChange while keeping the current value visible.
 
 ## Related widgets
+
+- [ProgressBar](ProgressBar.md)
 - [Slider](Slider.md)
-- [Icon](Icon.md)
-- [Text](Text.md)
 - [Chip](Chip.md)
 
 ---

@@ -1,153 +1,139 @@
 # Stepper
 
-## Overview
-`Stepper` renders a multi-step flow: a rail of step indicators, a content panel for the active step, and a Back/Next/Finish navigation row. You drive it with a `steps` array — each entry supplies a `label`, an optional `content` widget, and an optional `icon`. With the default `circles` variant, completed steps turn green with a check mark and the active one is filled with `colors.primary`; clicking any step jumps straight to it. The returned element exposes `next`, `back`, `goTo`, and `getActiveStep`.
+A multi-step progress indicator that shows each step as a circle, number or icon and reveals the active step's content.
 
-## When to use
-- Wizards and multi-screen forms: account setup, checkout, onboarding.
-- Any flow where the user should see their progress and move forward or backward through numbered stages.
-- A rail beside a tall form with `orientation: "vertical"`.
+## When to use it
 
-## Import
+Use Stepper for guided flows such as checkout or onboarding where the user advances through ordered steps.
 
-```javascript
-import { Stepper } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Stepper, Text } from "flet-box";
 
-Stepper({
+const stepper = Stepper({
   steps: [
-    { label: "Account", content: Text({ text: "Create your account" }) },
-    { label: "Profile", content: Text({ text: "Tell us about you" }) },
+    { label: "Account", content: Text({ text: "Account details" }) },
+    { label: "Done", content: Text({ text: "All set" }) },
   ],
 });
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `steps` | `Array<{ label: string, content?: Widget, icon?: string }>` | `[]` | The steps, in order. `content` is the widget shown in the panel while that step is active. `icon` is only read by the `icons` variant. |
-| `activeStep` | number | `0` | Initial index, clamped to `0 … steps.length - 1`. |
-| `onStepChange` | `(index: number) => void` | — | Fires on every step change: navigation buttons, `next()`/`back()`/`goTo()`, or a click on a step. Not fired for the initial `activeStep`. |
-| `onFinish` | `() => void` | — | Fires when the Finish button on the last step is pressed. |
-| `orientation` | `'horizontal'`, `'vertical'` | `'horizontal'` | Rail direction. Horizontal uses a `Row`, vertical a `Column` with a 16px gap. |
-| `variant` | `'circles'`, `'numbers'`, `'icons'` | `'circles'` | Indicator style. Any other value falls back to the icon indicator. |
-| `showLabels` | boolean | `true` | Renders each `label` under its indicator. |
-| `showNavigation` | boolean | `true` | Accepted but currently unused — the navigation row is always rendered. |
-| `nextLabel` | string | `'Next'` | Label of the forward button. |
-| `backLabel` | string | `'Back'` | Label of the backward button (hidden on the first step). |
-| `finishLabel` | string | `'Finish'` | Label of the last-step button; it replaces Next. |
-| `bgColor` | Color | `colors.surface` | Background of the outer panel. |
-| `borderRadius` | number | `16` | Corner radius in pixels. |
-| `border` | string | — | Full CSS border shorthand. When set it replaces `borderWidth`/`borderColor`. |
-| `borderColor` | Color | `colors.border` | Border color when `border` is not given. |
-| `borderWidth` | number | `1` | Border width in pixels when `border` is not given. |
-| `shadow` | string | — | CSS `box-shadow` for the outer panel. |
-| `padding` | number or string | `20` | Inner spacing of the outer panel. |
-| `margin` | number or string | `0` | Outer spacing. |
-| `width` | number or string | `'100%'` | Panel width. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `steps` | `Array<{ label: string; content: Widget; icon?: string }>` | Step definitions rendered by the stepper. |
+| `activeStep` | `number` | Index of the currently active step. |
+| `onStepChange` | `(index: number) => void` | Fired with the new active step index. |
+| `orientation` | `'horizontal' \| 'vertical'` | Orientation of the widget or control. |
+| `variant` | `'circles' \| 'numbers' \| 'icons'` | Visual variation or style preset. |
+| `showLabels` | `boolean` | Shows chart labels. |
+| `showNavigation` | `boolean` | Controls whether the navigation is shown. |
+| `nextLabel` | `string` | Label for the next. |
+| `backLabel` | `string` | Label for the back. |
+| `finishLabel` | `string` | Label for the finish. |
+| `onFinish` | `() => void` | Event handler for the `onFinish` event. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `border` | `string` | The `border` value for the widget. |
+| `borderColor` | `Color` | Color used for the border. |
+| `borderWidth` | `number` | Width of the border. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `width` | `number \| string` | Width of the widget. A number is pixels; a string uses any CSS unit. |
 
-These are the props specific to `Stepper`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned element exposes:
-
-- `next()` — advances one step. No-op on the last step. Fires `onStepChange`.
-- `back()` — steps back one. No-op on the first step. There is no `prev()`.
-- `goTo(index)` — jumps to `index`. Out-of-range indexes are ignored. Fires `onStepChange`.
-- `getActiveStep()` — returns the current step index.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Column, Input, Stepper, Text } from "flet-box";
+import { Stepper, Text } from "flet-box";
 
-Stepper({
-  steps: [
-    {
-      label: "Details",
-      content: Column({
-        gap: 8,
-        children: [Text({ text: "Your name" }), Input({ label: "Full name" })],
-      }),
-    },
-    {
-      label: "Confirm",
-      content: Text({ text: "Check the details and finish." }),
-    },
-  ],
+const stepper = Stepper({
   activeStep: 0,
-  nextLabel: "Continue",
-  finishLabel: "Submit",
-  onStepChange: (index) => console.log("step", index),
-  onFinish: () => console.log("submitted"),
+  steps: [
+    { label: "Cart", content: Text({ text: "Review your cart" }) },
+    { label: "Address", content: Text({ text: "Shipping address" }) },
+    { label: "Payment", content: Text({ text: "Payment method" }) },
+  ],
+  onStepChange: (index) => console.log("step:", index),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Column, Stepper, Text, colors } from "flet-box";
+import { Stepper, Text } from "flet-box";
 
-const step = (label, icon, body) => ({
-  label,
-  icon,
-  content: Column({ gap: 8, children: [Text({ text: body, size: 15 })] }),
-});
-
-Stepper({
-  steps: [
-    step("Personal", "person", "Who are you?"),
-    step("Payment", "credit_card", "How will you pay?"),
-    step("Done", "check_circle", "All set."),
-  ],
-  activeStep: 0,
-  orientation: "horizontal",
-  variant: "circles",
+const checkout = Stepper({
+  orientation: "vertical",
+  variant: "icons",
+  activeStep: 1,
   showLabels: true,
+  showNavigation: true,
   nextLabel: "Continue",
-  backLabel: "Back",
-  finishLabel: "Submit",
-  onStepChange: (index) => console.log("step", index),
-  onFinish: () => console.log("submitted"),
-  bgColor: colors.card,
-  borderRadius: 24,
-  borderWidth: 1,
-  borderColor: colors.border,
-  shadow: "0 6px 12px rgba(0,0,0,0.08)",
-  padding: 24,
-  width: "100%",
+  backLabel: "Previous",
+  finishLabel: "Place order",
+  steps: [
+    { label: "Cart", icon: "shopping_cart", content: Text({ text: "Your cart" }) },
+    { label: "Shipping", icon: "local_shipping", content: Text({ text: "Address" }) },
+    { label: "Payment", icon: "credit_card", content: Text({ text: "Payment" }) },
+  ],
+  onStepChange: (index) => console.log("step:", index),
+  onFinish: () => console.log("finished"),
 });
 ```
 
-## Notes
+## Tips
 
-- The element has exactly three children, in order: the rail wrapper, the content panel, and the navigation panel.
-- The rail sits inside a horizontally scrollable wrapper. When `steps.length * 80` exceeds the wrapper's width, the rail switches to a compact mode: each step is pinned to an 80px minimum and the flexible connector lines are replaced by 8px spacers.
-- Connectors between steps turn `colors.success` once the step before them is completed.
-- `steps: []` leaves the internal index at `-1`, so the rail and content stay empty and only a Finish button renders. Always pass at least one step.
-- The content and navigation panels are built with `Container`, so they inherit the default `colors.surface` background regardless of the `bgColor` you pass to the Stepper.
-- In `vertical` orientation each row renders the label twice — once under the indicator (when `showLabels` is on) and once beside it. Pass `showLabels: false` to avoid the duplicate.
-- A 1px solid border is always drawn unless you pass `border`. Use `border: "none"` to remove it.
-- Clicking a step indicator always jumps to it; there is no built-in "only completed steps are clickable" rule.
-- `variant: "circles"` indicators are 32px discs: `colors.primary` when active, `colors.success` with a white check when completed, `colors.gray300` otherwise.
+- Steps are clickable, so users can jump around; use onStepChange to validate a step before allowing the move.
+- variant: icons pulls each step's icon; circles and numbers ignore it.
+
+## Accessibility
+
+- Expose the current position beyond the highlight color; showLabels: true gives every step visible text.
+
+## Behavior
+
+- Clicking a step or the Next/Back buttons calls onStepChange; the final step swaps Next for Finish, which fires onFinish.
+- The returned element exposes goTo(index), next(), back() and getActiveStep() for imperative navigation.
 
 ## Related widgets
-- [Pagination](Pagination.md)
+
 - [ProgressBar](ProgressBar.md)
-- [Accordion](Accordion.md)
 - [Button](Button.md)
-- [Column](Column.md)
+- [Container](Container.md)
 
 ---
 

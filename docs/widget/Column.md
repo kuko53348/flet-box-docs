@@ -1,99 +1,123 @@
 # Column
 
-## Overview
-`Column` lays out its children vertically, top to bottom. It renders a `<div>` with `display: flex` and `flexDirection: column`, and is full-width by default. Use `gap` for spacing and `justifyContent`/`alignItems` to position children.
+Vertical flex layout that stacks its children one below another. It is full width and leaves height at auto by default.
 
-## When to use
-- Stack widgets one below another (a form, a list of sections, a page).
-- Distribute vertical space with `justifyContent`.
-- Align children horizontally with `alignItems` (alias `align`).
+## When to use it
 
-## Import
+Use Column for forms, lists of blocks, and any content that reads from top to bottom.
 
-```javascript
-import { Column } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Column, Text } from "flet-box";
 
-Column({
+const column = Column({
   gap: 8,
-  children: [Text({ text: "First line" }), Text({ text: "Second line" })],
-});
-```
-
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `children` | array of Widget | — | Child widgets stacked top to bottom. |
-| `child` | Widget | — | A single child. |
-| `gap` | number | — | Space between children, in pixels. |
-| `justifyContent` | string | — | Main-axis (vertical) distribution. Alias: `justify`. |
-| `alignItems` | string | — | Cross-axis (horizontal) alignment. Alias: `align`. |
-| `width` | Size | `'100%'` | Column width; full width by default. |
-| `height` | Size | `'auto'` | Column height. |
-| `display` | string | `'flex'` | CSS `display`. |
-| `flexDirection` | string | `'column'` | Main-axis direction. |
-| `boxSizing` | string | `'border-box'` | CSS `box-sizing` model. |
-
-These are the props specific to `Column`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
-
-## Examples
-
-### Everyday example
-
-```javascript
-import { Button, Column, Input, Text } from "flet-box";
-
-Column({
-  gap: 16,
   children: [
-    Text({ text: "Sign in", type: "h2", size: 24, weight: "bold" }),
-    Input({ label: "Email", placeholder: "you@example.com", fullWidth: true }),
-    Input({ label: "Password", type: "password", fullWidth: true }),
-    Button({ text: "Continue", fullWidth: true, onPress: () => console.log("submit") }),
+    Text({ text: "First" }),
+    Text({ text: "Second" }),
   ],
 });
 ```
 
-### Full example
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
+
+## Props
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `gap` | `number \| string` | Space between children along the layout axis. |
+| `justifyContent` | `ContainerProps['justifyContent']` | Aligns children along the main axis (CSS `justify-content`). |
+| `alignItems` | `ContainerProps['alignItems']` | Aligns children across the cross axis (CSS `align-items`). |
+| `children` | `Widget[]` | An array of child widgets. Alias: `child` for a single child. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
+
+## Examples
+
+### Everyday
 
 ```javascript
-import { Column, Container, Text } from "flet-box";
+import { Column, Text, flex } from "flet-box";
 
-Container({
-  padding: 24,
-  bgColor: "#ffffff",
-  child: Column({
-    gap: 12,
-    alignItems: "flex-start",
-    children: [
-      Text({ text: "Settings", type: "h2", size: 22, weight: "bold" }),
-      Text({ text: "Profile" }),
-      Text({ text: "Notifications" }),
-      Text({ text: "Privacy" }),
-    ],
-  }),
+const column = Column({
+  gap: 12,
+  padding: 16,
+  alignItems: "flex-start",
+  children: [
+    Text({ text: "Account settings", type: "h3", weight: "bold" }),
+    Text({ text: "Update your profile details." }),
+  ],
 });
 ```
 
-## Notes
+### Full
 
-- Full width (`100%`) by default — set `width` to shrink it to content.
-- For horizontal layouts, use [Row](Row.md).
+```javascript
+import { Button, Column, Text, flex } from "flet-box";
+
+const column = Column({
+  gap: 16,
+  justifyContent: "flex-start",
+  alignItems: "stretch",
+  padding: 24,
+  bgColor: "#ffffff",
+  borderRadius: 16,
+  children: [
+    Text({ text: "Sign in", type: "h2", weight: "bold" }),
+    Button({ text: "Continue", fullWidth: true, onPress: () => console.log("go") }),
+    Button({ text: "Cancel", variant: "text" }),
+  ],
+});
+```
+
+## Tips
+
+- `gap` controls the space between stacked children.
+- Set `alignItems: "center"` to center children horizontally in the column.
+- Give children `expand` to split the available height between them.
+
+## Accessibility
+
+- Maintain reading order from top to bottom and avoid purely visual reordering of the children.
+
+## Behavior
+
+- The element is `display: flex` with `flex-direction: column`; passing `onPress` makes the whole column interactive.
+- Children stack in the order given, and `justifyContent` controls how leftover vertical space is used.
 
 ## Related widgets
+
 - [Row](Row.md)
 - [Container](Container.md)
 - [Stack](Stack.md)
 - [ListView](ListView.md)
-- [Text](Text.md)
 
 ---
 

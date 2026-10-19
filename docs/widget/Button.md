@@ -1,97 +1,131 @@
 # Button
 
-## Overview
-`Button` renders a clickable `<button>` with built-in variants, sizes, icons, and elevation. It composes a `Text` label and optional Material `Icon`s, and supports filled, outlined, and text styles. Use `onPress` (or `onClick`) for the click handler.
+Interactive button with filled, outlined, and text variants, size presets, optional icons, and press feedback.
 
-## When to use
-- Trigger an action: submit, save, cancel, or navigate.
-- Present a primary or secondary choice with `variant` and `size`.
-- Add an icon with `icon` + `iconPosition`, or `iconLeft`/`iconRight`/`iconTop`/`iconBottom`.
+## When to use it
 
-## Import
+Use Button for actions such as submit, save, confirm, or any primary and secondary command.
 
-```javascript
-import { Button } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Button } from "flet-box";
 
-Button({ text: "Click me", onPress: () => console.log("pressed") });
+const save = Button({
+  text: "Save",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | string | — | Button label. |
-| `onPress` | function | — | Click handler. Aliases: `onClick`, `onclick`. Ignored when `disabled`. |
-| `variant` | `'filled'`, `'outlined'`, `'text'` | `'filled'` | Visual style. |
-| `size` | `'small'`, `'medium'`, `'large'` | `'medium'` | Preset for padding, font size, gap, and icon size. |
-| `bgColor` | Color | `colors.surface` | Background. Filled uses `gradient`, else `bgColor`, else `colors.primary`. |
-| `color` | Color | `colors.text` | Text and icon color. |
-| `borderRadius` | number | `24` | Corner radius in pixels. |
-| `elevation` | number `0`–`5` | `2` | Preset shadow level (not a CSS value). |
-| `disabled` | boolean | `false` | Disables clicks and shows the non-interactive state. |
-| `fullWidth` | boolean | `false` | Stretch to 100% width. |
-| `gradient` | string | — | CSS gradient background; overrides `bgColor` when set. |
-| `icon` | string | — | Material Icon name; placed by `iconPosition`. |
-| `iconPosition` | `'left'`, `'right'`, `'top'`, `'bottom'` | `'left'` | Where `icon` is placed. |
-| `iconLeft / iconRight / iconTop / iconBottom` | string | — | Explicit icon name per side. |
-| `padding` | number or `[v, h]` | size preset | Overrides the preset padding. A number `n` becomes `[n, n*2]`. |
-| `margin` | number or `[v, h]` | — | Outer spacing. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | Visible text content. |
+| `onPress` | `() => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `variant` | `'filled' \| 'outlined' \| 'text'` | Visual variation or style preset. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `gradient` | `string` | CSS gradient used as the fill. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `textColor` | `Color` | Color of the button label. |
+| `size` | `'small' \| 'medium' \| 'large'` | Overall size preset or pixel value, depending on the widget. |
+| `fullWidth` | `boolean` | Stretches the widget to the full width of its parent. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `icon` | `string` | Name of the icon to render. |
+| `iconLeft` | `string` | Icon shown to the left of the label. |
+| `iconRight` | `string` | Icon shown to the right of the label. |
+| `iconTop` | `string` | Icon shown above the label. |
+| `iconBottom` | `string` | Icon shown below the label. |
+| `iconPosition` | `'left' \| 'right' \| 'top' \| 'bottom'` | Where the icon sits relative to the label. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
 
-These are the props specific to `Button`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Button } from "flet-box";
 
-Button({
-  text: "Save changes",
-  variant: "filled",
-  size: "medium",
+const save = Button({
+  text: "Save",
   bgColor: "#2563eb",
   color: "#ffffff",
+  borderRadius: 8,
   onPress: () => console.log("saved"),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Button, Row } from "flet-box";
+import { Button } from "flet-box";
 
-Row({
-  gap: 12,
-  children: [
-    Button({ text: "Download", icon: "download", iconPosition: "left", elevation: 3, onPress: () => console.log("download") }),
-    Button({ text: "Outlined", variant: "outlined", bgColor: "#2563eb", onPress: () => console.log("outlined") }),
-    Button({ text: "Disabled", disabled: true }),
-  ],
+const checkout = Button({
+  text: "Checkout",
+  variant: "filled",
+  size: "large",
+  gradient: "linear-gradient(90deg, #2563eb, #7c3aed)",
+  color: "#ffffff",
+  icon: "shopping_cart",
+  iconPosition: "right",
+  borderRadius: 28,
+  elevation: 3,
+  fullWidth: true,
+  onPress: () => console.log("checkout"),
 });
 ```
 
-## Notes
+## Tips
 
-- `filled` uses `bgColor` (default theme `surface`); `outlined` draws a 2px border in `color`/`bgColor`; `text` has no background or border.
-- `elevation` maps `0`–`5` to preset shadows, not a pixel value.
-- Icons require the Material Icons font (see [Icon](Icon.md)).
-- `disabled` sets a `not-allowed` cursor, opacity 0.6, and ignores `onPress`.
+- `variant` defaults to `"filled"`; switch to `"outlined"` or `"text"` for secondary actions.
+- Place icons with `icon` and `iconPosition`, or use the explicit `iconLeft`, `iconRight`, `iconTop`, `iconBottom` props.
+- Setting `disabled` also drops the click handler, not just the styling.
+
+## Accessibility
+
+- Always pass `text` so the button has an accessible name, and use `disabled` rather than only dimming colors.
+
+## Behavior
+
+- Size presets control padding, font size, and icon size; `fullWidth` stretches the button to 100%.
+- `onPress` receives no arguments and is wired to the native click; `elevation` picks a shadow level.
 
 ## Related widgets
-- [Input](Input.md)
+
 - [Icon](Icon.md)
-- [Text](Text.md)
-- [FloatingActionButton](FloatingActionButton.md)
 - [Row](Row.md)
+- [Column](Column.md)
+- [FloatingActionButton](FloatingActionButton.md)
 
 ---
 

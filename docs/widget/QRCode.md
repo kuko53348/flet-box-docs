@@ -1,122 +1,111 @@
 # QRCode
 
-## Overview
-`QRCode` paints a QR-style matrix onto a `<canvas>` using FletBox's own built-in generator — no external QR library and no SVG. It returns an `inline-block` `<div>` containing a single canvas sized `size × size` pixels. The payload comes from `value` (a string); `bgColor` and `fgColor` are canvas fill colors, not CSS. The first paint is deferred with `setTimeout(..., 10)`, and `updateValue()` repaints synchronously.
+QRCode renders a scannable QR image for a string value. It lets you tune size, colors and the error-correction level.
 
-## When to use
-- Show a shareable code for a URL, session id, or small JSON payload.
-- Let the user download the code as a PNG with `download()`.
-- Reuse one widget for many payloads via `updateValue()` instead of rebuilding it.
+## When to use it
 
-## Import
+Use it to share URLs, pairing codes or contact data that a phone camera can scan.
 
-```javascript
-import { QRCode } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { QRCode } from "flet-box";
 
-QRCode({ value: "https://flet-box.dev" });
+const qr = QRCode({
+  value: "https://fletbox.dev",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | string | `""` | Payload encoded in the matrix. **The widget returns `null` when `value` is falsy.** There is no `text` alias. |
-| `size` | number | `200` | Canvas width and height in pixels (always square). |
-| `bgColor` | Color | `'#ffffff'` | Canvas background fill. |
-| `fgColor` | Color | `'#000000'` | Module (dark cell) fill. |
-| `errorCorrection` | `'L'`, `'M'`, `'Q'`, `'H'` | `'M'` | Accepted but not applied: the built-in generator does no error correction. |
-| `margin` | number | `4` | Quiet zone in **modules**, not CSS margin. It is consumed by the widget, so the common `margin` prop has no effect here. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `value` | `string` | Current value controlled by the widget. |
+| `size` | `number` | Overall size preset or pixel value, depending on the widget. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `fgColor` | `Color` | Color used for the fg. |
+| `errorCorrection` | `'L' \| 'M' \| 'Q' \| 'H'` | The `errorCorrection` value for the widget. |
+| `margin` | `number` | Space outside the widget, between it and its neighbors. |
 
-These are the props specific to `QRCode`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`. Common props land on the wrapper `<div>` — except `margin`, which the widget itself takes.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned wrapper exposes:
-
-- `updateValue(newValue)` — sets a new payload and repaints immediately (synchronously).
-- `download(filename = 'qrcode.png')` — triggers a browser download of the canvas as PNG.
-- `getDataURL()` — returns the canvas data URL.
-- `getCanvas()` — returns the underlying `<canvas>` element.
-- `getValue()` — returns the current payload string.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { QRCode } from "flet-box";
 
-QRCode({
-  value: "https://flet-box.dev/docs",
-  size: 180,
-  bgColor: "#ffffff",
-  fgColor: "#0f172a",
+const qr = QRCode({
+  value: "https://fletbox.dev/download",
+  size: 220,
+  errorCorrection: "M",
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Button, Column, QRCode, Row, Text, colors } from "flet-box";
+import { QRCode } from "flet-box";
 
 const qr = QRCode({
-  value: JSON.stringify({ id: 123, token: "abc" }),
-  size: 260,
+  value: "https://fletbox.dev/invite?team=core",
+  size: 320,
   bgColor: "#ffffff",
-  fgColor: "#1a1a2e",
-  margin: 4,
-  borderRadius: 12,
-  onClick: () => console.log("qr tapped"),
-});
-
-Column({
-  gap: 12,
-  alignItems: "center",
-  children: [
-    Text({ text: "Scan to continue", size: 16, color: colors.textSecondary }),
-    qr,
-    Row({
-      gap: 8,
-      children: [
-        Button({
-          text: "New link",
-          onPress: () => qr.updateValue("https://flet-box.dev/" + Date.now()),
-        }),
-        Button({ text: "Download PNG", onPress: () => qr.download("ticket.png") }),
-        Button({
-          text: "Log data URL",
-          onPress: () => console.log(qr.getValue(), qr.getDataURL().slice(0, 32)),
-        }),
-      ],
-    }),
-  ],
+  fgColor: "#0f172a",
+  margin: 8,
+  errorCorrection: "H",
 });
 ```
 
-## Notes
+## Tips
 
-- The payload prop is **`value`**. `QRCode({ text: "..." })` renders nothing (`value` stays `""`, so the widget returns `null`) and `text` ends up on the wrapper as a common prop.
-- `QRCode({ value: "" })` returns `null`, not an empty box — guard for that when the payload arrives asynchronously.
-- The canvas is painted in a `setTimeout(..., 10)` after construction, so `getDataURL()` called in the same tick returns a blank image. Call `updateValue()` (synchronous) first if you need pixels immediately.
-- The generator is deliberately simplified — the source comments call it "for demo only" and recommend a proper library for production. It packs each character's 8 bits into the matrix and draws the finder, timing, and alignment patterns, but performs no Reed–Solomon error correction, so the result looks like a QR code and may not scan reliably.
-- The matrix starts at 21×21 modules and grows by 2 while it cannot hold the payload, so longer strings produce denser (smaller-module) codes at the same `size`.
-- `margin` is the quiet zone in modules; the module size is `size / (moduleCount + margin * 2)`.
-- `size` sets the canvas CSS size and its backing-store size, so the code stays crisp at that exact pixel size but blurs if you scale it with CSS.
+- Keep size large enough to scan comfortably; very small codes fail on low-resolution cameras.
+- Raise errorCorrection to H when the code may be printed small, dirty or partially covered.
+- Keep fgColor dark and bgColor light for reliable contrast.
+
+## Accessibility
+
+- Also show the encoded value as text so users who cannot scan it can still read or type it.
+- Maintain strong foreground and background contrast for camera and screen legibility.
+
+## Behavior
+
+- The QR image re-encodes whenever value or errorCorrection changes.
+- margin adds a quiet-zone border around the code, which scanners expect.
 
 ## Related widgets
+
 - [Image](Image.md)
 - [CodeViewer](CodeViewer.md)
-- [Button](Button.md)
-- [Text](Text.md)
-- [Container](Container.md)
+- [Card](Card.md)
 
 ---
 
@@ -126,4 +115,4 @@ Column({
 - **Next:** [Inspector](Inspector.md)
 - **Index:** [Widget index](README.md) · [Start here](START_HERE.md)
 
-You are reading **Chapter 6 · Data and rich content** (6 of 7).
+You are reading **Chapter 6 · Data, rich content & effects** (6 of 13).

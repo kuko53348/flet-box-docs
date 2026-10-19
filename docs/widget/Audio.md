@@ -1,132 +1,136 @@
 # Audio
 
-## Overview
-`Audio` renders a native `<audio>` element — the widget returns the media element itself, not a wrapper. It forwards the media attributes directly to that element: `src`, `controls`, `loop`, `muted`, `autoplay`, and `volume`, and always sets `preload="metadata"`. It also attaches playback helpers (`playAudio`, `pauseAudio`, `stop`, `seekTo`, …) and emits `onPlay`/`onPause`/`onEnd`/`onTimeUpdate`/`onProgress`/`onLoad`.
+A thin wrapper around the native <audio> element with reliable duration detection, progress callbacks, and an imperative playback API. It can play without visible controls.
 
-## When to use
-- Play a sound, song, or podcast through the browser's native audio pipeline.
-- Build custom transport controls from the instance methods plus `Button`/`Slider`.
-- React to playback state with `onPlay`, `onPause`, `onEnd`, and `onTimeUpdate`.
+## When to use it
 
-## Import
+Use it for background music, podcasts, or any audio player where you build your own transport controls.
 
-```javascript
-import { Audio } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Audio } from "flet-box";
 
-Audio({ src: "clip.mp3", controls: true });
+const track = Audio({
+  src: "/media/song.mp3",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `src` | string | — | Media URL or path. Set as the `<audio>` element's `src` attribute. |
-| `controls` | boolean | `false` | Show the browser's native playback controls. |
-| `autoplay` | boolean | `false` | Begin playing as soon as the browser allows. |
-| `loop` | boolean | `false` | Repeat playback when the track ends. |
-| `muted` | boolean | `false` | Start muted. |
-| `volume` | number `0`–`1` | `1` | Initial playback volume. A non-number falls back to `1`. |
-| `onPlay` | `() => void` | — | Fires when playback starts. |
-| `onPause` | `() => void` | — | Fires when playback pauses. |
-| `onEnd` | `() => void` | — | Fires when the track ends (native `ended`). |
-| `onTimeUpdate` | `(current, duration, percent) => void` | — | Fires on each `timeupdate`; `percent` is `current / duration * 100`. |
-| `onProgress` | `(percent) => void` | — | Fires alongside `onTimeUpdate` with just the percent. |
-| `onLoad` | `(duration) => void` | — | Fires once, when the duration first becomes known. |
-| `ref` | `(el) => void` | — | Receives the `<audio>` element with its instance methods attached. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `src` | `string` | Resource URL for the image, audio, or video. |
+| `autoplay` | `boolean` | Starts playback automatically. |
+| `controls` | `boolean` | Shows the native media playback controls. |
+| `loop` | `boolean` | Restarts playback when it reaches the end. |
+| `muted` | `boolean` | Starts playback with the audio muted. |
+| `volume` | `number` | Initial volume from 0 to 1. |
+| `onPlay` | `() => void` | Fired when playback starts. |
+| `onPause` | `() => void` | Fired when playback is paused. |
+| `onEnd` | `() => void` | Fired when playback reaches the end. |
+| `onTimeUpdate` | `(current: number, duration: number, percent: number) => void` | Fired repeatedly as the playback position changes. |
+| `onProgress` | `(percent: number) => void` | Fired as the media buffers. |
+| `onLoad` | `(duration: number) => void` | Fired when the media finishes loading. |
+| `ref` | `(audio: HTMLAudioElement) => void` | Callback that receives the underlying DOM node. |
 
-These are the props specific to `Audio`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned `<audio>` element exposes:
-
-- `playAudio()` — starts playback; returns the element (chainable).
-- `pauseAudio()` — pauses playback; returns the element.
-- `stop()` — pauses and resets `currentTime` to `0`; returns the element.
-- `seekTo(seconds)` — seeks when `seconds` is within range; returns the element.
-- `seekToPercent(percent)` — seeks to a percentage of the duration; returns the element.
-- `getCurrentTime()` — current position in seconds.
-- `getDuration()` — total duration in seconds (`0` until known).
-- `getProgressPercent()` — current position as a percentage.
-- `volumeUp(step = 0.1)` / `volumeDown(step = 0.1)` — adjust volume, clamped to `0`–`1`; return the element.
-- `muteAudio()` / `unmuteAudio()` — toggle the muted flag; return the element.
-- `isPlaying()` — returns `true` while not paused.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Audio } from "flet-box";
 
-Audio({
-  src: "podcast.mp3",
+const track = Audio({
+  src: "/media/song.mp3",
   controls: true,
   volume: 0.8,
-  onPlay: () => console.log("playing"),
   onEnd: () => console.log("finished"),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Audio, Button, Row, Text, Column } from "flet-box";
+import { Audio } from "flet-box";
 
-let player;
-
-Column({
-  gap: 12,
-  children: [
-    Audio({
-      src: "track.mp3",
-      ref: (el) => (player = el),
-      onLoad: (duration) => console.log("duration", duration),
-      onTimeUpdate: (current, duration, percent) =>
-        console.log(`${Math.round(percent)}%`),
-    }),
-    Row({
-      gap: 8,
-      children: [
-        Button({ text: "Play", onPress: () => player && player.playAudio() }),
-        Button({ text: "Pause", onPress: () => player && player.pauseAudio() }),
-        Button({ text: "Stop", onPress: () => player && player.stop() }),
-      ],
-    }),
-    Text({ text: "Custom transport built from instance methods", size: 14 }),
-  ],
+const track = Audio({
+  src: "/media/podcast.mp3",
+  autoplay: false,
+  controls: false,
+  loop: false,
+  muted: false,
+  volume: 0.7,
+  onPlay: () => console.log("playing"),
+  onPause: () => console.log("paused"),
+  onTimeUpdate: (current, duration, percent) => console.log(percent),
+  onLoad: (duration) => console.log(duration),
+  ref: (audio) => audio.playAudio(),
 });
 ```
 
-## Notes
+## Tips
 
-- Renders a bare `<audio>` element: the widget returns the media element itself, so `ref` and every instance method live directly on it.
-- `controls`, `loop`, `muted`, and `autoplay` are applied as element **properties** (media attributes are not CSS), so they take effect even though they are not styling props. `preload` is always `"metadata"`.
-- `volume` accepts `0`–`1`; any non-number is ignored in favor of `1`.
-- Duration comes from the element's metadata. If the browser cannot supply it, the widget polls, and as a last resort fetches and decodes the file to compute it — `onLoad` and `getDuration()` stay `0` until then.
-- An empty or unreachable `src` plays nothing; the native `error` event is logged as a warning.
-- Browsers block autoplay until the user interacts with the page, so `autoplay`/`playAudio()` may be deferred.
+- controls defaults to false, so set controls: true for the native player or build a
+- custom one from the element's playback methods.
+- onTimeUpdate receives (current, duration, percent) while onProgress receives only
+- the percent, so pick the callback with the shape you need.
+- Duration detection polls the element and can fall back to decoding the file with
+- AudioContext when the browser reports an unknown duration.
+
+## Accessibility
+
+- When controls: false there is no visual affordance, so pair it with visible
+- play/pause buttons for assistive technology users.
+
+## Behavior
+
+- onLoad fires exactly once, when the duration is first resolved, which can arrive
+- after loadedmetadata for some formats.
+- The duration polling interval is cleared on unmount, and the fetch-based duration
+- fallback runs only if the duration is still unknown after two seconds.
 
 ## Related widgets
+
 - [Video](Video.md)
-- [Image](Image.md)
-- [Button](Button.md)
 - [Slider](Slider.md)
+- [Icon](Icon.md)
 
 ---
 
 ## Continue reading
 
-- **Previous:** [Inspector](Inspector.md)
+- **Previous:** [ParallaxBox](ParallaxBox.md)
 - **Next:** [Video](Video.md)
 - **Index:** [Widget index](README.md) · [Start here](START_HERE.md)
 
-You are reading **Chapter 7 · Media and drag & drop** (1 of 4).
+You are reading **Chapter 7 · Media and drag & drop** (1 of 5).

@@ -1,148 +1,145 @@
 # Chart
 
-## Overview
-`Chart` draws bar, line, area, and candlestick series on a single `<canvas>` — no charting library and no SVG. The widget returns a `<div>` (flex column, `overflow: hidden`, rounded by `borderRadius`) that contains a scroll `<div>` and the canvas inside it. `data` is a flat array of numbers for `bar`/`line`/`area`, and an array of OHLC records for `candle`. The chart measures its container, so it paints only once it is in the document.
+Chart draws bar, line, area or candlestick data onto a canvas, with optional labels, grid and value annotations. Numeric arrays drive bar/line/area while OHLC objects drive candle charts.
 
-## When to use
-- Plot a numeric series over time or categories (`line`, `area`, `bar`).
-- Render financial OHLC data as candles (`candle`, the default `type`).
-- Refresh a live series in place with `updateData` instead of rebuilding the widget.
+## When to use it
 
-## Import
+Use it to visualize trends and comparisons inline without pulling in a charting library.
 
-```javascript
-import { Chart } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Chart } from "flet-box";
 
-Chart({ type: "line", data: [10, 20, 15, 30] });
+const totals = Chart({
+  type: "bar",
+  data: [12, 19, 7, 15],
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `type` | `'bar'`, `'line'`, `'area'`, `'candle'` | `'candle'` | Series kind. `line` and `area` share the same point renderer; `area` also fills to the baseline. |
-| `data` | number[] (bar/line/area) or `{ open, high, low, close }[]` / `[open, high, low, close][]` (candle) | `[]` | Series values. **The widget returns `null` when `data` is empty.** Candle rows may be objects or 4-element arrays. |
-| `labels` | string[] | `[]` | X-axis labels, matched to `data` by index and drawn rotated below the axis when `showLabels`. |
-| `width` | number or string | `'100%'` | Container width; a number becomes px. |
-| `height` | number or string | `400` | Container height in pixels. The canvas fills it. |
-| `bgColor` | Color | `colors.surface` | Container background. |
-| `padding` | number or `{ top, right, bottom, left }` | `{ top: 20, right: 50, bottom: 50, left: 50 }` | Inner plot margins in pixels. A single number is used for all four sides; missing keys fall back to these defaults. |
-| `candleWidth` | number | `8` | Candle body width in pixels (used when candles do not fit and the plot scrolls). |
-| `candleSpacing` | number | `2` | Gap between candles in pixels. |
-| `barColor` | Color | `colors.primary` | Bar fill. |
-| `lineColor` | Color | `colors.primary` | Line stroke (2px) and point fill. |
-| `areaColor` | Color | `` `${colors.primary}40` `` | Area fill when `areaGradient` is off. |
-| `smooth` | boolean | `false` | Draws `line`/`area` with quadratic curves instead of straight segments. |
-| `areaGradient` | boolean | `false` | Fills the area with a vertical gradient (area only). |
-| `areaGradientColors` | `[Color, Color]` | `null` | Gradient stops from the baseline up. Without it the gradient goes `lineColor` → transparent. |
-| `candleUpColor` | Color | `colors.success` | Candle color when `close >= open`. |
-| `candleDownColor` | Color | `colors.danger` | Candle color when `close < open`. |
-| `axisColor` | Color | `colors.border` | Axis and grid line color. |
-| `textColor` | Color | `colors.textSecondary` | Value and label text color. |
-| `yAxisColor` | Color | `colors.primary` | Y-axis tick label color. |
-| `showGrid` | boolean | `true` | Draws 6 horizontal grid lines with rounded Y tick values. |
-| `showLabels` | boolean | `true` | Draws the `labels` under the X axis. |
-| `showValues` | boolean | `false` | Draws each data value next to its bar or point. |
-| `borderRadius` | number or string | `8` | Container corner radius; a number becomes px. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `type` | `'bar' \| 'line' \| 'area' \| 'candle'` | Kind or mode of the widget. |
+| `data` | `number[] \| Array<{ open: number; high: number; low: number; close: number }>` | Array of values or `{ label, value }` slices. |
+| `labels` | `string[]` | Axis or slice labels for the chart. |
+| `width` | `number \| string` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `number` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `padding` | `number \| { top: number; right: number; bottom: number; left: number }` | Space inside the widget, between its content and its border. |
+| `candleWidth` | `number` | Width of each candlestick. |
+| `candleSpacing` | `number` | The `candleSpacing` value for the widget. |
+| `barColor` | `Color` | Color used for the bar. |
+| `lineColor` | `Color` | Color used for the line. |
+| `areaColor` | `Color` | Color used for the area. |
+| `smooth` | `boolean` | Draws a smoothed line instead of straight segments. |
+| `areaGradient` | `boolean` | Fills the area under the line with a gradient. |
+| `areaGradientColors` | `[string, string]` | The `areaGradientColors` value for the widget. |
+| `candleUpColor` | `Color` | Color used for the candle up. |
+| `candleDownColor` | `Color` | Color used for the candle down. |
+| `axisColor` | `Color` | Color used for the axis. |
+| `textColor` | `Color` | Color of the button label. |
+| `yAxisColor` | `Color` | Color used for the y axis. |
+| `showGrid` | `boolean` | Shows the chart grid lines. |
+| `showLabels` | `boolean` | Shows chart labels. |
+| `showValues` | `boolean` | Controls whether the values is shown. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
 
-These are the props specific to `Chart`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`. Common props land on the outer container.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned container exposes:
-
-- `updateData(newData, newLabels?)` — replaces the series (and optionally the labels) and redraws immediately.
-- `redraw()` — re-measures the container and repaints.
-- `_cleanup()` — cancels the pending timers, disconnects the `ResizeObserver`, and removes the `resize`/`scroll` listeners.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Chart, colors } from "flet-box";
+import { Chart } from "flet-box";
 
-Chart({
-  type: "bar",
-  data: [12, 19, 8, 15, 22],
+const revenue = Chart({
+  type: "line",
+  data: [12, 19, 7, 15, 22],
   labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-  barColor: colors.primary,
   height: 260,
   showGrid: true,
   showLabels: true,
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Chart, colors } from "flet-box";
+import { Chart } from "flet-box";
 
-const revenue = Chart({
+const trend = Chart({
   type: "area",
-  data: [5, 15, 25, 20, 30, 45],
+  data: [8, 14, 10, 21, 18, 26],
   labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   width: "100%",
   height: 320,
-  bgColor: colors.surface,
-  padding: { top: 20, right: 40, bottom: 40, left: 50 },
-  lineColor: colors.primary,
-  areaColor: `${colors.primary}40`,
   smooth: true,
   areaGradient: true,
-  areaGradientColors: [`${colors.primary}66`, "transparent"],
-  axisColor: colors.border,
-  textColor: colors.textSecondary,
-  yAxisColor: colors.primary,
+  areaGradientColors: ["#3b82f6", "#bfdbfe"],
+  lineColor: "#2563eb",
+  areaColor: "#93c5fd",
+  axisColor: "#94a3b8",
+  textColor: "#475569",
   showGrid: true,
   showLabels: true,
-  showValues: false,
+  showValues: true,
   borderRadius: 12,
+  bgColor: "#ffffff",
+  padding: 16,
 });
-
-const candles = Chart({
-  type: "candle",
-  data: [
-    { open: 100, high: 112, low: 98, close: 110 },
-    { open: 110, high: 115, low: 104, close: 106 },
-    [106, 109, 101, 108], // arrays are accepted too: [open, high, low, close]
-  ],
-  labels: ["D1", "D2", "D3"],
-  height: 320,
-  candleUpColor: colors.success,
-  candleDownColor: colors.danger,
-});
-
-// Live updates:
-// revenue.updateData([8, 12, 18, 26, 33, 41], ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
-// revenue.redraw();
 ```
 
-## Notes
+## Tips
 
-- **The default `type` is `'candle'`**, which expects OHLC data. Passing plain numbers without setting `type` leaves the scale as `NaN` and nothing visible is drawn.
-- `Chart({ data: [] })` (or any empty `data`) returns `null`, not an empty container — guard for that if you render conditionally.
-- Painting is asynchronous: the first draw runs in a `setTimeout(..., 100)`, then on every `ResizeObserver` tick and window resize (debounced 50ms). The size is read from the container's bounding rect, so an unmounted or zero-height chart draws nothing.
-- `line` and `area` need at least 2 points; with a single point only the grid and axes appear.
-- The Y scale adds 10% headroom above the max and below the min, and the lower bound is clamped at `0`.
-- Candle charts either stretch to the container width or keep `candleWidth`/`candleSpacing` and scroll horizontally when the series is too wide.
-- `updateData` mutates the `data`/`labels` arrays you passed in.
-- Value and label text is drawn at 8–9px on the canvas, so it does not scale with your theme's font settings.
+- Match data to type: pass numbers for bar/line/area and open/high/low/close objects for candle.
+- Provide labels so the x-axis is meaningful to readers.
+- Set an explicit height to reserve space and avoid layout shift while the chart initializes.
+
+## Accessibility
+
+- Add a text summary or table of the values near the chart since canvas content is not readable by screen readers.
+- Use sufficient contrast between data, axis and background colors.
+
+## Behavior
+
+- The canvas redraws when data, labels, type or styling props change.
+- Candle charts read open, high, low and close in that order from each data object.
 
 ## Related widgets
+
 - [CircularChart](CircularChart.md)
 - [CircularBar](CircularBar.md)
-- [ProgressBar](ProgressBar.md)
-- [DataTable](DataTable.md)
-- [Container](Container.md)
+- [Card](Card.md)
 
 ---
 
@@ -152,4 +149,4 @@ const candles = Chart({
 - **Next:** [CircularChart](CircularChart.md)
 - **Index:** [Widget index](README.md) · [Start here](START_HERE.md)
 
-You are reading **Chapter 6 · Data and rich content** (2 of 7).
+You are reading **Chapter 6 · Data, rich content & effects** (2 of 13).

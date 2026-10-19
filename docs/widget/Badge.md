@@ -1,104 +1,122 @@
 # Badge
 
-## Overview
-`Badge` decorates a `child` with a small count pill. When there is something to show, it wraps `child` in a `Stack` (`display: inline-block`, `position: relative`) and overlays an absolutely-positioned pill on one of four corners. When there is nothing to show (no `value`, or a `value` of `0`/`""` while `showZero` is false), it returns `child` unchanged — no wrapper. So the returned element is either the `Stack` wrapper or your bare `child`.
+Wraps a child widget and overlays a small count or status marker at one of its corners. Commonly used for notification counts.
 
-## When to use
-- Show an unread count or alert on an icon (a bell, a cart, an avatar).
-- Overlay a small numeric or string label on the corner of another widget.
+## When to use it
 
-## Import
+Use it to signal unseen items or status on an icon, avatar, or button.
 
-```javascript
-import { Badge } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Badge, Icon } from "flet-box";
 
-Badge({ value: 3, child: Icon({ name: "notifications" }) });
+const badge = Badge({
+  value: 5,
+  child: Icon({ name: "notifications" }),
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | number or string | — | Badge content. Numbers above `max` render as `"<max>+"`. |
-| `child` | Widget | — | The element to decorate (must be an `HTMLElement`). |
-| `bgColor` | Color | `colors.secondary` | Pill background color. |
-| `color` | Color | `colors.text` | Pill text color. |
-| `size` | number | `20` | Pill height and min-width in pixels; the text is `size * 0.55`. |
-| `position` | `'top-right'`, `'top-left'`, `'bottom-right'`, `'bottom-left'` | `'top-right'` | Corner the pill sits on. |
-| `offset` | number | `0` | Pushes the pill outward from the corner. |
-| `borderWidth` | number | `2` | Pill border width in pixels. |
-| `borderColor` | Color | `colors.surface` | Pill border color (the ring that separates it from the child). |
-| `showZero` | boolean | `false` | Whether a `value` of `0` is shown. |
-| `max` | number | `99` | Numeric values above this render as `"<max>+"`. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `value` | `string \| number` | Current value controlled by the widget. |
+| `child` | `Widget` | A single child widget. Alias: `children` for a list. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `size` | `number` | Overall size preset or pixel value, depending on the widget. |
+| `position` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | CSS `position` value, or `stack` for centered stacking. |
+| `offset` | `number` | The `offset` value for the widget. |
+| `borderWidth` | `number` | Width of the border. |
+| `borderColor` | `Color` | Color used for the border. |
+| `showZero` | `boolean` | Controls whether the zero is shown. |
+| `max` | `number` | Maximum value used to compute the ratio. |
 
-These are the props specific to `Badge`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-When the badge is shown (a `Stack` wrapper is returned), that wrapper exposes:
-
-- `updateValue(newValue)` — sets the pill text (applying `max`) and shows or hides the pill.
-
-If `Badge` returned the bare `child` instead (nothing to show), there is no `updateValue`.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Badge, Icon, colors } from "flet-box";
+import { Badge, Icon } from "flet-box";
 
-Badge({
-  value: 5,
-  bgColor: colors.danger,
-  child: Icon({ name: "shopping_cart", size: 28 }),
+const inbox = Badge({
+  value: 12,
+  max: 99,
+  bgColor: "#dc2626",
+  color: "#ffffff",
+  child: Icon({ name: "mail" }),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Badge, Icon, colors } from "flet-box";
+import { Badge, Icon } from "flet-box";
 
-const bell = Badge({
+const inbox = Badge({
   value: 120,
   max: 99,
-  size: 22,
+  bgColor: "#dc2626",
+  color: "#ffffff",
+  size: 18,
   position: "top-right",
   offset: 4,
-  bgColor: colors.danger,
-  borderColor: colors.surface,
-  child: Icon({ name: "notifications", size: 32 }),
+  borderWidth: 2,
+  borderColor: "#ffffff",
+  showZero: false,
+  child: Icon({ name: "mail", size: 28 }),
 });
-
-// value 120 with max 99 renders "99+"
-// bell.updateValue(0); // hides the pill (showZero defaults to false)
 ```
 
-## Notes
+## Tips
 
-- When there is nothing to show, `Badge` returns `child` directly (or `null` if there is no child) — no `Stack` wrapper and no `updateValue`. The pill is hidden when `value` is `undefined`/`null`/`""`, or when it is the number `0` and `showZero` is false.
-- When shown with a valid `child`, the return value is a `Stack` (`display: inline-block`, `position: relative`) containing your child plus the absolutely-positioned pill.
-- `max` only affects numbers: a numeric `value` greater than `max` renders as `"<max>+"` (for example `120` → `"99+"`). Strings are shown as-is.
-- The pill is a factory `div` with a `Text` inside; `borderWidth`/`borderColor` draw the ring that separates it from the child.
-- If `child` is not an `HTMLElement`, `Badge` logs a warning and returns just the pill.
-- The pill does not subscribe to theme changes. `bgColor` defaults to `colors.secondary` and `color` to `colors.text`, so the pill always renders with those (or whatever you pass) and keeps them on theme switches.
-- The pill overlays the child with absolute positioning plus a `transform`, so it can extend beyond the child's box; `offset` nudges it further out.
+- Set max so large counts collapse to "99+" style displays.
+- Use position and offset to place the marker precisely on irregular shapes.
+
+## Accessibility
+
+- The badge value is visual only; add a Text or title nearby to convey the count.
+
+## Behavior
+
+- showZero: false hides the marker entirely when value is 0.
+- A borderWidth with a matching borderColor creates a clean cutout against the child.
 
 ## Related widgets
+
 - [Avatar](Avatar.md)
-- [Chip](Chip.md)
 - [Icon](Icon.md)
-- [Stack](Stack.md)
-- [Text](Text.md)
+- [Chip](Chip.md)
 
 ---
 

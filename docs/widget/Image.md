@@ -1,86 +1,119 @@
 # Image
 
-## Overview
-`Image` renders an `<img>` element. It is a thin wrapper: props are forwarded to the underlying image, so you use standard attributes like `src`, `alt`, `width`, and `height`, plus any common style props. Unknown CSS properties (such as `objectFit`) are applied as inline styles.
+Renders an image element from a URL or path. Supports fixed sizing, object-fit modes, and a circular crop for avatars.
 
-## When to use
-- Display a picture from a URL or a local path.
-- Show avatars, thumbnails, banners, or responsive media.
+## When to use it
 
-## Import
+Use it whenever you need to show a photo, banner, thumbnail, or icon asset.
 
-```javascript
-import { Image } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Image } from "flet-box";
 
-Image({ src: "https://placehold.co/200x120", alt: "Placeholder" });
+const photo = Image({
+  src: "/photo.jpg",
+  alt: "Profile photo",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `src` | string | — | Image URL or path. |
-| `alt` | string | — | Alternative text for accessibility. |
-| `width` | Size | — | Displayed width (number = pixels, or a CSS string). |
-| `height` | Size | — | Displayed height. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `src` | `string` | Resource URL for the image, audio, or video. |
+| `alt` | `string` | Alternative text for an image, for accessibility. |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `fit` | `'cover' \| 'contain' \| 'fill' \| 'none' \| 'scale-down'` | How the image fits its box (CSS `object-fit`). |
+| `circular` | `boolean` | Clips the image into a circle. |
+| `onLoad` | `(widget: Widget) => void` | Fired when the media finishes loading. |
+| `onError` | `(widget: Widget) => void` | Fired when the media fails to load. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
 
-These are the props specific to `Image`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Image } from "flet-box";
 
-Image({
-  src: "/assets/cover.png",
-  alt: "Cover",
-  width: "100%",
+const cover = Image({
+  src: "/banner.jpg",
+  alt: "Launch banner",
+  width: 320,
+  height: 180,
+  fit: "cover",
   borderRadius: 12,
-  style: { objectFit: "cover" },
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Column, Image, Text } from "flet-box";
+import { Image } from "flet-box";
 
-Column({
-  gap: 8,
-  children: [
-    Image({
-      src: "/assets/photo.jpg",
-      alt: "Photo",
-      width: 320,
-      height: 200,
-      borderRadius: 16,
-      style: { objectFit: "cover" },
-    }),
-    Text({ text: "A caption below the image", size: 14 }),
-  ],
+const teamPhoto = Image({
+  src: "/team/anna.jpg",
+  alt: "Anna at the keynote",
+  width: 96,
+  height: 96,
+  fit: "cover",
+  circular: true,
+  onLoad: () => console.log("loaded"),
+  onError: () => console.error("failed"),
+  onPress: () => console.log("open profile"),
 });
 ```
 
-## Notes
+## Tips
 
-- Props are forwarded to the native `<img>`; unrecognized CSS props (like `objectFit`) become inline styles.
-- Always provide `alt` for accessibility.
+- Set both width and height with fit: "cover" to avoid stretched or squashed art.
+- Use circular: true instead of a full borderRadius when you want a perfect avatar crop.
+
+## Accessibility
+
+- Always pass alt so screen readers can describe the image; alt: "" marks it decorative.
+
+## Behavior
+
+- onLoad fires once the image decodes; onError fires when the src fails to load.
+- onPress is attached to the wrapper, so the image behaves like a tappable tile.
 
 ## Related widgets
-- [Icon](Icon.md)
+
 - [Avatar](Avatar.md)
-- [Container](Container.md)
 - [Card](Card.md)
+- [Icon](Icon.md)
 
 ---
 

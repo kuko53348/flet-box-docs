@@ -36,8 +36,8 @@ flet-box run-bundle               # or run the bundled app
 ```javascript
 import { runApp, Container, Text, Button, useState } from "flet-box";
 
-withst App = () => {
-  withst [count, setCount] = useState("count", 0);
+const App = () => {
+  const [count, setCount] = useState("count", 0);
 
   return Container({
     width: "100%",

@@ -1,159 +1,145 @@
 # Carousel
 
-## Overview
-`Carousel` renders a horizontally sliding track of `items` with optional arrow buttons and dot indicators. Each item may be a widget (any DOM element), an image URL string, or a `{ src, alt }` object — the last two become a full-bleed `<img>` with `object-fit: cover`. Slides move by translating the track, so every item stays in the DOM at all times. The returned element exposes `next`, `prev`, `goTo`, and `getCurrentIndex`, and the widget returns `null` when `items` is empty.
+Carousel cycles through items one at a time with optional arrows, dots and autoplay. Items may be widgets, image URLs or src/alt objects.
 
-## When to use
-- Image galleries, product photos, hero banners, and onboarding slides.
-- Any fixed set of full-width panels the user pages through one at a time.
-- Auto-advancing showcases with `autoPlay` (it pauses while the pointer is over the carousel).
+## When to use it
 
-## Import
+Use it to showcase a small set of images, banners or promo slides in limited space.
 
-```javascript
-import { Carousel } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Carousel } from "flet-box";
 
-Carousel({
-  items: [{ src: "/img/a.jpg", alt: "A" }, { src: "/img/b.jpg", alt: "B" }],
-  height: 240,
+const hero = Carousel({
+  items: ["/banner-1.png", "/banner-2.png"],
 });
 ```
 
-## Item shapes
-
-`items` accepts three forms, chosen per entry:
-
-| Item | Rendered as |
-| --- | --- |
-| A widget / DOM element | Appended into the slide as-is, centered. |
-| A string | Treated as an image URL: `<img src="…">` at 100% × 100% with `object-fit: cover`. |
-| `{ src, alt }` | `<img src alt>` at 100% × 100% with `object-fit: cover`. |
-| Anything else | An empty slide. |
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `items` | array of widgets, strings, or `{ src, alt }` | `[]` | The slides. **An empty array makes the widget return `null`.** |
-| `autoPlay` | boolean | `false` | Advances every `interval` ms. Pauses on `mouseenter`, resumes on `mouseleave`. Ignored when there is only one item. |
-| `interval` | number | `3000` | Autoplay period in milliseconds. |
-| `showArrows` | boolean | `true` | Renders the left/right circular arrow buttons (only with more than one item). |
-| `showDots` | boolean | `true` | Renders the dot indicators (only with more than one item). |
-| `infinite` | boolean | `true` | Wraps around at both ends instead of stopping. |
-| `height` | number or string | `300` | Carousel height in pixels. |
-| `width` | number or string | `'100%'` | Carousel width. |
-| `borderRadius` | number | `12` | Corner radius in pixels; the track is clipped. |
-| `onIndexChange` | `(index: number) => void` | — | Fires after every move, including dot clicks and autoplay. |
-| `dotColor` | Color | `colors.gray300` | Inactive dot color. |
-| `dotActiveColor` | Color | `colors.primary` | Active dot color. |
-| `dotSize` | number | `8` | Dot height, and dot width while inactive. |
-| `dotActiveSize` | number | `20` | Width of the active dot. |
-| `buttonBgColor` | Color | `colors.surface` | Arrow button background. |
-| `buttonIconColor` | Color | `colors.secondary` | Arrow chevron color. |
-| `buttonSize` | number | `36` | Arrow button diameter in pixels. |
-| `buttonIconSize` | number | `24` | Arrow chevron size in pixels. |
-| `buttonTop` | number or string | `'46%'` | Vertical offset of both arrow buttons. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `items` | `(Widget \| string \| { src: string; alt?: string })[]` | Array of items rendered in a rotating or grouped widget. |
+| `autoPlay` | `boolean` | Advances automatically. |
+| `interval` | `number` | Delay between automatic advances, in milliseconds. |
+| `showArrows` | `boolean` | Shows previous/next arrows. |
+| `showDots` | `boolean` | Shows the dot indicators. |
+| `infinite` | `boolean` | Loops from the last item back to the first. |
+| `height` | `number \| string` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `width` | `number \| string` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `dotColor` | `Color` | Color used for the dot. |
+| `dotActiveColor` | `Color` | Color used for the dot active. |
+| `dotSize` | `number` | Size of the dot. |
+| `dotActiveSize` | `number` | Size of the dot active. |
+| `buttonBgColor` | `Color` | Background color for the button. |
+| `buttonIconColor` | `Color` | Color used for the button icon. |
+| `buttonSize` | `number` | Size of the button. |
+| `buttonIconSize` | `number` | Size of the button icon. |
+| `buttonTop` | `number \| string` | The `buttonTop` value for the widget. |
+| `onIndexChange` | `(index: number) => void` | Fired with the new active index. |
 
-These are the props specific to `Carousel`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned element exposes:
-
-- `next()` — advances one slide, wrapping to the first when `infinite`.
-- `prev()` — goes back one slide, wrapping to the last when `infinite`.
-- `goTo(index)` — jumps to `index`. Out-of-range indexes are ignored.
-- `getCurrentIndex()` — returns the current slide index.
-- `_cleanup()` — stops the autoplay timer.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Carousel } from "flet-box";
 
-Carousel({
-  items: ["/img/slide-1.jpg", "/img/slide-2.jpg", "/img/slide-3.jpg"],
+const hero = Carousel({
+  items: [
+    { src: "/sale.png", alt: "Summer sale" },
+    { src: "/launch.png", alt: "New launch" },
+  ],
   autoPlay: true,
   interval: 4000,
-  height: 260,
   showDots: true,
-  onIndexChange: (index) => console.log("slide", index),
+  showArrows: true,
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Carousel, Column, Text, colors } from "flet-box";
+import { Carousel, Text } from "flet-box";
 
-const slide = (title, body) => Column({
-  gap: 8,
-  alignItems: "center",
-  justifyContent: "center",
-  children: [
-    Text({ text: title, size: 24, weight: "bold", color: colors.text }),
-    Text({ text: body, size: 14 }),
-  ],
-});
-
-const carousel = Carousel({
+const hero = Carousel({
   items: [
-    slide("Fast", "Real DOM elements, no virtual DOM."),
-    slide("Small", "Vanilla JS with zero dependencies."),
-    { src: "/img/cover.jpg", alt: "Cover" },
+    { src: "/sale.png", alt: "Summer sale" },
+    { src: "/launch.png", alt: "New launch" },
+    Text({ text: "Featured story" }),
   ],
   autoPlay: true,
   interval: 5000,
+  infinite: true,
   showArrows: true,
   showDots: true,
-  infinite: true,
   height: 320,
   width: "100%",
   borderRadius: 16,
-  dotColor: colors.gray400,
-  dotActiveColor: colors.primary,
+  dotColor: "#cbd5e1",
+  dotActiveColor: "#2563eb",
   dotSize: 8,
-  dotActiveSize: 24,
-  buttonBgColor: "rgba(255,255,255,0.85)",
-  buttonIconColor: colors.text,
+  dotActiveSize: 10,
+  buttonBgColor: "#ffffff",
+  buttonIconColor: "#0f172a",
   buttonSize: 40,
-  buttonIconSize: 24,
-  buttonTop: "46%",
-  onIndexChange: (index) => console.log("slide", index),
+  buttonIconSize: 20,
+  onIndexChange: (index) => console.log(index),
 });
-
-// carousel.next();   carousel.prev();   carousel.goTo(0);   carousel.getCurrentIndex();
 ```
 
-## Notes
+## Tips
 
-- `items: []` returns `null`, not an element. Guard before mounting: `items.length ? Carousel({ items }) : Text({ text: "No slides" })`.
-- Moves are throttled. Each `next()`/`prev()`/`goTo()` sets an internal transitioning flag that clears after 350ms, so a second call inside that window is silently ignored — including autoplay ticks that land mid-transition.
-- Arrows and dots only render when `items.length > 1`; a single-item carousel is just the track.
-- The track is `items.length * 100%` wide and each slide is `100 / items.length`% wide, so every item is mounted up front. Large galleries stay heavy.
-- Slides center their content (`justify-content`/`align-items: center`) and clip overflow.
-- `onIndexChange` fires synchronously with the new index, after the track and dots are updated.
-- Dots are 4px-radius pills, not circles: the active one is `dotActiveSize` wide and `dotSize` tall.
-- Arrow buttons are plain positioned `div`s with a Material chevron, not `Button` widgets.
-- With `infinite: false`, `next()` on the last slide and `prev()` on the first do nothing.
-- `_cleanup()` clears the autoplay interval; autoplay also attaches `mouseenter`/`mouseleave` listeners to the container.
+- Enable autoPlay with a sensible interval and keep showDots on so users can jump to a slide.
+- Mix URL strings, src/alt objects and widgets in items to combine images with captions.
+- Use infinite for looping banners but turn it off when the sequence has a clear first and last slide.
+
+## Accessibility
+
+- Give image items meaningful alt text so each slide is described.
+- Provide pause and advance controls, and avoid autoplay for content that needs reading time.
+
+## Behavior
+
+- onIndexChange fires with the new slide index whenever the active item changes.
+- Autoplay is cleared automatically when the widget unmounts.
 
 ## Related widgets
+
 - [Image](Image.md)
 - [Stack](Stack.md)
-- [Pagination](Pagination.md)
-- [Icon](Icon.md)
-- [GridView](GridView.md)
+- [Card](Card.md)
 
 ---
 

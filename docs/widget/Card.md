@@ -1,112 +1,119 @@
 # Card
 
-## Overview
-`Card` renders a `<div>` pre-styled as a raised surface: a `colors.surface` background, `12px` rounded corners, `16px` of inner padding, and a 1px `colors.border` border. Think of it as a `Container` with sensible card defaults — you compose any widgets inside it with `child`/`children`. It has no behavior of its own beyond styling.
+A rounded, optionally elevated surface that groups related content into a single tappable unit.
 
-## When to use
-- Group related content (a profile, a product, a form section) on a distinct bordered surface.
-- Wrap content that should read as a "card" with rounded corners and breathing room, without hand-writing the styles.
+## When to use it
 
-## Import
+Use it to present a self-contained block such as a summary, product, or stat.
 
-```javascript
-import { Card } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Card, Text } from "flet-box";
 
-Card({ child: Text({ text: "Card content" }) });
+const card = Card({
+  child: Text({ text: "Hello" }),
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `padding` | number | `16` | Inner spacing in pixels. |
-| `borderRadius` | number | `12` | Corner radius in pixels. |
-| `bgColor` | Color | `colors.surface` | Background color. |
-| `showBorder` | boolean | `true` | When `false`, the border is removed (`border: none`). |
-| `borderWidth` | number | `1` | Border thickness in pixels (only when `showBorder`). |
-| `borderStyle` | string | `'solid'` | CSS border style (only when `showBorder`). |
-| `borderColor` | Color | `colors.border` | Border color (only when `showBorder`). |
-| `elevation` | number | `2` | Shadow level forwarded to the factory. See Notes — it does not currently render a visible shadow. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `child` | `Widget` | A single child widget. Alias: `children` for a list. |
+| `children` | `Widget[]` | An array of child widgets. Alias: `child` for a single child. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `showBorder` | `boolean` | Controls whether the border is shown. |
+| `borderWidth` | `number` | Width of the border. |
+| `borderStyle` | `'solid' \| 'dashed' \| 'dotted'` | The `borderStyle` value for the widget. |
+| `borderColor` | `Color` | Color used for the border. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
 
-These are the props specific to `Card`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Card, Column, Text, colors } from "flet-box";
+import { Card, Text } from "flet-box";
 
-Card({
+const card = Card({
+  elevation: 2,
+  padding: 16,
+  borderRadius: 12,
+  child: Text({ text: "Today's summary" }),
+});
+```
+
+### Full
+
+```javascript
+import { Card, Text } from "flet-box";
+
+const card = Card({
+  elevation: 3,
   padding: 20,
   borderRadius: 16,
-  bgColor: colors.surface,
-  child: Column({
-    gap: 6,
-    children: [
-      Text({ text: "Account", size: 18, weight: "bold" }),
-      Text({ text: "jane@example.com", color: colors.textSecondary }),
-    ],
-  }),
+  showBorder: true,
+  borderColor: "#e2e8f0",
+  borderWidth: 1,
+  onPress: () => console.log("open report"),
+  children: [
+    Text({ text: "Weekly report", weight: "bold" }),
+    Text({ text: "Revenue is up 12% this week." }),
+  ],
 });
 ```
 
-### Full example
+## Tips
 
-```javascript
-import { Button, Card, Column, Divider, Row, Text, colors } from "flet-box";
+- Keep elevation subtle (1-3) so stacked cards do not look noisy.
+- Set showBorder: true for a flat look, or use elevation for a raised surface.
 
-Card({
-  width: 320,
-  padding: 0,
-  borderRadius: 20,
-  showBorder: false,
-  child: Column({
-    children: [
-      Text({ text: "Pro plan", size: 20, weight: "bold", padding: 20 }),
-      Divider({ margin: 0, color: colors.border }),
-      Column({
-        gap: 8,
-        padding: 20,
-        children: [
-          Text({ text: "Unlimited projects", color: colors.textSecondary }),
-          Text({ text: "Priority support", color: colors.textSecondary }),
-        ],
-      }),
-      Row({
-        padding: 20,
-        justifyContent: "flex-end",
-        children: [
-          Button({ text: "Upgrade", onPress: () => console.log("upgrade") }),
-        ],
-      }),
-    ],
-  }),
-});
-```
+## Accessibility
 
-## Notes
+- When onPress is set the whole card becomes a button; make its heading describe the action.
 
-- Renders a plain `<div>`; it is effectively a `Container` pre-styled with `colors.surface`, `borderRadius: 12`, `padding: 16`, and a 1px `colors.border` border.
-- `showBorder: false` sets `border: none`. Otherwise the border string is built from `borderWidth`, `borderStyle`, and `borderColor`.
-- `elevation` is forwarded to the widget factory, but unlike `Button` (which maps `0`–`5` to a preset shadow table) `Card` does not convert it into a real `box-shadow`, so it has no visible effect. Use the common `shadow`/`boxShadow` prop when you need an actual shadow.
-- Numeric props are pixels via the framework's rem/16 system: `padding: 16` becomes `1rem`, which computes to `16px`.
+## Behavior
+
+- Accepts either child for one widget or children for a stacked column of content.
+- onPress fires for clicks anywhere inside the card surface.
 
 ## Related widgets
+
 - [Container](Container.md)
-- [Column](Column.md)
-- [Row](Row.md)
-- [Divider](Divider.md)
 - [ListTile](ListTile.md)
-- [Text](Text.md)
+- [Button](Button.md)
 
 ---
 

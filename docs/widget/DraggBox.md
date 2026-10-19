@@ -1,109 +1,130 @@
 # DraggBox
 
-## Overview
-`DraggBox` wraps a `child` in a draggable `<div>` (`display: inline-block`, `cursor: grab`, `user-select: none`) so it can be picked up with the native HTML5 drag-and-drop API. On `dragstart` it publishes a payload — `{ data, group, dragId }` — to `window.__dragData` and writes the `dragId` into `dataTransfer`; a matching `DroppBox` reads that payload on drop. It returns `null` when no `child` is given.
+DraggBox wraps a child so it can be dragged with the native drag-and-drop API. It tags the payload with data and an optional group so matching DroppBox targets can accept it.
 
-## When to use
-- Make a card, chip, or list item draggable in a drag-and-drop UI.
-- Pair with `DroppBox` to move items between drop targets.
-- Carry an arbitrary `data` payload and a `group` tag that decides which targets accept the drag.
+## When to use it
 
-## Import
+Use it to build kanban boards, sortable lists or any drag-to-rearrange interface.
 
-```javascript
-import { DraggBox } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { DraggBox, Text } from "flet-box";
 
-DraggBox({ child: Text({ text: "Drag me" }) });
+const item = DraggBox({
+  child: Text({ text: "Drag me" }),
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `child` | Widget | — | Content to make draggable. Required — `DraggBox` returns `null` without it. |
-| `data` | any | — | Payload passed to `onDragStart`/`onDragEnd` and to a `DroppBox`'s `onDrop`. |
-| `group` | string | `"default"` | Tag matched against a `DroppBox`'s `acceptGroups` to decide drop validity. |
-| `disabled` | boolean | `false` | Turns dragging off: `draggable` becomes false, `cursor` becomes `default`, and `dragstart` is cancelled. |
-| `cloneOnDrag` | boolean | `true` | Drag a styled clone of the box as the drag image. Ignored when `dragImage` is set. |
-| `dragImage` | HTMLElement | — | Custom element used as the drag image instead of the clone. |
-| `opacity` | number | `0.5` | Opacity applied to the source box **while dragging** (not at rest). |
-| `dragOverlayColor` | Color | `${colors.primary}20` | Background color of the drag clone. |
-| `dragBorderColor` | Color | `colors.primary` | Dashed border color of the drag clone. |
-| `onDragStart` | `(event, data) => void` | — | Fires on `dragstart`, after the payload is published. |
-| `onDragEnd` | `(event, data) => void` | — | Fires on `dragend`. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `child` | `Widget` | A single child widget. Alias: `children` for a list. |
+| `data` | `any` | Array of values or `{ label, value }` slices. |
+| `group` | `string` | Drag group name; only matching targets accept the item. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onDragStart` | `(event: DragEvent, data: any) => void` | Fired when dragging starts. |
+| `onDragEnd` | `(event: DragEvent, data: any) => void` | Fired when dragging ends. |
+| `dragImage` | `HTMLElement` | Custom image shown while dragging. |
+| `cloneOnDrag` | `boolean` | Keeps the original element while dragging a clone. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `dragOverlayColor` | `Color` | Color used for the drag overlay. |
+| `dragBorderColor` | `Color` | Border color for the drag. |
 
-These are the props specific to `DraggBox`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { Card, DraggBox, Text } from "flet-box";
 
-DraggBox({
-  child: Card({ child: Text({ text: "Move this card" }) }),
-  group: "cards",
+const task = DraggBox({
+  child: Card({ padding: 12, child: Text({ text: "Write docs" }) }),
+  group: "tasks",
   data: { id: 1 },
-  onDragEnd: (event, data) => console.log("drag finished", data),
+  onDragEnd: (event, data) => console.log(data),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Column, DraggBox, DroppBox, Text } from "flet-box";
+import { Card, DraggBox, Text } from "flet-box";
 
-Column({
-  gap: 16,
-  children: [
-    DraggBox({
-      group: "tasks",
-      data: { id: "task-1", title: "Write documentation" },
-      cloneOnDrag: true,
-      opacity: 0.6,
-      onDragStart: (event, data) => console.log("start", data),
-      onDragEnd: (event, data) => console.log("end", data),
-      child: Text({ text: "Write documentation" }),
-    }),
-    DroppBox({
-      acceptGroups: ["tasks"],
-      onDrop: (data, group) => console.log("dropped into", group, data),
-      child: Text({ text: "Drop here" }),
-    }),
-  ],
+const task = DraggBox({
+  child: Card({
+    padding: 16,
+    child: Text({ text: "Ship the release" }),
+  }),
+  group: "kanban",
+  data: { id: "task-42", title: "Ship the release" },
+  cloneOnDrag: true,
+  opacity: 0.6,
+  dragOverlayColor: "#eff6ff",
+  dragBorderColor: "#2563eb",
+  onDragStart: (event, data) => console.log("start", data),
+  onDragEnd: (event, data) => console.log("end", data),
 });
 ```
 
-## Notes
+## Tips
 
-- Renders an inline-block `<div>`; the widget returns that wrapper element.
-- Pairing: on `dragstart` the payload `{ data, group, dragId }` is stored on `window.__dragData`. A `DroppBox` accepts the drop only when this `group` is listed in its `acceptGroups`. The default `group: "default"` matches a default `DroppBox`.
-- `dataTransfer` carries the `dragId` as `text/plain`; `effectAllowed` and the target's `dropEffect` are `"copy"`.
-- `opacity` applies only during the drag; at rest the box is fully opaque.
-- `cloneOnDrag` (default) builds a rotated, dashed-border clone as the drag image using `dragOverlayColor`/`dragBorderColor`. Pass `dragImage` to use your own element, or set `cloneOnDrag: false` with no `dragImage` for a transparent drag image.
-- `disabled` sets `draggable="false"`, `cursor: default`, and cancels the `dragstart`.
+- Give draggable items a group and have targets list it in acceptGroups to control what can be dropped.
+- Use cloneOnDrag when the original should remain in place while a copy is dragged.
+- Set data to the payload the drop target needs, not just the visual content.
+
+## Accessibility
+
+- Provide a non-drag alternative such as buttons or a menu so keyboard users can move items.
+- Ensure onDragStart and onDragEnd give feedback so changes are perceivable.
+
+## Behavior
+
+- Drag events surface the original payload via the data argument in onDragStart and onDragEnd.
+- Setting disabled turns the child back into a non-draggable element.
 
 ## Related widgets
+
 - [DroppBox](DroppBox.md)
 - [Card](Card.md)
-- [Container](Container.md)
-- [Text](Text.md)
+- [ListView](ListView.md)
 
 ---
 
 ## Continue reading
 
-- **Previous:** [Video](Video.md)
+- **Previous:** [Maps](Maps.md)
 - **Next:** [DroppBox](DroppBox.md)
 - **Index:** [Widget index](README.md) · [Start here](START_HERE.md)
 
-You are reading **Chapter 7 · Media and drag & drop** (3 of 4).
+You are reading **Chapter 7 · Media and drag & drop** (4 of 5).

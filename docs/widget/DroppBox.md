@@ -1,115 +1,146 @@
 # DroppBox
 
-## Overview
-`DroppBox` renders a styled `<div>` drop target — `position: relative`, a `2px` solid border, `12px` radius, and `16px` padding by default — that receives items dragged from a `DraggBox`. While a drag hovers over it, the box highlights green (valid) or red (invalid) depending on whether the dragged `group` is listed in `acceptGroups`. On a valid `drop` it calls `onDrop(data, group, event)`.
+A drop target for DraggBox items. It validates incoming payloads against acceptGroups and reports successful drops through onDrop.
 
-## When to use
-- Create a target that accepts draggable items from a `DraggBox`.
-- Build kanban columns, trash zones, or "drop cards here" areas.
-- Show accept/reject feedback driven by `acceptGroups`.
+## When to use it
 
-## Import
+Use it as a container that receives dragged items, such as a column on a kanban board.
 
-```javascript
-import { DroppBox } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { DroppBox, Text } from "flet-box";
 
-DroppBox({ child: Text({ text: "Drop here" }) });
+const zone = DroppBox({
+  child: Text({ text: "Drop here" }),
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `child` | Widget | — | Content inside the target. May be an element, a string, or an array of either. |
-| `acceptGroups` | string[] | `["default"]` | Drag `group`s this target accepts. A drop from any other group is ignored. |
-| `disabled` | boolean | `false` | Ignore all drag events. |
-| `onDrop` | `(data, group, event) => void` | — | Fires on a valid drop with the dragged payload. |
-| `onDragEnter` | `(event) => void` | — | Fires when a valid drag first enters. |
-| `onDragLeave` | `(event) => void` | — | Fires when the active drag leaves. |
-| `onDragOver` | `(event) => void` | — | Fires continuously while a drag is over the target. |
-| `bgColor` | Color | `colors.surface` | Resting background color. |
-| `borderRadius` | number or string | `12` | Corner radius (a number becomes pixels). |
-| `borderWidth` | number | `2` | Resting border width in pixels. |
-| `borderStyle` | string | `"solid"` | Resting border style. |
-| `borderColor` | Color | `colors.border` | Resting border color. |
-| `shadow` | string | `"none"` | Resting box-shadow. |
-| `padding` | number or string | `16` | Inner padding (a number becomes pixels). |
-| `validBgColor` | Color | `${colors.success}20` | Background while a **valid** drag hovers. |
-| `validBorderColor` | Color | `colors.success` | Border color while a valid drag hovers. |
-| `invalidBgColor` | Color | `${colors.danger}20` | Background while an **invalid** drag hovers. |
-| `invalidBorderColor` | Color | `colors.danger` | Border color while an invalid drag hovers. |
-| `activeBgColor` | Color | `${colors.primary}20` | Accepted but currently has no effect — see Notes. |
-| `activeBorderColor` | Color | `colors.primary` | Accepted but currently has no effect — see Notes. |
-| `activeBorderStyle` | string | `"dashed"` | Border style while any drag hovers. |
-| `activeBorderWidth` | number | `2` | Border width (pixels) while a drag hovers. |
-| `activeShadow` | string | `0 4px 12px ${colors.primary}40` | Box-shadow while a drag hovers. |
-| `transitionDuration` | string | `"0.2s"` | CSS transition duration for style changes. |
-| `transitionTiming` | string | `"ease"` | CSS transition timing function. |
-| `showFeedback` | boolean | `true` | Whether to apply the hover highlight at all. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `child` | `Widget` | A single child widget. Alias: `children` for a list. |
+| `onDrop` | `(data: any, group: string, event: DragEvent) => void` | Fired when an item is dropped on the target. |
+| `onDragEnter` | `(event: DragEvent) => void` | Fired when a dragged item enters the target. |
+| `onDragLeave` | `(event: DragEvent) => void` | Fired when a dragged item leaves the target. |
+| `onDragOver` | `(event: DragEvent) => void` | Fired continuously while an item is dragged over the target. |
+| `acceptGroups` | `string[]` | Drag groups this target accepts. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `borderWidth` | `number` | Width of the border. |
+| `borderStyle` | `string` | The `borderStyle` value for the widget. |
+| `borderColor` | `Color` | Color used for the border. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `activeBgColor` | `Color` | Background color for the active. |
+| `activeBorderColor` | `Color` | Border color for the active. |
+| `activeBorderWidth` | `number` | Border width for the active. |
+| `activeBorderStyle` | `string` | Border style for the active. |
+| `activeShadow` | `string` | The `activeShadow` value for the widget. |
+| `validBgColor` | `Color` | Background color for the valid. |
+| `validBorderColor` | `Color` | Border color for the valid. |
+| `invalidBgColor` | `Color` | Background color for the invalid. |
+| `invalidBorderColor` | `Color` | Border color for the invalid. |
+| `transitionDuration` | `string` | Duration for the transition, in milliseconds. |
+| `transitionTiming` | `string` | The `transitionTiming` value for the widget. |
+| `showFeedback` | `boolean` | Shows valid/invalid feedback during a drag. |
 
-These are the props specific to `DroppBox`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { DroppBox, Text } from "flet-box";
 
-DroppBox({
-  acceptGroups: ["cards"],
-  onDrop: (data, group) => console.log("dropped", data, "in", group),
-  child: Text({ text: "Drop a card here" }),
+const zone = DroppBox({
+  child: Text({ text: "Drop a task here" }),
+  acceptGroups: ["tasks"],
+  onDrop: (data, group) => console.log(data, group),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Column, Container, DroppBox, Text, colors } from "flet-box";
+import { Container, DroppBox, Text } from "flet-box";
 
-Column({
-  gap: 12,
-  children: [
-    Text({ text: "Tasks", type: "h3" }),
-    DroppBox({
-      acceptGroups: ["tasks"],
-      showFeedback: true,
-      padding: 24,
-      borderRadius: 16,
-      validBgColor: `${colors.success}20`,
-      invalidBgColor: `${colors.danger}20`,
-      onDragEnter: () => console.log("drag over the column"),
-      onDrop: (data, group) => console.log("added to", group, data),
-      child: Container({ padding: 16, child: Text({ text: "Drop tasks here" }) }),
-    }),
-  ],
+const zone = DroppBox({
+  child: Container({
+    padding: 24,
+    child: Text({ text: "Drop tasks here" }),
+  }),
+  acceptGroups: ["kanban"],
+  showFeedback: true,
+  bgColor: "#f8fafc",
+  borderWidth: 2,
+  borderStyle: "dashed",
+  borderColor: "#cbd5e1",
+  borderRadius: 12,
+  padding: 16,
+  activeBgColor: "#eff6ff",
+  activeBorderColor: "#2563eb",
+  validBgColor: "#f0fdf4",
+  validBorderColor: "#16a34a",
+  invalidBgColor: "#fef2f2",
+  invalidBorderColor: "#dc2626",
+  transitionDuration: "150ms",
+  onDrop: (data, group, event) => console.log(data, group),
+  onDragEnter: () => console.log("enter"),
 });
 ```
 
-## Notes
+## Tips
 
-- Renders a `<div>`; the widget returns that wrapper element.
-- Pairing: a `DraggBox` writes `{ data, group }` to `window.__dragData` on dragstart. `DroppBox` accepts the drop only when that `group` is in `acceptGroups` (default `["default"]`, which matches a default `DraggBox`).
-- `onDrop(data, group, event)` receives the dragged `data` and its `group`; the shared payload is cleared after a successful drop.
-- Hover feedback (when `showFeedback` is true): a valid drag uses `validBgColor`/`validBorderColor`, an invalid drag uses `invalidBgColor`/`invalidBorderColor`; both switch the border to `activeBorderStyle`/`activeBorderWidth` and apply `activeShadow`.
-- `dragover` always calls `preventDefault()` and sets `dropEffect = "copy"` so the browser permits the drop.
-- `disabled` short-circuits every drag handler.
-- `activeBgColor` and `activeBorderColor` are accepted but currently have no effect — the hover background and border come from the valid/invalid colors.
+- List the drag group values you allow in acceptGroups; unlisted groups are rejected.
+- Style activeBgColor and activeBorderColor so users see the target highlight during a drag.
+- Use validBgColor and invalidBgColor with showFeedback to signal whether a drop is allowed.
+
+## Accessibility
+
+- Pair drop zones with an alternative control, such as a move menu, for keyboard and touch users.
+- Make the target's purpose clear with visible text, not just a highlighted border.
+
+## Behavior
+
+- onDrop fires with the data, group and event when an accepted item is released.
+- onDragEnter, onDragOver and onDragLeave fire as the pointer passes over the target.
 
 ## Related widgets
+
 - [DraggBox](DraggBox.md)
-- [Card](Card.md)
 - [Container](Container.md)
-- [Column](Column.md)
+- [Card](Card.md)
 
 ---
 
@@ -119,4 +150,4 @@ Column({
 - **Next:** [Scaffold](Scaffold.md) — Chapter 8 · App navigation
 - **Index:** [Widget index](README.md) · [Start here](START_HERE.md)
 
-You are reading **Chapter 7 · Media and drag & drop** (4 of 4).
+You are reading **Chapter 7 · Media and drag & drop** (5 of 5).

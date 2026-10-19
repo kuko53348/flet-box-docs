@@ -1,115 +1,95 @@
 # SnackBar
 
-## Overview
-`SnackBar` shows a temporary notification bar fixed to the top or bottom edge of the viewport. Calling it is the action: it immediately builds a `<div>` bar (message + optional action button + optional close button), appends it to `document.body`, animates it in, and schedules auto-dismiss after `duration` ms. It returns a controller object `{ close, show, getElement }` — not an element you place in your tree.
+A transient toast that appears at the edge of the screen, reports a short message, and dismisses itself.
 
-## When to use
-- Confirm a completed action without interrupting the user ("Item saved").
-- Report a transient error, optionally with an `action` button like Retry or Undo.
-- Any short, self-dismissing message that doesn't need a decision.
+## When to use it
 
-## Import
+Use SnackBar to confirm a completed action or surface a brief, non-blocking notice.
 
-```javascript
-import { SnackBar } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { SnackBar } from "flet-box";
 
-SnackBar({ message: "Item saved" });
+const toast = SnackBar({
+  message: "Saved",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `message` | string | — | Notification text. |
-| `action` | string | — | Action button label. Clicking it fires `onAction`, then closes the bar. |
-| `onAction` | function | — | Action button handler. |
-| `duration` | number (ms) | `3000` | Auto-dismiss delay. `0` (or negative) keeps the bar until `close()`. |
-| `type` | `'normal'`, `'success'`, `'error'`, `'warning'`, `'info'` | `'normal'` | Color preset from the theme: `normal` → `colors.surface`, `success` → `colors.success`, `error` → `colors.danger`, `warning` → `colors.warning`, `info` → `colors.info`. |
-| `position` | `'bottom'`, `'top'` | `'bottom'` | Screen edge the bar slides in from. |
-| `backgroundColor` | Color | preset | Overrides the `type` background. |
-| `textColor` | Color | `colors.text` | Message color. |
-| `actionColor` | Color | preset | Action button color. |
-| `dismissible` | boolean | `false` | Adds a `✕` close button — only when `action` is not set. |
-| `borderRadius` | number or string | `16` | Corner radius in pixels. |
-| `padding` | string | `'12px 16px'` | Inner padding. |
-| `margin` | number | `16` | Distance from the screen edges in pixels (left, right, and top/bottom). |
-| `elevation` | number | `2` | Shadow depth: `0 e px 2·e px rgba(0,0,0,0.15)`; `0` removes the shadow. |
-| `animationDuration` | number (ms) | `300` | Slide/fade duration, also the delay before the element is removed on close. |
-| `zIndex` | number | `10000` | Stacking order — above `Modal` (9998) and `BottomSheet` (9999). |
-| `onShow` | function | — | Fires right after the bar starts showing. |
-| `onClose` | function | — | Fires when the bar finishes closing (after the animation). |
-
-This widget returns a controller object, not an element, so [common props](COMMON_PROPS.md) do not apply to it; unrecognized options are ignored.
-
-## Instance methods
-
-The returned controller exposes:
-
-- `close()` — cancels the auto-dismiss timer, animates the bar out, and removes it from `document.body` after `animationDuration` ms (then fires `onClose`).
-- `show()` — replays the slide/fade-in animation (and fires `onShow`).
-- `getElement()` — returns the bar's `<div>` so you can style or inspect it directly.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `message` | `string` | Body text or notification content. |
+| `action` | `string` | The `action` value for the widget. |
+| `onAction` | `() => void` | Event handler for the `onAction` event. |
+| `duration` | `number` | How long the transient element stays visible, in milliseconds. |
+| `type` | `'normal' \| 'success' \| 'error' \| 'warning' \| 'info'` | Kind or mode of the widget. |
+| `position` | `'bottom' \| 'top'` | CSS `position` value, or `stack` for centered stacking. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `textColor` | `Color` | Color of the button label. |
+| `actionColor` | `Color` | Color used for the action. |
+| `dismissible` | `boolean` | The `dismissible` value for the widget. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `padding` | `number \| string` | Space inside the widget, between its content and its border. |
+| `margin` | `number \| string` | Space outside the widget, between it and its neighbors. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `animationDuration` | `number` | Duration for the animation, in milliseconds. |
+| `zIndex` | `number` | Index used for the z. |
+| `onShow` | `() => void` | Event handler for the `onShow` event. |
+| `onClose` | `() => void` | Fired when the overlay closes. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Button, SnackBar } from "flet-box";
+import { SnackBar } from "flet-box";
 
-Button({
-  text: "Save",
-  onPress: () => SnackBar({ message: "Changes saved", type: "success", duration: 2000 }),
+const toast = SnackBar({
+  message: "Changes saved",
+  type: "success",
+  duration: 3000,
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { SnackBar, colors } from "flet-box";
+import { SnackBar } from "flet-box";
 
-const bar = SnackBar({
-  message: "Connection lost. Reconnecting...",
+const toast = SnackBar({
+  message: "Could not reach the server",
   type: "error",
-  position: "top",
-  action: "Retry",
-  onAction: () => console.log("retrying"),
   duration: 5000,
-  backgroundColor: "#1e293b",
-  textColor: "#ffffff",
-  actionColor: colors.warning,
+  bgColor: "#1e293b",
+  color: "#ffffff",
   borderRadius: 12,
-  margin: 24,
-  elevation: 4,
-  onShow: () => console.log("visible"),
-  onClose: () => console.log("dismissed"),
+  elevation: 3,
 });
-
-// bar.close();            // dismiss early
-// bar.getElement();       // the fixed-position <div>
 ```
 
-## Notes
+## Tips
 
-- There is no "create then open" step — the bar shows as soon as you call `SnackBar(...)` and each call creates a brand-new element. There is no queue: several calls stack on top of each other at the same edge.
-- The bar spans nearly the full width (`left`/`right` set to `margin`), Material-style.
-- `dismissible` only adds the `✕` button when no `action` is present; the action button already closes the bar.
-- The slide-in runs inside a `requestAnimationFrame`, so computed `opacity`/`transform` reach their final values one frame after creation — the DOM insertion itself is synchronous.
-- `close()` removes the element from the DOM only after `animationDuration` ms; `onClose` fires at that point.
+- Keep message short and use SnackBar for confirmations, not for information the user must act on.
+- A duration of 0 keeps the toast open until you call close(); otherwise it auto-dismisses.
+
+## Accessibility
+
+- A SnackBar disappears on its own, so make sure the same information is available elsewhere and never required reading.
+
+## Behavior
+
+- The element is appended to document.body and auto-removed after duration; the returned controller has show(), close() and getElement().
+- Calling close() early cancels the pending dismissal timer and slides the toast out.
 
 ## Related widgets
-- [Tooltip](Tooltip.md)
-- [Modal](Modal.md)
+
 - [AlertDialog](AlertDialog.md)
+- [Modal](Modal.md)
 - [Button](Button.md)
-- [Badge](Badge.md)
 
 ---
 

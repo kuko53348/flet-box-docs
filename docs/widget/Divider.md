@@ -1,95 +1,102 @@
 # Divider
 
-## Overview
-`Divider` renders a `<div>` used as a thin rule. Horizontal (the default) it spans the full width and is `thickness` tall; vertical it is `thickness` wide and fills the available height. The line color comes from `color`, applied as `background-color`. It is a styled bar, not a native `<hr>`.
+A thin horizontal or vertical line that separates sections of content. Its thickness, color, and spacing are all adjustable.
 
-## When to use
-- Separate stacked sections of content with a thin horizontal rule.
-- Split items inside a `Row` with a vertical rule (`orientation: "vertical"`).
+## When to use it
 
-## Import
+Use it to break up lists, forms, or toolbars where whitespace alone is not enough.
 
-```javascript
-import { Divider } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Divider } from "flet-box";
 
-Divider();
+const divider = Divider({});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `color` | Color | `colors.surface` | Line color (applied as `background-color`). |
-| `thickness` | number | `1` | Cross-axis thickness in pixels — the height when horizontal, the width when vertical. |
-| `orientation` | `'horizontal'`, `'vertical'` | `'horizontal'` | Direction of the rule. |
-| `margin` | number, object, or string | `16` | Space around the rule. A number applies to the two cross-axis sides (top/bottom when horizontal, left/right when vertical); an object accepts `{ top, bottom, left, right }`; a string is applied verbatim and overrides the rest. |
-| `width` | Size | `'100%'` | Length of a horizontal rule. |
-| `height` | Size | `'100%'` | Length of a vertical rule. |
-| `flexShrink` | number | `0` | Keeps the rule from shrinking inside flex layouts. |
-| `marginTop / marginBottom / marginLeft / marginRight` | number | — | Per-side margins; these take priority over the `margin` number/object. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `thickness` | `number` | The `thickness` value for the widget. |
+| `margin` | `number \| { top?: number; right?: number; bottom?: number; left?: number }` | Space outside the widget, between it and its neighbors. |
+| `orientation` | `'horizontal' \| 'vertical'` | Orientation of the widget or control. |
 
-These are the props specific to `Divider`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Column, Divider, Text, colors } from "flet-box";
+import { Divider } from "flet-box";
 
-Column({
-  gap: 12,
-  children: [
-    Text({ text: "Section one" }),
-    Divider({ color: colors.border, margin: 4 }),
-    Text({ text: "Section two" }),
-  ],
+const divider = Divider({
+  thickness: 1,
+  color: "#e5e7eb",
+  margin: 16,
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Divider, Row, Text, colors } from "flet-box";
+import { Divider } from "flet-box";
 
-Row({
-  gap: 12,
-  alignItems: "center",
-  children: [
-    Text({ text: "Left" }),
-    Divider({
-      orientation: "vertical",
-      height: 24,
-      thickness: 2,
-      color: colors.border,
-      margin: 0,
-    }),
-    Text({ text: "Right" }),
-  ],
+const divider = Divider({
+  orientation: "vertical",
+  thickness: 2,
+  color: "#cbd5e1",
+  margin: { top: 8, bottom: 8, left: 12, right: 12 },
 });
 ```
 
-## Notes
+## Tips
 
-- Renders a `<div>`, not a native `<hr>`.
-- The default `color` is `colors.surface` (a very light gray), so on a white background the default rule is nearly invisible. Pass `color: colors.border` (or your own) for a visible line.
-- Horizontal rules set `height: thickness` and `width: width`; vertical rules set `width: thickness`, `height: height`, and `minHeight: 1`.
-- Margin priority is: individual `marginTop`/`marginBottom`/`marginLeft`/`marginRight` first, then a `margin` object, then a `margin` number, then defaults. A string `margin` overrides everything.
-- Numeric values are pixels via the rem/16 system: `thickness: 2` computes to `2px`.
+- Use orientation: "vertical" inside Row layouts and horizontal elsewhere.
+- margin accepts a number or an object with per-side values for fine spacing control.
+
+## Accessibility
+
+- Dividers are purely decorative and are hidden from assistive technology.
+
+## Behavior
+
+- Horizontal dividers stretch to the available width; vertical ones need a parent height.
+- thickness sets the line weight and defaults to a hairline.
 
 ## Related widgets
-- [Card](Card.md)
-- [Column](Column.md)
-- [Row](Row.md)
+
 - [ListTile](ListTile.md)
+- [Card](Card.md)
 - [Container](Container.md)
 
 ---

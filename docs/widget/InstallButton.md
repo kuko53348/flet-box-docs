@@ -1,100 +1,122 @@
 # InstallButton
 
-## Overview
-`InstallButton` renders a `Button` wired to the browser's PWA install flow. It listens on `window` for `beforeinstallprompt`, keeps the deferred prompt, and reveals itself; pressing the button calls `prompt()` and awaits `userChoice`. If the user accepts — or the browser fires `appinstalled` — it calls `onInstalled` and hides itself again. The widget returns the underlying `<button>` element, so anything you can do to a `Button` you can do here.
+A floating button that appears only when the browser is ready to install the app as a PWA. It wraps a standard Button and stays hidden otherwise.
 
-## When to use
-- Offering "Add to Home Screen" or desktop install for a progressive web app.
-- You want the install affordance to appear only when the browser says installation is actually possible.
-- Placing a floating install pill at the bottom of the screen without writing the prompt plumbing yourself.
+## When to use it
 
-## Import
+Use it on a landing page when you want to offer an install prompt without the browser's default install UI.
 
-```javascript
-import { InstallButton } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { InstallButton } from "flet-box";
 
-InstallButton({ onInstalled: () => console.log("installed") });
+const install = InstallButton({
+  text: "Install app",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | string | `'📲 Install'` | Button label; forwarded to `Button`. |
-| `variant` | `'filled'`, `'outlined'`, `'text'` | `'filled'` | Forwarded to `Button`. |
-| `size` | `'small'`, `'medium'`, `'large'` | `'medium'` | Forwarded to `Button`. |
-| `borderRadius` | number | `28` | Corner radius in pixels; forwarded to `Button`. |
-| `padding` | number, `[v, h]`, or string | `'12px 24px'` | Forwarded to `Button`, overriding its size preset. |
-| `bottom` | number | `20` | Pixel offset from the viewport bottom used in the button's fixed-position style block. |
-| `backgroundColor` | Color | — | Maps to `Button`'s `bgColor`. |
-| `color` | Color | — | Label and icon color. |
-| `onInstalled` | `() => void` | — | Fires when the user accepts the prompt, and again when the browser reports `appinstalled`. |
-| `onClick` | `() => void` | — | Fires on every press, after the install attempt (accepted, dismissed, or no prompt available). |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | Visible text content. |
+| `variant` | `'filled' \| 'outlined' \| 'text'` | Visual variation or style preset. |
+| `size` | `'small' \| 'medium' \| 'large'` | Overall size preset or pixel value, depending on the widget. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `bottom` | `number` | The `bottom` value for the widget. |
+| `onInstalled` | `() => void` | Fired when the PWA finishes installing. |
+| `onClick` | `() => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
 
-Every other prop is forwarded to [Button](Button.md).
+### Common props
 
-These are the props specific to `InstallButton`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
 import { InstallButton } from "flet-box";
 
-InstallButton({
+const install = InstallButton({
   text: "Install app",
-  onInstalled: () => console.log("thanks for installing"),
-  onClick: () => console.log("install button pressed"),
+  variant: "filled",
+  bottom: 24,
+  onInstalled: () => console.log("installed"),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { InstallButton, SnackBar, colors } from "flet-box";
+import { InstallButton } from "flet-box";
 
-InstallButton({
-  text: "Get the app",
+const install = InstallButton({
+  text: "Add to home screen",
   variant: "filled",
   size: "large",
-  backgroundColor: colors.primary,
-  color: "#ffffff",
+  bottom: 32,
   borderRadius: 32,
   padding: "14px 28px",
-  bottom: 24,
-  onInstalled: () => SnackBar({ message: "Installed. Enjoy!", type: "success" }),
-  onClick: () => console.log("install_click"),
+  bgColor: "#2563eb",
+  color: "#ffffff",
+  onInstalled: () => console.log("installed"),
+  onClick: () => console.log("clicked"),
 });
 ```
 
-## Notes
+## Tips
 
-- Nothing is shown until the browser fires `beforeinstallprompt`. In browsers that never fire it — or once the app is already installed — the button stays out of sight.
-- The handler calls `event.preventDefault()` on `beforeinstallprompt`, which suppresses the browser's own install banner so this button is the only affordance.
-- The button is built with an inline style block: `position: fixed`, `bottom: {bottom}px`, centered with `left: 50%` plus `translateX(-50%)`, `z-index: 10000`, a drop shadow, and `opacity: 0` / `visibility: hidden` / `display: none`. Reveal and hide write those three properties directly on the element.
-- The deferred prompt is consumed: it is set to `null` after the first `prompt()`, so a second press only runs `onClick`.
-- `onInstalled` can fire twice for one install — once from the accepted `userChoice` and once from the `appinstalled` event.
-- `onClick` runs regardless of whether an install prompt was available, so it is safe for analytics.
-- Do not pass `onPress`. The remaining props are spread onto `Button` **after** the internal `onPress` handler, so your own `onPress` replaces it and the install prompt never fires. Use `onClick`.
-- For the same reason, passing your own `style` prop replaces the internal style block wholesale and loses the fixed positioning and hidden state. Use the explicit props (`bottom`, `backgroundColor`, `borderRadius`, `padding`) instead.
-- `_cleanup()` removes both window listeners and the button; the framework calls it when the widget is torn down.
-- The browser only fires `beforeinstallprompt` for a served page (not `file://`) with a valid manifest and service worker.
+- The button listens for the browser's beforeinstallprompt event and stays hidden
+- until an install is actually offered.
+- It takes the same text, variant, and size vocabulary as Button, since it renders
+- one internally.
+- Raise bottom to float the fixed button above a bottom navigation or dock.
+
+## Accessibility
+
+- Give it descriptive text like "Install app" rather than relying on an icon-only
+- label, since the widget is a small floating control.
+
+## Behavior
+
+- It hides itself permanently when the app is installed and removes its window
+- listeners plus the underlying button on unmount.
+- onInstalled fires when the user accepts the browser prompt; onClick fires for every
+- click regardless of install availability.
 
 ## Related widgets
+
 - [Button](Button.md)
-- [FloatingActionButton](FloatingActionButton.md)
 - [SnackBar](SnackBar.md)
-- [AlertDialog](AlertDialog.md)
-- [Icon](Icon.md)
+- [Modal](Modal.md)
 
 ---
 

@@ -1,188 +1,169 @@
 # Markdown
 
-## Overview
-`Markdown` turns a markdown string into HTML with a small built-in regex parser — no markdown library, no virtual DOM. It renders a `<div>` (your typography and container props) holding one `.markdown-content` `<div>` whose `innerHTML` is the parsed result, plus a single document-wide `<style id="markdown-styles">` that styles headings, lists, code, links, blockquotes, images, and tables. The source text comes from `text`, with `source`, `content`, and `children` accepted as aliases.
+Renders markdown source as styled HTML with scoped CSS, syntax-highlighted code blocks, copy buttons, tables, and blockquotes inside a scrollable surface.
 
-## When to use
-- Render documentation, release notes, or a README string inside your app.
-- Show server-provided rich text (headings, bold/italic, lists, links, quotes) without writing HTML.
-- Swap content at runtime with `updateContent()` instead of rebuilding the widget.
+## When to use it
 
-## Import
+Use it for documentation, changelogs, readmes, or any user-facing text authored in Markdown.
 
-```javascript
-import { Markdown } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Markdown } from "flet-box";
 
-Markdown({ text: "# Hello\nThis is **bold** and `inline code`." });
+const notes = Markdown({
+  content: `# Hello
+
+**FletBox** renders markdown.`,
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | string | `""` | Markdown source. Aliases: `source`, `content`, `children`. The first truthy one wins, in that order. |
-| `fontSize` | number or string | `14` | Base font size in pixels for the container. |
-| `fontFamily` | string | `'system-ui, -apple-system, sans-serif'` | Container font stack. |
-| `lineHeight` | number | `1.6` | Container line height (unitless). |
-| `color` | Color | `colors.text` | Base text color. |
-| `linkColor` | Color | `colors.primary` | `<a>` color (injected stylesheet). |
-| `linkHoverColor` | Color | `colors.primary` | `<a>:hover` color. |
-| `linkUnderline` | boolean | `false` | Underlines links; hover always underlines. |
-| `codeBgColor` | Color | `colors.gray100` | Inline `<code>` background. |
-| `codeColor` | Color | `colors.danger` | Inline `<code>` color. |
-| `codeFontSize` | number or string | `12` | Inline `<code>` font size in pixels. |
-| `codeFontFamily` | string | `'monospace, "Courier New", Courier'` | Inline `<code>` font stack. |
-| `codeBorderRadius` | number or string | `4` | Inline `<code>` corner radius in pixels. |
-| `codePadding` | string | `'0.2em 0.4em'` | Inline `<code>` padding. |
-| `preBgColor` | Color | `colors.gray100` | `<pre>` background. |
-| `preBorderRadius` | number or string | `8` | `<pre>` corner radius in pixels. |
-| `prePadding` | string | `'1em'` | `<pre>` padding. |
-| `preMargin` | string | `'1em 0'` | `<pre>` margin. |
-| `blockquoteBorderColor` | Color | `colors.primary` | Blockquote left border color. |
-| `blockquoteBorderWidth` | number | `4` | Blockquote left border width in pixels. |
-| `blockquoteColor` | Color | `colors.textSecondary` | Blockquote text color. |
-| `blockquotePadding` | string | `'0 1em'` | Blockquote padding. |
-| `blockquoteMargin` | string | `'1em 0'` | Blockquote margin. |
-| `headingColor` | Color | `colors.text` | `h1`–`h6` color. |
-| `headingMargin` | string | `'0.67em 0'` | `h1`–`h6` margin. |
-| `listMargin` | string | `'1em 0'` | `ul`/`ol` margin. |
-| `listPadding` | string | `'0 0 0 2em'` | `ul`/`ol` padding. |
-| `listItemMargin` | string | `'0.25em 0'` | `li` margin. |
-| `imageMaxWidth` | string | `'100%'` | `img` max width. |
-| `imageBorderRadius` | number or string | `0` | `img` corner radius in pixels. |
-| `padding` | number or string | `0` | Container padding; a number becomes px. |
-| `maxHeight` | number or string | — | Container max height in pixels; pairs with `overflow`. |
-| `overflow` | string | `'auto'` | Container overflow. |
-| `backgroundColor` | Color | `'transparent'` | Container background. Alias: `bgColor` as a common prop. |
-| `borderRadius` | number or string | `0` | Container corner radius in pixels. |
-| `allowDangerousHtml` | boolean | `false` | Skips the built-in HTML stripping. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | Visible text content. |
+| `source` | `string` | Markdown source string to render. |
+| `content` | `string` | Main content of the overlay. |
+| `children` | `string` | An array of child widgets. Alias: `child` for a single child. |
+| `fontSize` | `number` | Size of the font. |
+| `fontFamily` | `string` | The `fontFamily` value for the widget. |
+| `lineHeight` | `number` | Line height as a number multiplier or CSS value. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `linkColor` | `Color` | Color of links in rendered markdown. |
+| `linkHoverColor` | `Color` | Color used for the link hover. |
+| `linkUnderline` | `boolean` | The `linkUnderline` value for the widget. |
+| `codeBgColor` | `Color` | Background color of inline code. |
+| `codeColor` | `Color` | Color used for the code. |
+| `codeFontSize` | `number` | Size of the code font. |
+| `codeFontFamily` | `string` | The `codeFontFamily` value for the widget. |
+| `codeBorderRadius` | `number` | Corner radius for the code. |
+| `codePadding` | `Padding` | Padding for the code. |
+| `preBgColor` | `Color` | Background color of code blocks. |
+| `preBorderRadius` | `number` | Corner radius for the pre. |
+| `prePadding` | `Padding` | Padding for the pre. |
+| `preMargin` | `Padding` | Margin for the pre. |
+| `blockquoteBorderColor` | `Color` | Border color for the blockquote. |
+| `blockquoteBorderWidth` | `number` | Border width for the blockquote. |
+| `blockquoteColor` | `Color` | Color used for the blockquote. |
+| `blockquotePadding` | `Padding` | Padding for the blockquote. |
+| `blockquoteMargin` | `Padding` | Margin for the blockquote. |
+| `tableBorderColor` | `Color` | Border color for the table. |
+| `tableHeaderBgColor` | `Color` | Background color for the table header. |
+| `tableCellPadding` | `Padding` | Padding for the table cell. |
+| `headingColor` | `Color` | Color of markdown headings. |
+| `headingMargin` | `Padding` | Margin for the heading. |
+| `listMargin` | `Padding` | Margin for the list. |
+| `listPadding` | `Padding` | Padding for the list. |
+| `listItemMargin` | `Padding` | Margin for the list item. |
+| `imageMaxWidth` | `string` | Width of the image max. |
+| `imageBorderRadius` | `number` | Corner radius for the image. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `maxHeight` | `number` | Maximum height the widget may grow to. |
+| `overflow` | `string` | How overflowing content is handled (`hidden`, `auto`, `scroll`). |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `allowDangerousHtml` | `boolean` | Allows raw HTML inside markdown output. |
 
-These are the props specific to `Markdown`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`. Common props land on the outer container.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned container exposes:
-
-- `updateContent(newText)` — re-parses a new markdown string into the same `.markdown-content` div (with the same sanitizing rules).
-- `getContent()` — returns the current inner HTML string.
-- `getSource()` — returns the markdown source the widget was created with.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Markdown, colors } from "flet-box";
+import { Markdown } from "flet-box";
 
-Markdown({
-  text: [
-    "## Release 1.4",
-    "",
-    "Shipped **dark mode** and a faster `ListView`.",
-    "",
-    "- Fixed scroll jitter",
-    "- Improved theming",
-    "",
-    "> Read the [full changelog](https://example.com/changelog).",
-  ].join("\n"),
+const readme = Markdown({
+  content: `# Getting started
+
+Edit the **props** and render.`,
   fontSize: 15,
-  lineHeight: 1.6,
-  color: colors.text,
-  linkColor: colors.primary,
-  linkUnderline: true,
-});
-```
-
-### Full example
-
-```javascript
-import { Button, Column, Markdown, Row, colors } from "flet-box";
-
-const doc = Markdown({
-  text: [
-    "# Getting started",
-    "",
-    "FletBox widgets are **plain functions** that return real DOM elements.",
-    "",
-    "### Install",
-    "",
-    "Run `npm install flet-box` and import what you need.",
-    "",
-    "1. Create a widget",
-    "2. Nest it in a layout",
-    "3. Mount it with runApp",
-    "",
-    "---",
-    "",
-    "> No virtual DOM, no build step required.",
-  ].join("\n"),
-  fontSize: 15,
-  fontFamily: "system-ui, -apple-system, sans-serif",
   lineHeight: 1.7,
-  color: colors.text,
-  linkColor: colors.primary,
-  linkHoverColor: colors.secondary,
-  linkUnderline: false,
-  codeBgColor: colors.gray100,
-  codeColor: colors.danger,
-  codeFontSize: 12,
-  codeBorderRadius: 4,
-  blockquoteBorderColor: colors.primary,
-  blockquoteBorderWidth: 4,
-  blockquoteColor: colors.textSecondary,
-  headingColor: colors.text,
-  padding: 16,
-  maxHeight: 320,
-  overflow: "auto",
-  backgroundColor: colors.surface,
-  borderRadius: 12,
-  allowDangerousHtml: false,
-});
-
-// doc.getSource();          // the markdown string
-// doc.getContent();         // the generated HTML
-// doc.updateContent("# New title");
-
-Column({
-  gap: 12,
-  children: [
-    doc,
-    Row({
-      gap: 8,
-      children: [
-        Button({ text: "Load changelog", onPress: () => doc.updateContent("# Changelog\n- 1.4\n- 1.3") }),
-      ],
-    }),
-  ],
+  linkColor: "#2563eb",
 });
 ```
 
-## Notes
+### Full
 
-- `Markdown` is exported from the package entry (`flet-box`) and re-exported through `src/widgets/index.js`.
-- Supported syntax: `#`/`##`/`###` headings, `**bold**`/`__bold__`, `*italic*`/`_italic_`, `` `inline code` ``, `[text](url)` links (opened with `target="_blank" rel="noopener"`), `- ` bullet items, `1. ` numbered items, `> ` blockquotes, `---` rules, and paragraphs.
-- Fenced code blocks (three backticks) do **not** produce `<pre><code>`: the inline-code rule runs first and eats the backticks. Use [CodeViewer](CodeViewer.md) for code samples.
-- `![alt](src)` images do **not** produce `<img>`: the link rule matches first, so you get a literal `!` followed by a link. The `img` styles in the injected sheet only apply to raw HTML you pass in.
-- Lists are fragile: any run of `<li>` also gets wrapped in an `<ol>` inside the `<ul>`, and mixing bullet and numbered items in one document produces malformed nesting. Keep one list style per block.
-- Only `h1`–`h3` are generated (`h4`–`h6` are styled but never emitted), and `####`+ markers render as literal text.
-- The stylesheet is injected **once per document** (`#markdown-styles`). The first `Markdown` instance created on the page decides `headingColor`, `linkColor`, `codeBgColor`, list spacing, and so on for every instance; only container-level props (`fontSize`, `color`, `lineHeight`, `padding`, `maxHeight`, `backgroundColor`, `borderRadius`) are per-instance.
-- Sanitizing is a regex pass that strips `<script>` blocks, `on*=` attributes, and `javascript:` URLs. It is **not** a real HTML sanitizer — never enable `allowDangerousHtml` for untrusted input.
-- Table CSS exists in the injected sheet, but the parser never generates tables; pipe tables render as plain paragraph text.
+```javascript
+import { Markdown } from "flet-box";
+
+const guide = Markdown({
+  content: `# Guide
+
+- Install FletBox
+- Write declarative UI`,
+  fontSize: 16,
+  lineHeight: 1.8,
+  color: "#1f2937",
+  linkColor: "#2563eb",
+  codeBgColor: "#f3f4f6",
+  preBgColor: "#111827",
+  preBorderRadius: 8,
+  blockquoteBorderColor: "#e5e7eb",
+  tableHeaderBgColor: "#f9fafb",
+  headingColor: "#111827",
+  padding: 16,
+  borderRadius: 12,
+  backgroundColor: "#ffffff",
+  maxHeight: 480,
+  overflow: "auto",
+});
+```
+
+## Tips
+
+- text, source, and content are interchangeable aliases for the markdown source.
+- Tune the palette with the per-instance props (codeBgColor, preBgColor, linkColor),
+- and set maxHeight with overflow to keep long pages scrollable.
+- Code blocks are syntax-highlighted and get a one-click copy action out of the box.
+
+## Accessibility
+
+- Keep link text descriptive; rendered links stay real anchors that the keyboard can
+- tab to.
+- Heading levels map to real h1-h6 elements, so keep the document hierarchy sensible.
+
+## Behavior
+
+- Generated styles are scoped to each instance, so several Markdown blocks never leak
+- CSS into each other.
+- Rendered HTML is sanitized before insert; allowDangerousHtml stays false by default
+- for untrusted input.
 
 ## Related widgets
-- [CodeViewer](CodeViewer.md)
+
 - [Text](Text.md)
-- [Accordion](Accordion.md)
+- [CodeViewer](CodeViewer.md)
 - [Card](Card.md)
-- [Container](Container.md)
 
 ---
 
@@ -192,4 +173,4 @@ Column({
 - **Next:** [CodeViewer](CodeViewer.md)
 - **Index:** [Widget index](README.md) · [Start here](START_HERE.md)
 
-You are reading **Chapter 6 · Data and rich content** (4 of 7).
+You are reading **Chapter 6 · Data, rich content & effects** (4 of 13).

@@ -37,10 +37,11 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | --- | --- | --- |
 | `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
 | `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
-| `size` | `number` | Overall size preset or pixel value, depending on the widget. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
 | `padding` | `Padding` | Space inside the widget, between its content and its border. |
 | `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
 | `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
 | `color` | `Color` | Foreground color, usually the text or icon color. |
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |

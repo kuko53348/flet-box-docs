@@ -1,207 +1,170 @@
 # TreeView
 
-## Overview
-`TreeView` renders a hierarchical, expandable list from a `nodes` array. Each node becomes a row holding a toggle chevron (only when the node has `children`), a Material icon, a label, and an optional red `badge` pill; nested nodes are indented by `indent` pixels per level. Expansion and selection are tracked by node `id`, and the whole tree is rebuilt into the same container on every change. The returned element exposes `expandAll`, `collapseAll`, `expandTo`, `collapseTo`, `updateNodes`, `getExpanded`, `getSelected`, and `setSelected`.
+TreeView renders a collapsible hierarchy from nodes, each with an id, label, optional icon, badge and children. It supports expand/collapse, selection and nested navigation.
 
-## When to use
-- File explorers, org charts, category trees, and nested navigation menus.
-- Any data set where parents hold children and users should expand only the branch they care about.
-- Read-only hierarchical displays: pass `selectable: false` to drop the click-to-select behavior.
+## When to use it
 
-## Import
+Use it for file explorers, category menus or any nested set of items the user drills into.
 
-```javascript
-import { TreeView } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { TreeView } from "flet-box";
 
-TreeView({
+const tree = TreeView({
   nodes: [
-    { id: "docs", label: "Docs", children: [{ id: "intro", label: "Intro" }] },
-    { id: "src", label: "Source" },
+    { id: "src", label: "src" },
   ],
-  onSelect: (node) => console.log(node.id),
 });
 ```
 
-## Node shape
-
-`nodes` is an array of plain objects. Each object may hold:
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `id` | string or number | Required and unique. Expansion and selection are both keyed by `id`. |
-| `label` | string | Row text. |
-| `children` | array of nodes | Makes the node a parent: it gets a toggle chevron and can be expanded. |
-| `icon` | string | Material Icon name; overrides the folder/file default for this node. |
-| `iconColor` | Color | Per-node icon color; overrides `folderIconColor`/`iconColor`. |
-| `badge` | string or number | Renders a `colors.danger` pill at the end of the row. |
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `nodes` | array of nodes | `[]` | The tree data. See the node shape above. |
-| `onSelect` | `(node) => void` | — | Fires when a row is clicked (only while `selectable`). Also required for click-to-select highlighting — see Notes. |
-| `onToggle` | `(nodeId, expanded: boolean) => void` | — | Fires when a chevron is clicked, with the new state. |
-| `expandedNodes` | array of ids | `[]` | Ids that start expanded. |
-| `defaultExpanded` | boolean | `false` | Expands every node at build time. Only applies when `expandedNodes` is empty. |
-| `indent` | number | `20` | Left margin added per nesting level, in pixels. |
-| `showIcons` | boolean | `true` | Renders the node icon. |
-| `folderIcon` | string | `'folder'` | Icon for a collapsed parent. |
-| `folderOpenIcon` | string | `'folder_open'` | Icon for an expanded parent. |
-| `fileIcon` | string | `'insert_drive_file'` | Icon for a leaf node. |
-| `expandIcon` | string | `'chevron_right'` | Chevron glyph while collapsed. |
-| `collapseIcon` | string | `'expand_more'` | Chevron glyph while expanded. |
-| `selectable` | boolean | `true` | Rows are clickable and show a pointer cursor. |
-| `selectedNodeId` | string, number, or `null` | `null` | Id that starts selected. |
-| `bgColor` | Color | `'transparent'` | Row background. |
-| `hoverBgColor` | Color | `colors.gray100` | Row background on mouse over. |
-| `selectedBgColor` | Color | `colors.primary` + `20` alpha | Row background when selected. Pass a 6-digit hex base. |
-| `textColor` | Color | `colors.text` | Label color. |
-| `selectedTextColor` | Color | `colors.primary` | Label color when selected; the label also turns bold. |
-| `iconColor` | Color | `colors.textSecondary` | Leaf icon and chevron color. |
-| `folderIconColor` | Color | `colors.warning` | Parent icon color. |
-| `borderColor` | Color | `colors.border` | Accepted but currently unused. |
-| `nodePadding` | string | `'6px 4px'` | CSS padding of each row. |
-| `nodeGap` | number | `4` | Gap in pixels between the chevron, icon, label, and badge. |
-| `childrenGap` | number | `2` | Gap in pixels between sibling nodes. |
-| `borderRadius` | number | `6` | Row corner radius in pixels. |
-| `fontSize` | number | `14` | Label font size in pixels. |
-| `iconSize` | number | `18` | Chevron size in pixels; the node icon renders 2px larger. |
-| `transitionDuration` | string | `'0.2s'` | CSS duration of the row background transition. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `nodes` | `Array<{` | Tree nodes, each with `id`, `label`, and optional `children`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `label` | `string` | Label or caption shown near the control. |
+| `icon` | `string` | Name of the icon to render. |
+| `iconColor` | `Color` | Color of the field icons. |
+| `children` | `any[]` | An array of child widgets. Alias: `child` for a single child. |
+| `badge` | `string \| number` | The `badge` value for the widget. |
+| `onSelect` | `(node: any) => void` | Fired when the widget or an option is selected. |
+| `onToggle` | `(nodeId: string, expanded: boolean) => void` | Fired with the new toggled state. |
+| `expandedNodes` | `string[]` | Ids of nodes that start expanded. |
+| `indent` | `number` | Indentation depth used when printing nested structures. |
+| `showIcons` | `boolean` | Controls whether the icons is shown. |
+| `folderIcon` | `string` | Icon for the folder. |
+| `folderOpenIcon` | `string` | Icon for the folder open. |
+| `fileIcon` | `string` | Icon for the file. |
+| `expandIcon` | `string` | Icon for the expand. |
+| `collapseIcon` | `string` | Icon for the collapse. |
+| `defaultExpanded` | `boolean` | Expands top-level nodes by default. |
+| `selectable` | `boolean` | Lets the user select a tree node. |
+| `selectedNodeId` | `string \| null` | Id of the currently selected node. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `hoverBgColor` | `Color` | Background color for the hover. |
+| `selectedBgColor` | `Color` | Background color for the selected. |
+| `textColor` | `Color` | Color of the button label. |
+| `selectedTextColor` | `Color` | Color used for the selected text. |
+| `iconColor` | `Color` | Color of the field icons. |
+| `folderIconColor` | `Color` | Color used for the folder icon. |
+| `borderColor` | `Color` | Color used for the border. |
+| `nodePadding` | `Padding` | Padding for the node. |
+| `nodeGap` | `number` | Space for the node. |
+| `childrenGap` | `number` | Space for the children. |
+| `borderRadius` | `number` | Rounds the corners of the widget. |
+| `fontSize` | `number` | Size of the font. |
+| `iconSize` | `number` | Size of the field icons. |
+| `transitionDuration` | `string` | Duration for the transition, in milliseconds. |
 
-These are the props specific to `TreeView`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned element exposes:
-
-- `expandAll()` — expands every node at every level.
-- `collapseAll()` — clears the expanded set and collapses everything.
-- `expandTo(nodeId)` — expands the chain of ancestors needed to reveal `nodeId`.
-- `collapseTo(nodeId)` — keeps only the ancestors of `nodeId` expanded and collapses the rest.
-- `updateNodes(newNodes, selectedId = null)` — replaces the tree data and re-renders.
-- `getExpanded()` — returns an array of the currently expanded ids.
-- `getSelected()` — returns the currently selected id, or `null`.
-- `setSelected(nodeId)` — selects a node, re-renders, and fires `onSelect` with the matching node.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Column, Text, TreeView } from "flet-box";
-
-Column({
-  gap: 8,
-  children: [
-    Text({ text: "Project files", weight: "bold" }),
-    TreeView({
-      nodes: [
-        {
-          id: "src",
-          label: "src",
-          children: [
-            { id: "index", label: "index.js" },
-            { id: "app", label: "app.js", badge: 2 },
-          ],
-        },
-        { id: "readme", label: "README.md" },
-      ],
-      expandedNodes: ["src"],
-      indent: 16,
-      onSelect: (node) => console.log("open file:", node.id),
-    }),
-  ],
-});
-```
-
-### Full example
-
-```javascript
-import { Button, Row, TreeView, colors } from "flet-box";
+import { TreeView } from "flet-box";
 
 const tree = TreeView({
   nodes: [
     {
-      id: "team",
-      label: "Team",
-      icon: "groups",
-      iconColor: colors.primary,
+      id: "src",
+      label: "src",
       children: [
-        { id: "ana", label: "Ana", badge: 3 },
-        { id: "lio", label: "Lio" },
+        { id: "app", label: "app.js" },
+        { id: "router", label: "Router.js" },
       ],
     },
-    {
-      id: "billing",
-      label: "Billing",
-      children: [{ id: "invoices", label: "Invoices" }],
-    },
   ],
-  selectedNodeId: "ana",
-  expandedNodes: ["team"],
-  selectable: true,
   showIcons: true,
-  folderIcon: "folder",
-  folderOpenIcon: "folder_open",
-  fileIcon: "description",
-  expandIcon: "chevron_right",
-  collapseIcon: "expand_more",
-  indent: 20,
-  nodePadding: "8px 6px",
-  nodeGap: 6,
-  childrenGap: 4,
-  borderRadius: 8,
-  fontSize: 14,
-  iconSize: 18,
-  bgColor: "transparent",
-  hoverBgColor: colors.gray100,
-  selectedBgColor: "#6366f120",
-  selectedTextColor: colors.primary,
-  folderIconColor: colors.warning,
-  transitionDuration: "0.15s",
-  onSelect: (node) => console.log("selected", node.id, node.label),
-  onToggle: (id, expanded) => console.log(id, expanded ? "opened" : "closed"),
-});
-
-Row({
-  gap: 8,
-  children: [
-    Button({ text: "Expand all", variant: "outlined", onPress: () => tree.expandAll() }),
-    Button({ text: "Collapse all", variant: "outlined", onPress: () => tree.collapseAll() }),
-    Button({ text: "Reveal invoices", variant: "text", onPress: () => tree.expandTo("invoices") }),
-  ],
+  onSelect: (node) => console.log(node.id),
 });
 ```
 
-## Notes
+### Full
 
-- Every node needs a unique `id`. Without one, expansion matches on `undefined` and a single click can select every id-less node at once.
-- Click-to-select only records the new selection when `onSelect` is provided. Without a handler, clicking a row does not move the highlight — use `setSelected(id)` instead.
-- `updateNodes` mutates the array you passed as `nodes` (it empties and refills it in place) and resets the selection to `null` unless you pass a second argument.
-- `ref` is invoked twice — once by the widget factory and once by `TreeView` itself.
-- The container holds a single wrapper element. Each node is a wrapper whose first child is the row and whose second child (only while the node is expanded) holds its children.
-- Hover is implemented with `mouseenter`/`mouseleave` listeners rather than CSS `:hover`, and is only attached to selectable rows that are not currently selected.
-- Leaf nodes reserve a 24px spacer where a chevron would be, so labels line up across levels.
-- `defaultExpanded` is ignored as soon as you pass a non-empty `expandedNodes`.
-- `nodePadding` is a CSS string; `nodeGap`, `childrenGap`, `indent`, `fontSize`, and `iconSize` are numbers in pixels.
-- Icons and chevrons need the Material Icons font (see [Icon](Icon.md)).
-- `nodes: []` renders an empty wrapper without throwing.
+```javascript
+import { TreeView } from "flet-box";
+
+const tree = TreeView({
+  nodes: [
+    {
+      id: "src",
+      label: "src",
+      icon: "folder",
+      children: [
+        { id: "app", label: "app.js", icon: "description" },
+        { id: "router", label: "Router.js", badge: 2 },
+      ],
+    },
+  ],
+  expandedNodes: ["src"],
+  defaultExpanded: true,
+  selectable: true,
+  showIcons: true,
+  selectedNodeId: "app",
+  indent: 20,
+  nodeGap: 4,
+  childrenGap: 4,
+  fontSize: 14,
+  transitionDuration: "200ms",
+  hoverBgColor: "#f1f5f9",
+  selectedBgColor: "#dbeafe",
+  onToggle: (nodeId, expanded) => console.log(nodeId, expanded),
+  onSelect: (node) => console.log(node.id),
+});
+```
+
+## Tips
+
+- Give every node a stable unique id; expandedNodes and selectedNodeId reference those ids.
+- Set selectable to false for navigation trees where tapping should only toggle groups.
+- Use defaultExpanded to open first-level groups on first render.
+
+## Accessibility
+
+- Expose meaningful label text and do not rely only on icons to describe a node.
+- Keep onSelect behavior predictable so keyboard users understand what activation does.
+
+## Behavior
+
+- Nodes toggle locally and report expansion through onToggle with the nodeId and expanded flag.
+- Selection is reported through onSelect as the node object and can be controlled with selectedNodeId.
 
 ## Related widgets
-- [Accordion](Accordion.md)
+
 - [ListView](ListView.md)
 - [ListTile](ListTile.md)
-- [GridView](GridView.md)
-- [Stepper](Stepper.md)
+- [Accordion](Accordion.md)
 
 ---
 

@@ -1,111 +1,120 @@
 # Chip
 
-## Overview
-`Chip` renders a compact pill for a tag, filter, or attribute. The returned element is an outer `<div>` (`display: inline-block`) wrapping an inner `Row` that holds an optional leading `Icon`, the `label` `Text`, and an optional delete ("close") icon. `variant` switches between filled (a colored background) and outlined (transparent with a colored border).
+A compact, pill-shaped label for tags, filters, and selections. It can carry a leading icon and a delete affordance.
 
-## When to use
-- Show tags, keywords, filters, or selected attributes.
-- Offer a removable token (with `onDelete`) or a tappable filter chip (with `onPress`).
+## When to use it
 
-## Import
+Use it to represent selected filters, categories, or removable tokens.
 
-```javascript
-import { Chip } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { Chip } from "flet-box";
 
-Chip({ label: "Tag" });
+const tag = Chip({
+  label: "Design",
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `label` | string | — | Chip text. |
-| `icon` | string | — | Leading Material icon name. |
-| `variant` | `'filled'`, `'outlined'` | `'filled'` | Filled = colored background; outlined = transparent with a colored border. |
-| `color` | Color | `colors.primary` | Filled background, or the outlined border/text color. |
-| `textColor` | Color | — | Overrides the label/icon color. Defaults: filled → `#fff`, outlined → `color`. |
-| `borderColor` | Color | — | Outlined border color (defaults to `color`). |
-| `onPress` | function | — | Click handler; makes the chip tappable (pointer cursor + hover). |
-| `onDelete` | function | — | Adds a trailing "close" icon; clicking it fires `onDelete` and stops propagation. |
-| `borderRadius` | number | `32` | Corner radius in pixels. |
-| `padding` | number or string | `'4px 12px'` | Inner padding of the pill. |
-| `gap` | number | `4` | Space between the icon, label, and delete button. |
-| `size` | number | `12` | Font size (and icon size) in pixels. |
-| `elevation` | number | `0` | When greater than 0, adds a `box-shadow` to the pill. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `label` | `string` | Label or caption shown near the control. |
+| `icon` | `string` | Name of the icon to render. |
+| `onPress` | `() => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onDelete` | `() => void` | Event handler for the `onDelete` event. |
+| `variant` | `'filled' \| 'outlined'` | Visual variation or style preset. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `textColor` | `Color` | Color of the button label. |
+| `borderColor` | `Color` | Color used for the border. |
+| `size` | `'small' \| 'medium' \| 'large'` | Overall size preset or pixel value, depending on the widget. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `gap` | `number` | Space between children along the layout axis. |
 
-These are the props specific to `Chip`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style`.
+### Common props
+
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { Chip, Row } from "flet-box";
+import { Chip, filter } from "flet-box";
 
-Row({
-  gap: 8,
-  children: [
-    Chip({ label: "React", icon: "star" }),
-    Chip({ label: "Vue", variant: "outlined" }),
-    Chip({ label: "Svelte", onDelete: () => console.log("removed") }),
-  ],
+const tag = Chip({
+  label: "Design",
+  icon: "palette",
+  onPress: () => console.log("filter by design"),
 });
 ```
 
-### Full example
+### Full
 
 ```javascript
-import { Chip, Row, colors } from "flet-box";
+import { Chip, filter } from "flet-box";
 
-Row({
-  gap: 8,
-  children: [
-    Chip({
-      label: "FletBox",
-      icon: "rocket_launch",
-      variant: "filled",
-      color: colors.primary,
-      size: 14,
-      elevation: 2,
-      onPress: () => console.log("filter by fletbox"),
-    }),
-    Chip({
-      label: "Removable",
-      variant: "outlined",
-      color: colors.danger,
-      borderColor: colors.danger,
-      textColor: colors.danger,
-      borderRadius: 8,
-      onDelete: () => console.log("remove"),
-    }),
-  ],
+const tag = Chip({
+  label: "Design",
+  icon: "palette",
+  variant: "outlined",
+  size: "small",
+  color: "#eff6ff",
+  textColor: "#1d4ed8",
+  borderColor: "#bfdbfe",
+  borderRadius: 999,
+  gap: 6,
+  onPress: () => console.log("filter by design"),
+  onDelete: () => console.log("removed"),
 });
 ```
 
-## Notes
+## Tips
 
-- Two layers: the returned element is an outer `<div>` (`display: inline-block`) that carries the cursor and click handler, wrapping an inner `Row` that draws the visible pill. Visual props such as `borderRadius`, `padding`, and `elevation` land on the inner pill, not the outer element.
-- `variant: "filled"` (default) uses `color` as the background with white text; `variant: "outlined"` is transparent with a `1px solid` border in `borderColor` (default `color`) and text in `textColor` (default `color`).
-- `onDelete` appends a Material `"close"` icon; clicking it calls `onDelete` and `stopPropagation`, so it will not also trigger `onPress`.
-- `onPress` adds a pointer cursor and a hover effect (filled dims to 0.85 opacity; outlined tints the background).
-- `size` is the label font size in pixels and also the leading icon size; the delete icon is `size - 2`.
-- `elevation > 0` builds a real `box-shadow` on the pill (`0 Npx 2Npx rgba(0,0,0,0.1)`).
-- Icons require the Material Icons font (see [Icon](Icon.md)).
+- Use variant: "outlined" for unselected filters and a filled color once active.
+- Add onDelete only when the chip represents a removable value.
+
+## Accessibility
+
+- The label text is the accessible name, so keep it a single clear word or short phrase.
+
+## Behavior
+
+- onPress fires from the chip body; onDelete fires from the trailing close control.
+- A chip with onPress but no onDelete behaves like a small toggle button.
 
 ## Related widgets
+
 - [Badge](Badge.md)
+- [Avatar](Avatar.md)
 - [Button](Button.md)
-- [Row](Row.md)
-- [Icon](Icon.md)
-- [Text](Text.md)
 
 ---
 

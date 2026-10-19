@@ -1,147 +1,162 @@
 # CircularBar
 
-## Overview
-`CircularBar` renders a circular progress ring (donut) drawn on a real `<canvas>` inside a `<div>` container — not SVG, not CSS conic gradients. The arc starts at 12 o'clock, sweeps clockwise for `value / max` of the turn, and animates from 0 with `requestAnimationFrame` by default. The center text (value, `label`, `subtitle`) is painted onto the same canvas. Without `size` it is fully responsive: a `ResizeObserver` redraws the ring whenever the container width changes.
+A circular or radial progress indicator drawn on canvas. It can show a percentage or raw value, an optional label, gradients, glow, and markers.
 
-## When to use
-- Show a score, quota, or completion percentage as a compact ring (dashboards, cards).
-- Animate progress toward a target with `animate` and `onComplete`.
-- Mark thresholds on the ring with `markers`, or add a second inner ring with `innerStrokeWidth`/`innerColor`.
+## When to use it
 
-## Import
+Use it for scan-style progress, scores, budgets, or any gauge that benefits from a ring layout instead of a horizontal bar.
 
-```javascript
-import { CircularBar } from "flet-box";
-```
-
-## Basic example
-
-The smallest useful version. Start here if this widget is new to you.
+## Quick start
 
 ```javascript
 import { CircularBar } from "flet-box";
 
-CircularBar({ value: 75, size: 120 });
+const progress = CircularBar({
+  value: 72,
+});
 ```
+
+> The prop table is generated from `src/index.d.ts`; the examples use only documented props.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | number | `0` | Current progress. |
-| `max` | number | `100` | Value that counts as a full circle. |
-| `size` | number | `null` | Fixed diameter in pixels (`inline-block` container). `null` = responsive: fills the container width (`block`, `width: 100%`), 200px fallback. |
-| `strokeWidth` | number | `12` | Ring thickness in pixels. |
-| `color` | Color | `colors.primary` | Progress arc color (used when `gradient` is not set). |
-| `backgroundColor` | Color | `colors.gray200` | Background ring color. |
-| `showValue` | boolean | `true` | Paints the formatted value in the center. |
-| `valueColor` | Color | `colors.text` | Center value color. |
-| `valueSize` | number | `24` | Center value font size in pixels. |
-| `label` | string | — | Caption painted under the value. |
-| `labelColor` | Color | `colors.textSecondary` | Caption color. |
-| `labelSize` | number | `12` | Caption font size in pixels. |
-| `lineCap` | `'round'`, `'butt'`, `'square'` | `'round'` | Canvas line cap for both rings. |
-| `animate` | boolean | `true` | Animates the arc from 0 to `value`. `false` draws it statically. |
-| `animationDuration` | number (ms) | `1000` | Sweep duration. |
-| `onComplete` | function | — | Fires when the sweep animation finishes (animated mode only). |
-| `ref` | function | — | Receives the `<canvas>` element. |
-| `valueFormat` | `'percent'`, `'value'`, `'custom'` | `'percent'` | Center text mode: rounded percentage, raw value, or `current/max`. |
-| `valuePrefix` / `valueSuffix` | string | `''` | Text around the formatted value (e.g. `valueSuffix: "%"`). |
-| `valueDecimals` | number | `0` | Decimals kept in the formatted value. |
-| `customValueFormatter` | `(value, max) => string` | `null` | Overrides all formatting when set. |
-| `gradient` | array of Colors or string | `null` | Array → diagonal canvas linear gradient across those stops; string → used as the stroke style directly. |
-| `gradientAngle` | number | `135` | Accepted but currently unused — the canvas gradient is always diagonal. |
-| `shadowBlur` | number | `0` | Canvas shadow blur behind the arc. |
-| `shadowColor` | string | `'rgba(0,0,0,0.3)'` | Canvas shadow color. |
-| `glow` | boolean | `false` | Strong glow on the arc (blur 12) using `glowColor` or `color`. |
-| `glowColor` | Color | `null` | Glow color override. |
-| `markers` | array of `{ value, color?, size?, label? }` | `[]` | Dots on the ring perimeter at given values (default radius 4), with optional 10px labels. |
-| `innerStrokeWidth` | number | `0` | Width of a second ring drawn inside the main one (needs `innerColor`). |
-| `innerColor` | Color | `null` | Inner ring color. |
-| `onClick` | `({ value, max, percent }) => void` | `null` | Click handler on the canvas. |
-| `onHover` | `(hovering, { value, max }) => void` | `null` | Fires on canvas mouseenter (`true`) and mouseleave (`false`). |
-| `subtitle` | string | `null` | Extra line painted under the value/label. |
-| `subtitleColor` | Color | `colors.textSecondary` | Subtitle color. |
-| `subtitleSize` | number | `10` | Subtitle font size in pixels. |
-| `tooltip` | string | `null` | Sets the native `title` attribute on the canvas. |
+| Prop | Type | Description |
+| --- | --- | --- |
+| `value` | `number` | Current value controlled by the widget. |
+| `max` | `number` | Maximum value used to compute the ratio. |
+| `size` | `number` | Overall size preset or pixel value, depending on the widget. |
+| `strokeWidth` | `number` | Thickness of the circular stroke. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `showValue` | `boolean` | Shows the numeric value next to the indicator. |
+| `valueColor` | `Color` | Color used for the value. |
+| `valueSize` | `number` | Size of the value. |
+| `label` | `string` | Label or caption shown near the control. |
+| `labelColor` | `Color` | Color used for the label. |
+| `labelSize` | `number` | Size of the label. |
+| `lineCap` | `'butt' \| 'round' \| 'square'` | Shape of the ends of the progress stroke. |
+| `animate` | `boolean` | The `animate` value for the widget. |
+| `animationDuration` | `number` | Duration for the animation, in milliseconds. |
+| `onComplete` | `() => void` | Event handler for the `onComplete` event. |
+| `ref` | `(canvas: HTMLCanvasElement) => void` | Callback that receives the underlying DOM node. |
+| `valueFormat` | `'percent' \| 'value' \| 'custom'` | Formats the displayed value. |
+| `valueSuffix` | `string` | Text appended after the displayed value. |
+| `valuePrefix` | `string` | Text prepended before the displayed value. |
+| `valueDecimals` | `number` | Number of decimals in the displayed value. |
+| `customValueFormatter` | `(value: number, max: number) => string` | Function that returns the formatted value string. |
+| `gradient` | `string \| string[]` | CSS gradient used as the fill. |
+| `gradientAngle` | `number` | The `gradientAngle` value for the widget. |
+| `shadowBlur` | `number` | The `shadowBlur` value for the widget. |
+| `shadowColor` | `string` | Color used for the shadow. |
+| `glow` | `boolean` | Adds a glow around the widget. |
+| `glowColor` | `string` | Color of the glow. |
+| `markers` | `Array<{ value: number; color?: Color; size?: number; label?: string }>` | Marker ticks drawn along the progress arc. |
+| `innerStrokeWidth` | `number` | Width of the inner stroke. |
+| `innerColor` | `Color` | Color used for the inner. |
+| `onClick` | `(data: { value: number; max: number; percent: number }) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `onHover` | `(hovering: boolean, data: { value: number; max: number }) => void` | Event handler for the `onHover` event. |
+| `subtitle` | `string` | The `subtitle` value for the widget. |
+| `subtitleColor` | `Color` | Color used for the subtitle. |
+| `subtitleSize` | `number` | Size of the subtitle. |
+| `tooltip` | `string` | The `tooltip` value for the widget. |
 
-These are the props specific to `CircularBar`. It also accepts every [common prop](COMMON_PROPS.md): layout, spacing, size, color, typography, borders, shadow, events, `child`/`children`, `ref`, and `style` — applied to the outer container (note: `ref` above is consumed by `CircularBar` itself and receives the canvas).
+### Common props
 
-## Instance methods
+Every widget also accepts these shared props — see [common props](COMMON_PROPS.md) for the full rules and aliases.
 
-The returned container element exposes:
-
-- `updateValue(newValue, newMax = null)` — sets a new value (clamped to `max`, optionally a new `max`) and replays the animation.
-- `_cleanup()` — (framework hook) cancels the running animation and disconnects the resize observer.
+| Prop | Type | Description |
+| --- | --- | --- |
+| `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
+| `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
+| `size` | `Size` | Overall size preset or pixel value, depending on the widget. |
+| `padding` | `Padding` | Space inside the widget, between its content and its border. |
+| `margin` | `Margin` | Space outside the widget, between it and its neighbors. |
+| `bgColor` | `Color` | Background color. Alias: `backgroundColor`. |
+| `backgroundColor` | `Color` | Background color. Alias of `bgColor`. |
+| `color` | `Color` | Foreground color, usually the text or icon color. |
+| `borderRadius` | `number \| string` | Rounds the corners of the widget. |
+| `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
+| `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
+| `visible` | `boolean` | Whether the widget is rendered and visible. |
+| `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
+| `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
+| `onClick` | `(widget: Widget) => void` | Callback fired when the widget is clicked. Alias: `onPress`. |
+| `id` | `string` | DOM `id` for the rendered element. |
+| `className` | `string` | CSS class names applied to the rendered element. |
+| `ref` | `(widget: Widget) => void` | Callback that receives the underlying DOM node. |
+| `disableTransform` | `boolean` | Disables the default press/scale transform animation. |
 
 ## Examples
 
-### Everyday example
+### Everyday
 
 ```javascript
-import { CircularBar, colors } from "flet-box";
+import { CircularBar } from "flet-box";
 
-const disk = CircularBar({
-  value: 82,
+const progress = CircularBar({
+  value: 72,
   max: 100,
-  size: 140,
-  strokeWidth: 10,
-  color: colors.warning,
-  label: "Disk used",
-  valueSuffix: "%",
-});
-
-// disk.updateValue(64);
-```
-
-### Full example
-
-```javascript
-import { CircularBar, colors } from "flet-box";
-
-const ring = CircularBar({
-  value: 68,
-  max: 100,
-  strokeWidth: 14,
-  gradient: ["#6366f1", "#8b5cf6", "#ec4899"],
-  backgroundColor: colors.border,
-  lineCap: "round",
+  size: 160,
+  color: "#2563eb",
+  backgroundColor: "#e5e7eb",
   showValue: true,
-  valueSize: 28,
-  valueDecimals: 1,
-  valueSuffix: "%",
-  label: "Completion",
-  subtitle: "of Q3 target",
-  glow: true,
-  glowColor: colors.primary,
-  markers: [
-    { value: 25, color: colors.textSecondary, size: 4, label: "Q1" },
-    { value: 75, color: colors.success, size: 5 },
-  ],
-  innerStrokeWidth: 3,
-  innerColor: colors.gray100,
-  animate: true,
-  animationDuration: 1500,
-  onComplete: () => console.log("animation done"),
-  onClick: ({ percent }) => console.log(`clicked at ${percent}%`),
-  tooltip: "68% completed",
 });
 ```
 
-## Notes
+### Full
 
-- Everything visible — arc, value, label, subtitle, markers — is painted on one `<canvas>`; there is no text in the DOM to select or style with CSS.
-- Responsive mode (`size` omitted) measures the container with `getBoundingClientRect()`; before layout it falls back to 200px, then the `ResizeObserver` (or a `window` resize listener where observers are unavailable) redraws at the real width.
-- `animate: true` sweeps from 0 on every `updateValue()` call and on resize; `onComplete` only fires at the end of an animated sweep, never in static mode.
-- `valueFormat: 'percent'` rounds the percentage; during animation the center text counts up with the arc.
-- `updateValue` clamps `value` to `max` but does not clamp below 0.
+```javascript
+import { CircularBar } from "flet-box";
+
+const progress = CircularBar({
+  value: 820,
+  max: 1000,
+  size: 200,
+  strokeWidth: 16,
+  color: "#10b981",
+  backgroundColor: "#e5e7eb",
+  valueFormat: "value",
+  valuePrefix: "$",
+  valueDecimals: 0,
+  label: "Revenue",
+  subtitle: "this month",
+  lineCap: "round",
+  animate: true,
+  animationDuration: 900,
+  gradient: ["#34d399", "#059669"],
+  onComplete: () => console.log("done"),
+  onClick: (data) => console.log(data.percent),
+});
+```
+
+## Tips
+
+- Leave size unset to fill the parent width, or set size for a fixed square canvas.
+- valueFormat accepts "percent", "value", or "custom"; customValueFormatter
+- overrides how the number is rendered entirely.
+- When valueFormat is "value", use valuePrefix and valueSuffix to render units like
+- "$" or "%".
+
+## Accessibility
+
+- Canvas contents are invisible to assistive technology, so add a label or subtitle
+- next to the bar to give the number context.
+
+## Behavior
+
+- With animate: true the sweep animates from zero and onComplete fires once it reaches
+- the target value.
+- Clicking the bar passes { value, max, percent } to onClick; hovering toggles the
+- onHover boolean.
+- When size is unset the canvas re-measures its container via ResizeObserver and
+- releases the observer on unmount.
 
 ## Related widgets
+
+- [CircularChart](CircularChart.md)
 - [ProgressBar](ProgressBar.md)
-- [Skeleton](Skeleton.md)
-- [Chart](Chart.md)
-- [Card](Card.md)
-- [Text](Text.md)
+- [Rating](Rating.md)
 
 ---
 

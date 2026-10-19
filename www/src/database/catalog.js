@@ -130,7 +130,6 @@ export const CATEGORIES = [
       { name: "Accordion", path: "docs/widget/Accordion.md", hint: "Collapsible sections" },
       { name: "Carousel", path: "docs/widget/Carousel.md", hint: "A rotating slideshow" },
       { name: "Inspector", path: "docs/widget/Inspector.md", hint: "A dev tool to inspect widgets" },
-      { name: "Ads", path: "docs/widget/Ads.md", hint: "Reserve an ad slot container" },
     ],
   },
   {
@@ -142,6 +141,7 @@ export const CATEGORIES = [
     items: [
       { name: "Audio", path: "docs/widget/Audio.md", hint: "Play audio" },
       { name: "Video", path: "docs/widget/Video.md", hint: "Play video" },
+      { name: "Maps", path: "docs/widget/Maps.md", hint: "An interactive map with markers and routes" },
       { name: "DraggBox", path: "docs/widget/DraggBox.md", hint: "A draggable box" },
       { name: "DroppBox", path: "docs/widget/DroppBox.md", hint: "A drop target" },
       { name: "InstallButton", path: "docs/widget/InstallButton.md", hint: "A PWA install-prompt button" },

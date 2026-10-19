@@ -11,6 +11,8 @@ android/build/
 android/app/build/
 android/local.properties
 android/capacitor-cordova-android-plugins/
+# A full copy of the flet-box framework checkout that landed here by accident.
+android/flet-box/
 package-lock.json
 .DS_Store
 *.log

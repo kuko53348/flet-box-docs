@@ -21,6 +21,64 @@ export const docUrl = (path) =>
     ? path
     : new URL(path, `${window.location.origin}${getBasePath()}/`).href;
 
+// An installed app carries the docs folder as it was when its APK/IPA was built,
+// and OTA replaces only the bundle — so a page added since then is listed in the
+// catalog but missing on disk. Read documents from the published source named by
+// config.json, and keep what the device already has as the offline fallback.
+const DOC_CACHE = "fletbox-docs";
+const DOC_SOURCE_KEY = "fletbox-docs-source";
+
+let publishedDocsUrl;
+
+const publishedDocs = async () => {
+  if (publishedDocsUrl !== undefined) return publishedDocsUrl;
+  // Seed from the last online launch: offline, config.json is unreachable, and
+  // without the source URL the cached copy of the document is unfindable.
+  publishedDocsUrl = globalThis.localStorage?.getItem(DOC_SOURCE_KEY) || null;
+  const configUrl = docUrl("config.json");
+  try {
+    const res = await fetch(configUrl, { cache: "no-store" });
+    const url = res.ok ? (await res.json()).update?.url : null;
+    if (url) {
+      publishedDocsUrl = new URL(url, configUrl).href;
+      globalThis.localStorage?.setItem(DOC_SOURCE_KEY, publishedDocsUrl);
+    }
+  } catch {
+    // No readable config: the snapshot on disk is all there is.
+  }
+  return publishedDocsUrl;
+};
+
+export const fetchDoc = async (path) => {
+  const source = await publishedDocs();
+  const url = source ? new URL(path, source).href : null;
+  if (url) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) {
+        const text = await res.text();
+        if ("caches" in window) {
+          const cache = await caches.open(DOC_CACHE);
+          await cache.put(
+            url,
+            new Response(text, { headers: { "Content-Type": "text/markdown" } }),
+          );
+        }
+        return text;
+      }
+    } catch {
+      // Offline, or a host without CORS for this origin — use local copies.
+    }
+    if ("caches" in window) {
+      const hit = await (await caches.open(DOC_CACHE)).match(url);
+      if (hit) return hit.text();
+    }
+  }
+  const local = await fetch(docUrl(path));
+  if (!local.ok) throw new Error(`Failed to load ${path}`);
+  return local.text();
+};
+
 // Path of the document currently on screen. Kept in this module (outside any
 // render) because the body is rebuilt on navigation while the click listener
 // below is registered once.

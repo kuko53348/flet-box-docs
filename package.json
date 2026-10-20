@@ -1,10 +1,11 @@
 {
   "name": "flet-box-docs",
-  "version": "1.1.0",
+  "version": "1.0.3",
   "type": "module",
   "scripts": {
     "dev": "bash run.sh",
-    "build": "flet-box createBundle www && node scripts/copy-docs.mjs www && node scripts/spa-fallback.mjs www",
+    "build": "node scripts/check-version.mjs && flet-box createBundle www && node scripts/copy-docs.mjs www && node scripts/spa-fallback.mjs www",
+    "check-version": "node scripts/check-version.mjs",
     "copy-docs": "node scripts/copy-docs.mjs www",
     "start": "npm run dev",
     "android:init": "npm run build && cap add android",

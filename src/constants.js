@@ -1,9 +1,14 @@
 // constants.js
-// Central place for the URLs and versions shown throughout the app. Keep the
-// framework version in sync with the installed `flet-box` package.
+// Central place for the URLs and versions shown throughout the app.
+//
+// FRAMEWORK_VERSION is the published `flet-box` release this site's docs
+// describe; APP_VERSION is this site's own version and must match
+// package.json, which is what stamps the bundle and the release tag.
+// Both are literals because the dev server loads these modules straight from
+// disk with an import map — nothing reads package.json at runtime.
 
-export const FRAMEWORK_VERSION = "1.0.2";
-export const APP_VERSION = "1.0.0";
+export const FRAMEWORK_VERSION = "1.0.6";
+export const APP_VERSION = "1.0.3";
 
 export const GITHUB_URL = "https://github.com/kuko53348/flet-box";
 export const GITHUB_PROFILE_URL = "https://github.com/kuko53348";

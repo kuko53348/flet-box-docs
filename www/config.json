@@ -1,9 +1,10 @@
 {
-  "version": "1.1.0",
-  "hash": "a08f9e7c09e3e0b6f9aab359182233c0b86d0b2487c13104d0a35f24b088cb73",
-  "builtAt": "2026-10-19T23:20:09.518Z",
+  "version": "1.0.3",
+  "hash": "eec77184fa28272cc9b47598e304c978c7362b4416cb682eda908ded7b595a06",
+  "builtAt": "2026-10-20T15:17:15.981Z",
   "bundle": "src/app.js",
-  "size": 179819,
+  "size": 179827,
+  "assets": [],
   "minNativeVersion": "0.0.0",
   "update": {
     "url": "https://kuko53348.github.io/flet-box-docs/",

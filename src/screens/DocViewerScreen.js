@@ -18,7 +18,10 @@ export const DocViewerScreen = () => {
   // surfaces and no decorative wrapper.
   const markdown = Markdown({
     text: "# Loading…",
-    padding: 0,
+    // The breathing room after the last line lives inside the scroll container:
+    // as wrapper padding it would paint a dead strip of scaffold background
+    // between the document and the bottom bar that never scrolls away.
+    padding: "0 0 24px 0",
     fontSize: 15,
     lineHeight: 1.7,
     color: colors.text,
@@ -42,11 +45,12 @@ export const DocViewerScreen = () => {
       });
   }
 
-  // The document's own first heading supplies the top space, so the wrapper
-  // only pads the sides and keeps a long code block clear of the bottom bar.
+  // The document's own first heading supplies the top space, and the wrapper
+  // only pads the sides: the reader gets the full height between the AppBar and
+  // the bottom bar, with no fixed strip of background under the last line.
   return Column({
     width: "100%",
-    padding: "4px 16px 48px 16px",
+    padding: "4px 16px 0 16px",
     child: markdown,
   });
 };

@@ -1,6 +1,6 @@
 # Stack
 
-Overlay container that lets children occupy the same box. It is relative by default so children can be positioned, and it supports a nine-point alignment.
+Overlay container: every child after the first paints in the same box, anchored by a nine-point `alignment` or by its own edges.
 
 ## When to use it
 
@@ -46,6 +46,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
@@ -98,9 +101,10 @@ const stack = Stack({
 
 ## Tips
 
-- Stack is `position: "relative"` by default, which makes it a positioning context for absolute children.
-- `alignment` anchors children at one of nine points from top-left to bottom-right.
+- The first child stays in the flow and gives the stack its size; every child after it floats over that box.
+- `alignment` anchors the children that name no edges, at one of nine points from top-left to bottom-right. Top-left is the default.
 - Later children paint on top, so order them from back to front.
+- A child that names its own `top`/`right`/`bottom`/`left` keeps those, and a child that declares `position` is left alone — that is how a child stays in the flow.
 
 ## Accessibility
 
@@ -108,8 +112,8 @@ const stack = Stack({
 
 ## Behavior
 
-- The root is a plain block by default and children are laid out per `position` and `alignment`.
-- Set `width` and `height` (or `expand`) when the stack needs a definite size for layered content.
+- The root is a flex column, so `alignment` places the in-flow child too; an explicit `justifyContent` or `alignItems` wins over it.
+- The layers take no space. Give the stack a `width` and `height`, or make the first child the size you want the box to be, or there is nothing for them to sit on.
 
 ## Related widgets
 

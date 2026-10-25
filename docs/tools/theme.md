@@ -11,7 +11,7 @@ FletBox ships a built-in color system: `colors` is the palette of the current th
 ## Import
 
 ```javascript
-import { colors, setTheme, toggleTheme, subscribeTheme, ThemeProvider } from "flet-box";
+import { colors, setTheme, registerPalette, toggleTheme, subscribeTheme, ThemeProvider } from "flet-box";
 ```
 
 ## Functions
@@ -19,6 +19,7 @@ import { colors, setTheme, toggleTheme, subscribeTheme, ThemeProvider } from "fl
 | Function | Signature | Returns | Description |
 | --- | --- | --- | --- |
 | `setTheme` | `setTheme('light' \| 'dark')` | `Record<string, string>` | Switch the active palette. |
+| `registerPalette` | `registerPalette(themeName, palette)` | `Record<string, string>` | Merge brand tokens into a named palette and repaint the page. |
 | `getTheme` | `getTheme()` | `string` | The active theme name. |
 | `toggleTheme` | `toggleTheme()` | `string` | Flip light/dark and return the new name. |
 | `getColor` | `getColor(name, opacity?)` | `string` | Resolve a token (optionally with alpha). |
@@ -38,8 +39,46 @@ Every token is available on `colors`:
 - **Surfaces:** `background`, `surface`, `card`, `overlay`.
 - **Text:** `text`, `textSecondary`, `textDisabled`, `divider`, `border`, `shadow`.
 - **Tints:** `gray50` … `gray900`, plus the soft backgrounds `errorBg`, `successBg`, `warningBg`, `infoBg`.
+- **Glass:** `glass` (the translucent surface) and `glassBorder` (its rim), meant to pair with `backdropFilter`. Light is white glass, dark is a slate pane with a light rim.
 
 The `dark` palette overrides the surface/text tokens; `gray*` and brand colors also shift to keep contrast. Read [the palette walkthrough](../guides/utilities.md) for usage patterns.
+
+## Brand colors: `registerPalette`
+
+A generated app ships a `src/database/themes.js` with its own `lightColors` and
+`darkColors` objects. Assigning onto `colors` from that file changes nothing:
+every widget reads the framework's live `colors`, and the next theme switch
+re-applies a registered palette over whatever you wrote there. The call that
+reaches the page is `registerPalette`:
+
+```javascript
+import { registerPalette } from "flet-box";
+import { lightColors, darkColors } from "./database/themes.js";
+
+registerPalette("light", lightColors);
+registerPalette("dark", darkColors);
+```
+
+What it does:
+
+- **Merges**, it does not replace. Tokens you leave out keep the framework's
+  value, so a palette that only carries `primary` and `surface` stays legal.
+- **Repaints when that palette is on screen.** If the name matches the active
+  theme the tokens are applied, the `--color-*` custom properties are rewritten,
+  and theme subscribers are notified. Registering the other theme only stores it
+  for the next `setTheme`.
+- **Never writes the theme preference.** Supplying your brand is not the user
+  choosing light or dark; that is the one difference from `setTheme`.
+- **A token the framework has never heard of is added to `colors`**, so
+  `colors.brandSand` resolves in your own code. Widgets will still not use it —
+  they read the tokens they know — and because the built-in palettes do not
+  carry it, a custom key keeps its registered value across a theme switch unless
+  you register it in both palettes.
+
+Run it once, at startup, before the first screen renders. The generated app does
+it at the bottom of `src/database/themes.js` — the same file that declares
+`lightColors` and `darkColors` — so a project that edits its brand colors is
+already correct without touching `src/app.js`.
 
 ## Examples
 
@@ -83,6 +122,8 @@ runApp(ThemeProvider({ children: ThemedApp() }), "root");
 ## Notes
 
 - The shared palette tokens are updated across all widgets when you switch themes; widgets referencing `colors.*` at build time pick up the active palette.
+- Switching a theme also repaints the browser's own chrome: the `<meta name="theme-color">` the installed PWA takes for its status and navigation bars, and the root `color-scheme` that decides how the OS draws scrollbars and form controls. Both read the live palette, so an app that changes `colors.surface` changes its system bars with it — see [Mobile and platforms](../guides/mobile-and-platforms.md#the-browser-chrome-follows-the-theme).
+- `colors.glass` is genuinely see-through: its contrast depends on whatever is behind it, so use it over photography or gradients with a scrim, and keep body copy off the most colourful part of the backdrop. The dark token is a dark pane, not white glass.
 - `watchSystemTheme()` and `applySystemTheme()` read `prefers-color-scheme`; both return/need cleanup to release listeners.
 - `subscribeTheme(callback)` fires with the new palette object — remember to unsubscribe when a feature is destroyed.
 

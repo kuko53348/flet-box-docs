@@ -1,6 +1,6 @@
 # Image
 
-Renders an image element from a URL or path. Supports fixed sizing, object-fit modes, and a circular crop for avatars.
+Renders an image element from a URL or path. Supports fixed sizing, object-fit modes, a circular crop for avatars, and saving on click.
 
 ## When to use it
 
@@ -29,6 +29,8 @@ const photo = Image({
 | `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
 | `fit` | `'cover' \| 'contain' \| 'fill' \| 'none' \| 'scale-down'` | How the image fits its box (CSS `object-fit`). |
 | `circular` | `boolean` | Clips the image into a circle. |
+| `downloadable` | `boolean` | Makes a click on the image save it. |
+| `downloadFileName` | `string` | File name suggested when saving; defaults to the name in the URL. |
 | `onLoad` | `(widget: Widget) => void` | Fired when the media finishes loading. |
 | `onError` | `(widget: Widget) => void` | Fired when the media fails to load. |
 | `onPress` | `(widget: Widget) => void` | Callback fired when the widget is pressed. Alias: `onClick`. |
@@ -50,6 +52,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
@@ -83,12 +88,14 @@ const cover = Image({
 import { Image } from "flet-box";
 
 const teamPhoto = Image({
-  src: "/team/anna.jpg",
+  src: "/team/anna.jpg?v=3",
   alt: "Anna at the keynote",
   width: 96,
   height: 96,
   fit: "cover",
   circular: true,
+  downloadable: true,
+  downloadFileName: "anna-keynote.jpg",
   onLoad: () => console.log("loaded"),
   onError: () => console.error("failed"),
   onPress: () => console.log("open profile"),
@@ -99,6 +106,7 @@ const teamPhoto = Image({
 
 - Set both width and height with fit: "cover" to avoid stretched or squashed art.
 - Use circular: true instead of a full borderRadius when you want a perfect avatar crop.
+- downloadable only saves the file when the image is same-origin or CORS-served; anything else opens in a new tab instead of replacing your app.
 
 ## Accessibility
 
@@ -107,7 +115,9 @@ const teamPhoto = Image({
 ## Behavior
 
 - onLoad fires once the image decodes; onError fires when the src fails to load.
-- onPress is attached to the wrapper, so the image behaves like a tappable tile.
+- onPress is attached to the image itself, so the image behaves like a tappable tile.
+- With downloadable: true a click saves the image under downloadFileName, or under the file name in the URL when that prop is absent.
+- Both download props stay live: update() can turn the offer on or off and rename it, and a downloadable bound to a useState key follows the store.
 
 ## Related widgets
 

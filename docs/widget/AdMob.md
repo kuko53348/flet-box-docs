@@ -31,7 +31,7 @@ const banner = AdMob({
 | `margin` | `number` | Space outside the widget, between it and its neighbors. |
 | `interstitialId` | `string` | AdMob interstitial ad unit id. |
 | `rewardedId` | `string` | AdMob rewarded ad unit id. |
-| `autoShow` | `boolean` | Shows the ad automatically when it is ready. |
+| `autoShow` | `boolean` | Shows the banner automatically on mount. false silences only the mount; show() still asks for the ad. |
 | `autoInitialize` | `boolean` | The `autoInitialize` value for the widget. |
 | `width` | `Size` | Width of the widget. A number is pixels; a string uses any CSS unit. |
 | `height` | `Size` | Height of the widget. A number is pixels; a string uses any CSS unit. |
@@ -62,6 +62,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |

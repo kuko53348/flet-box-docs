@@ -47,6 +47,7 @@ natural. Each group below maps to the same underlying style or behavior:
 | `flexDirection` | `direction` | CSS `flex-direction` |
 | `justifyContent` | `justify` | CSS `justify-content` |
 | `alignItems` | `align` | CSS `align-items` |
+| `alignSelf` | `selfAlign` | CSS `align-self` (one child's own answer to `alignItems`) |
 | `flexWrap` | `wrap` | CSS `flex-wrap` |
 | `lineHeight` | `lineH` | CSS `line-height` |
 | `letterSpacing` | `letterSpace` | CSS `letter-spacing` |
@@ -70,9 +71,62 @@ These expand to two sides at once (numeric values are pixels):
 ## Layout and display
 
 `display`, `flexDirection` (`direction`), `justifyContent` (`justify`),
-`alignItems` (`align`), `flexWrap` (`wrap`), `flex`, `flexGrow`, `flexShrink`,
-`flexBasis`, `gap`, `boxSizing`, `overflow`, `overflowX`, `overflowY`,
-`position` (`pos`), `top`, `right`, `bottom`, `left`, `inset`, `zIndex` (`z`).
+`alignItems` (`align`), `alignSelf` (`selfAlign`), `flexWrap` (`wrap`), `flex`,
+`flexGrow`, `flexShrink`, `flexBasis`, `gap`, `boxSizing`, `overflow`,
+`overflowX`, `overflowY`, `position` (`pos`), `top`, `right`, `bottom`, `left`,
+`inset`, `zIndex` (`z`).
+
+### One child, its own alignment
+
+`alignItems` is the parent's answer for every child; `alignSelf` is one child's
+answer for itself. The values are CSS's: `'auto'` (inherit the parent),
+`'flex-start'`, `'center'`, `'flex-end'`, `'baseline'`, `'stretch'`. It goes on
+the child, on any widget — `alignSelf` is a `CommonProps` entry, not a layout
+prop — and it is what keeps a short label from being stretched to the full height
+of a row of inputs:
+
+```js
+Row({
+  alignItems: 'stretch',
+  gap: 8,
+  children: [
+    Input({ label: 'Coupon', value: '', onChange: () => {} }),
+    // The row stretches its children; this one refuses.
+    Button({ text: 'Apply', onPress: () => {}, alignSelf: 'flex-end' }),
+  ],
+});
+```
+
+### Stack positioning
+
+`position: 'stack'` takes the widget out of normal flow and pins it to its
+nearest positioned ancestor. The placement shorthands below apply **only** in
+that mode; the plain offsets still work with any CSS `position` value.
+
+| Prop | Effect |
+| --- | --- |
+| `top` / `right` / `bottom` / `left` | Edge offsets. A number is pixels on the 16px base, written as rem. |
+| `start` / `end` | `left` / `right` under the logical names. |
+| `centerX` / `centerY` | Centre on one axis. |
+| `center` | Centre on both axes. |
+| `fullWidth` / `fullHeight` | Stretch to the parent's width / height. |
+| `full` | Stretch on both axes. |
+
+```js
+Stack({
+  width: "100%",
+  height: 320,
+  children: [
+    Image({ src: "cover.jpg", position: "stack", full: true, fit: "cover" }),
+    Text({ text: "Centred", position: "stack", center: true }),
+  ],
+});
+```
+
+A `false` shorthand means "do not apply", so `full: false` leaves the widget at
+its natural size. [`Button`](Button.md), [`Input`](Input.md) and
+[`Tabs`](Tabs.md) also read `fullWidth` as a plain layout prop, independent of
+`position`.
 
 ## Size and spacing
 
@@ -106,6 +160,27 @@ shorthands `roundedTop`, `roundedBottom`, `roundedLeft`, `roundedRight`, plus
 
 `transition`, `animation`, `transform`, `cursor`, `visibility`, `pointerEvents`,
 `userSelect`, `touchAction`.
+
+## Glass and filters
+
+`backdropFilter`, `filter`, `maskImage`. Each takes a raw CSS value string, not an
+object.
+
+```js
+Card({
+  bgColor: colors.glass,
+  borderColor: colors.glassBorder,
+  borderWidth: 1,
+  backdropFilter: 'blur(14px) saturate(160%)',
+});
+```
+
+> A translucent `bgColor` alone is only see-through. `backdropFilter` blurs what is
+> behind the widget, which is what makes the card read as frosted glass.
+> `backdropFilter` and `maskImage` also write their `-webkit-` twin, so the effect
+> reaches Safari and the `WKWebView` inside a wrapped iOS app.
+> `filter` affects the widget's own pixels; `backdropFilter` affects only the
+> backdrop, so the widget's text stays sharp.
 
 ## Text content
 

@@ -4,6 +4,8 @@ FletBox is a tiny UI framework: you describe your screen with plain JavaScript *
 
 This documentation is one continuous book. Start at **Chapter 0** and follow the "Continue reading" links at the bottom of every page; each page teaches you something real and links to the next.
 
+> **Want to see before you read?** The [live widget gallery](https://kuko53348.github.io/flet-box-widgets-exemples/) runs in the browser: one page per widget, every example rendered, with the exact call printed under it and a light/dark toggle. It is the same code the chapters describe, so it doubles as the answer to "what does this look like when it is real?".
+
 ## The reading path
 
 | # | Chapter | What you learn | Level |
@@ -14,6 +16,8 @@ This documentation is one continuous book. Start at **Chapter 0** and follow the
 | 9 | [State, Router & Services](guides/state.md) | Shared state, navigation routes, storage, and HTTP | Intermediate |
 | 10 | [Tools & Utilities](tools/README.md) | The helper functions that ship with the framework | Intermediate |
 | 11 | [The CLI](cli/README.md) | Create, run, and build projects with `flet-box` | Intermediate |
+| 12 | [Clean UI](guides/clean-ui.md) | The four skills every app ships with, the design system they hold, and the gate that enforces it | Intermediate |
+| 13 | [Accessibility](guides/accessibility.md) | The focus ring, the keyboard pass over every press, the roles the widgets declare, and the overlays that hold the keyboard | Intermediate |
 | A | [Appendices](guides/minification-and-protection.md) | Minification, mobile, compatibility, embedding, online updates (OTA) | Advanced |
 
 > **Levels.** *Beginner:* start here and read in order. *Intermediate:* continue in order — you are comfortable with widgets. *Advanced:* for when you ship, skip on a first read.
@@ -50,6 +54,8 @@ Front cover (this page)
 → Animation helpers · tools/animation.md
 → Utilities guide · guides/utilities.md
 → The CLI · cli/README.md
+→ Clean UI · guides/clean-ui.md
+→ Accessibility · guides/accessibility.md
 → Appendices (minification → mobile → compatibility → embedding → online updates)
 → The end of the book
 ```
@@ -66,3 +72,24 @@ Front cover (this page)
 - [Server toolkit](server/README.md) — Express/SQLite/Redis backend helpers (separate toolkit).
 - [Architecture](arquitectura.md) — how the framework is built inside.
 - [Contributing](CONTRIBUTING.md) — for people who add code or docs to FletBox.
+
+## Read this book as an app
+
+The same pages are also a FletBox application: **[flet-box-docs](https://github.com/kuko53348/flet-box-docs)**, published to npm as its own package.
+
+```bash
+npm install flet-box-docs        # then: cd node_modules/flet-box-docs && npm install && npm run dev
+```
+
+It is a normal FletBox project — the router, a categorized index, cross-document
+Previous/Next, a light/dark toggle, an offline cache, and Capacitor wrappers for
+Android and iOS — and every page is rendered by the framework's own `Markdown`
+widget, so the book is also a live demo of the widget that writes it.
+
+Its `docs/` folder is a **snapshot** of this folder, refreshed before each
+release; when the app is online it reads the published source instead, so a page
+added here arrives on an installed device without a new build. That is why
+`flet-box-docs` carries a version of its own: it is a shipping app, and its
+`npm run build` refuses to bundle until `src/constants.js` states both versions
+out loud — the app's own, which must match its `package.json`, and the framework
+release its pages describe.

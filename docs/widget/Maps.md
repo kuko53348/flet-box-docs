@@ -27,7 +27,7 @@ const place = Maps({
 | `zoom` | `number` | Integer zoom level: `0` shows the whole world, each step doubles the scale. |
 | `minZoom` | `number` | Lowest zoom level the user can reach. |
 | `maxZoom` | `number` | Highest zoom level the user can reach, usually the provider's last tile level. |
-| `markers` | `Array<MapMarker \| LatLng>` | Pins to draw: bare positions or `{position, label, color, id, data}` records. |
+| `markers` | `Array<MapMarker \| LatLng>` | Pins to draw: bare positions or `{position, label, color, id, rotation, clickable, data}` records. |
 | `markerColor` | `Color` | Colour of the pins that do not set a `color` of their own. |
 | `polylines` | `Array<MapPolyline \| LatLng[]>` | Stroked paths: bare position lists or `{points, color, width, opacity, dashed, id}` records. |
 | `polylineColor` | `Color` | Stroke of the lines that do not set a `color` of their own. |
@@ -62,6 +62,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
@@ -130,6 +133,7 @@ const picker = Maps({
 
 picker.fitBounds(route.geometry);
 picker.addMarker({ position: [40.42, -3.7], label: "Dropped" });
+picker.setMarker({ id: "taxi", position: [40.42, -3.7], rotation: 128, clickable: false });
 picker.addPolyline({ id: "leg", points: [picked, stop.at] });
 picker.locate();
 picker.setFollowUser(true);
@@ -141,6 +145,9 @@ picker.setFollowUser(true);
 - Match maxZoom to the provider. Asking level 20 from a server that stops at 18 shows the offline notice instead of a map.
 - `locate()` takes `{ timeout, maximumAge, highAccuracy, setCenter, zoom }`. Desktop laptops can need more than the 10 s default for a first fix, and a slow fix (code 3) is not the same failure as a denied permission (code 1) — branch on `error.code` in the rejected handler instead of reporting one generic error.
 - Give markers an id: the pin node is then reused across updates instead of rebuilt, which matters for a list that moves often.
+- `setMarker({id, ...})` replaces the pin with that id instead of stacking another under it — that is the call to make on every GPS fix, and `addMarker()` is the one that grows the list forever. The reused node restates what it shows, so a new `label`, `color` or `rotation` reaches the screen, the tooltip and the accessibility name.
+- `rotation` is degrees clockwise from north, the compass convention `onUserUpdate` reports as `fix.heading`. The pin turns around its own tip, so the point it marks never moves, and its caption stays upright to read.
+- `clickable: false` makes a pin transparent to the pointer: the tap reaches `onMapClick` with the coordinate under it. A vehicle drawn at the centre of the view would otherwise cover that whole spot, and every attempt to pick a pick-up point would answer with the car.
 - A polyline needs two usable points; `addPolyline()` returns null for one-point input rather than drawing a speck that looks like a broken route. Lines are stroked on a canvas above the tiles and below the pins, so a long route costs no DOM nodes — but it also means a line is not clickable; put an invisible marker on each stop you want tappable.
 - `fitBounds(pointList)` frames a route in one call: pass the coordinates and it picks the zoom and centre. Feed it the geometry an OSRM or GraphHopper reply returns, and keep the distance and duration from that same reply for the readout.
 - A track grows by re-passing `polylines` with the fixes collected so far, or by keeping one line with an id and calling `update()`. `onUserUpdate` is the source of those fixes: it fires for every watched position, following or not.
@@ -159,7 +166,7 @@ picker.setFollowUser(true);
 - Tiles are pooled per zoom level and the previous level is kept until the new one is on screen, so a zoom step never flashes an empty grid.
 - onMoveEnd is debounced — it fires once the view settles, not on every pan frame.
 - Lines are redrawn from their geographic points on every frame, so a polyline follows the pan and the zoom instead of being pinned to the screen. A line whose bounding box misses the viewport is skipped before any coordinate is projected.
-- A press that moved the map more than a few pixels is a drag, so onMapClick stays quiet.
+- Whether a press was a drag is judged by how far the pointer ended up from the point it went down on, not by the length of the path it walked: a trembling finger keeps its click and never nudges the view.
 - A press on a pin answers onMarkerClick only; the map never reports the same press twice.
 - A press on the widget's own chrome — the ± buttons or the credit link — is not a click on the map underneath, so onMapClick reports only the bare map surface.
 - Props bound with useState patch this widget alone — the map subscribes to the key and redraws without re-rendering the app.

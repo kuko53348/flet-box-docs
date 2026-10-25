@@ -21,14 +21,17 @@ npm --version
 
 ## Install FletBox
 
-Inside the FletBox package directory:
+FletBox is published to npm, so the CLI is one install away:
 
 ```bash
-npm install
-npm link
+npm install -g flet-box
 ```
 
-After linking, the `flet-box` command is available globally on your computer.
+Or run it without installing anything globally — `npx` fetches the same package:
+
+```bash
+npx flet-box create my-app
+```
 
 Check that it works:
 
@@ -37,10 +40,20 @@ flet-box --version
 flet-box --help
 ```
 
-When using the published package, install it in a project with:
+Inside a project the framework itself is an ordinary dependency:
 
 ```bash
 npm install flet-box
+```
+
+Cloning the repository and linking it is the exception, and it is for people
+editing the framework:
+
+```bash
+git clone https://github.com/kuko53348/flet-box.git
+cd flet-box
+npm install
+npm link                          # the `flet-box` command now points at this checkout
 ```
 
 ## Your first project
@@ -61,6 +74,33 @@ http://localhost:8000
 ```
 
 The default project includes screens, an app bar, a drawer, routing, and the files needed to start experimenting.
+
+### Pointing the project at its repository
+
+`flet-box create` writes a GitHub Pages workflow into every project. Pass the
+repository with `--repo` and the same address is filled in everywhere it is
+needed:
+
+```bash
+flet-box create my-app --repo kuko53348/my-app
+```
+
+That sets `update.url` in `fletbox.config.json` (what an installed app polls for
+an over-the-air update), names the site at the top of
+`.github/workflows/build.yml`, and prints the address in the closing summary:
+
+```text
+⬆️  OTA updates: https://kuko53348.github.io/my-app/
+CI:      .github/workflows/build.yml publishes the web to GitHub Pages on every push.
+         It goes live at: https://kuko53348.github.io/my-app/
+         Enable it once: Settings → Pages → Source: GitHub Actions. The job prints the URL.
+```
+
+The first positional argument is always the project name; a flag that arrives
+before it is read as the name. Without `--repo` nothing is invented — the
+placeholder stays in both files and the workflow says which two to edit. The
+reason the workflow log, not the header, is the authority on the live address is
+explained in [The Pages address of a generated app](../guides/online-updates.md).
 
 ## Project templates
 
@@ -248,6 +288,7 @@ A typical generated project looks like this:
 ```text
 my-app/
 ├── index.html
+├── jsconfig.json
 ├── package.json
 ├── capacitor.config.json
 ├── manifest.json
@@ -274,7 +315,23 @@ my-app/
 
 The exact folders depend on the selected template.
 
-## A complete beginner workflow
+### Autocomplete without TypeScript
+
+`jsconfig.json` is not a build step: it tells the editor's own JavaScript
+language service to read `flet-box`'s bundled `src/index.d.ts`. With `checkJs`
+on, VS Code, Cursor and any editor that understands `jsconfig.json` autocomplete
+every widget, prop, colour token and helper — and underline a prop that does not
+exist, which is the same error `npm run check` reports from the command line.
+
+Nothing is installed and nothing is compiled. The framework keeps the promise
+honest with `scripts/check-app-types.mjs`, which creates all five templates and
+requires zero diagnostics over their `src/` — a starter that produces red
+squiggles fails `npm test`.
+
+```bash
+npm run check   # the gate: real API, real props, real imports
+```
+
 
 ```bash
 # 1. Create the project
@@ -421,9 +478,117 @@ Capacitor template with different slots keeps working. It:
   status bar style ignored.
 
 The script is idempotent: running it twice leaves identical files. The brand
-color `#1a1a2e` is defined at the top of the script.
+color `#18181b` is defined at the top of the script.
+
+## Convert asset images to PNG
+
+Screens need PNG, and a `logo.jpg` dropped into `assets/` still works — until an
+Android or iOS build asks for a format the source photo cannot give it.
+`flet-box to-png` converts a folder of images to PNG using nothing but Node
+itself, so it works on a machine where no image library is installed.
+
+```bash
+flet-box to-png                 # converts ./assets, ./public/assets or ./src/assets
+flet-box to-png assets          # converts one folder
+flet-box to-png assets --dry-run
+```
+
+It recognises a file by its leading bytes, never by its extension, so a
+`logo.jpg` that is really a PNG is treated as the PNG it is. What it converts:
+
+| Format | Notes |
+| --- | --- |
+| JPEG | Baseline and extended sequential, greyscale or colour, any sampling factor (4:4:4, 4:2:2, 4:2:0, 4:1:1), restart intervals. Progressive, arithmetic-coded, lossless, 12-bit and CMYK files are refused with the reason. |
+| PNG | Colour types grey/RGB/palette/grey+alpha/RGBA at 1–16 bits, all five row filters, `tRNS` transparency. Already a PNG, so it is left alone unless you ask with `--optimize` or `--force`. Interlaced (Adam7) files are refused. |
+| GIF | First frame, with or without interlacing and transparency. An animated file converts with a note saying how many frames were dropped. |
+| BMP | Uncompressed 1/4/8/24/32-bit, top-down or bottom-up. Run-length (RLE) files are refused. |
+
+These need a codec or a rasteriser that a zero-dependency package cannot carry,
+so they are reported as declined rather than quietly skipped: WebP, AVIF/HEIF,
+TIFF, ICO and SVG.
+
+Nothing is overwritten. `assets/logo.jpg` becomes `assets/logo.png` beside it and
+the source stays; if `logo.png` already exists the file is kept and reported as a
+name clash, because that collision usually means someone already converted it by
+hand. `--replace` deletes each source, and only after the PNG it replaces has been
+read back and checked:
+
+```bash
+flet-box to-png assets --out build/img   # write the PNGs somewhere else
+flet-box to-png assets --force           # replace an existing logo.png
+flet-box to-png assets --replace         # delete the source once its PNG is verified
+flet-box to-png assets --optimize        # re-pack the PNGs already in the folder
+flet-box to-png assets --flat            # top level only, no sub-folders
+```
+
+The summary counts the outcomes apart — converted, declined, already a PNG, name
+clashes, and with `--optimize` also optimized, already optimal and the bytes saved
+— and only a file whose bytes could not be decoded counts as a failure, which is
+the one case that exits non-zero.
+
+### The PNG it writes is the smallest one that holds the picture
+
+A converted file is not written in one fixed layout. The writer looks at the
+pixels first and keeps whichever arrangement is smallest: a palette when the
+frame really does hold 256 colours or fewer (an exact address per pixel, not a
+quantisation), greyscale when every channel already agrees, three bytes per pixel
+when no pixel uses alpha. It then deflates the five row filters and keeps the
+shortest result. Nothing is approximated, so the file reads back as the same
+picture — and the command checks that before it calls the conversion a success.
+
+`--optimize` asks the same question about files that already are PNG, which is
+how a hand-made asset gets its turn:
+
+```bash
+flet-box to-png assets --optimize
+```
+
+It replaces a PNG only when the new bytes are smaller *and* every pixel matches,
+so running it twice is free: the second pass reports each file as already optimal
+and touches nothing. The repo's own icons lose 13 KB on the 1024 maskable and 3 KB
+on the logo, and the other four come back as already optimal. A 16-bit PNG is left
+alone either way — rewriting it would trade someone else's bit depth for a smaller
+file, and "smaller without losing quality" does not cover that.
+
+What this cannot do is make a photograph small. PNG stores every pixel, and a
+camera JPEG has already thrown most of them away, so the PNG of a photo comes out
+three to four times the file it came from (a 3.5 MB picture writes as 12 MB). The
+command converts it anyway and says so in the report: keep the JPEG — or a WebP
+from a tool that carries a codec — for that picture, and let `to-png` do the flat
+art, the logos and the icons.
+
+## Check the UI
+
+`flet-box check-ui` reads your app's own `src/` and reports the design mistakes a
+static pass can prove: a hand-typed color literal instead of a token, a size that
+is not on the 8-based scale, a tap target below the Fitts floor, a form field with
+no label, and text whose contrast against the fill it sits on is below WCAG AA.
+
+```bash
+flet-box check-ui                  # scan ./src
+flet-box check-ui --root ../my-app # scan another project
+flet-box check-ui --tokens         # print the measured token contrast table
+flet-box check-ui --strict         # contrast warnings fail too
+flet-box check-ui --json           # machine-readable findings
+```
+
+Aliases: `flet-box ui`, `flet-box checkUi`. The command exits `1` when it finds an
+error, or when it finds a warning with `--strict`, so it works as a CI gate.
+
+Every prop name the checker uses comes from the installed package's own prop
+registry, so it cannot invent an API while judging yours. The scale, the radii and
+the tap minimum are the framework's own numbers, read from its `scale` module —
+the same table the widget defaults are drawn from.
+
+What it deliberately does not judge: taste, hierarchy, and whether the screen
+solves the user's problem. `flet-box create` writes the rules as a skill file
+alongside the app, and that file says so.
+
+The full contract — the 21 rules, every finding code, and how to fix one — is
+[Chapter 12, Clean UI](../guides/clean-ui.md).
 
 ## Command reference
+
 
 | Command | What it does |
 | --- | --- |
@@ -432,6 +597,7 @@ color `#1a1a2e` is defined at the top of the script.
 | `flet-box create <name> --full` | Creates a project with drawer and bottom navigation. |
 | `flet-box create <name> --sidebar` | Creates a desktop sidebar project. |
 | `flet-box create <name> --adaptive` | Creates a mobile and desktop project. |
+| `flet-box create <name> --repo <user>/<repo>` | Sets the GitHub Pages address, the OTA URL and the workflow header from the repo. |
 | `flet-box screen <name>` | Creates one screen. |
 | `flet-box screen <number>` | Creates up to ten screens. |
 | `flet-box component <name>` | Creates one component. |
@@ -447,6 +613,13 @@ color `#1a1a2e` is defined at the top of the script.
 | `flet-box run-native <android\|ios>` | Compiles and launches the app on an emulator/simulator or connected device. |
 | `flet-box run-native <android\|ios> --device` | Forces a physical device instead of the emulator. |
 | `flet-box run-native <android\|ios> --livereload` | Launches the app with hot reload on the device. |
+| `flet-box to-png [dir]` | Converts JPEG, GIF, BMP and non-PNG-precision images in a folder to PNG. |
+| `flet-box to-png --dry-run` | Reports what would happen, writes nothing. |
+| `flet-box to-png --replace` | Deletes each source after its PNG was written and read back. |
+| `flet-box to-png --optimize` | Re-packs the PNGs already in the folder, and only when that makes them smaller. |
+| `flet-box check-ui` | Runs the clean-UI gate over `src/`: tokens, scale, tap targets, labels, contrast. |
+| `flet-box check-ui --tokens` | Prints the measured contrast of every color token, on the background and on the surface. |
+| `flet-box check-ui --strict` | Makes the contrast warnings fail the run, not just the errors. |
 | `flet-box pkg` | Opens the package manager. |
 | `flet-box --version` | Shows the CLI version. |
 | `flet-box --help` | Shows the command list. |
@@ -476,9 +649,17 @@ For normal application development, `npm install flet-box` is usually enough.
 
 ### `flet-box: command not found`
 
-The CLI is not linked or installed globally. From the FletBox package directory, run:
+The CLI is not installed globally. Install the published package:
 
 ```bash
+npm install -g flet-box
+```
+
+If you are working from a clone of the framework instead, link that checkout so the
+command points at the code you are editing:
+
+```bash
+cd flet-box
 npm install
 npm link
 ```
@@ -536,7 +717,7 @@ npm install --save-dev esbuild
 ## Continue reading
 
 - **Previous:** [FletBox utilities](../guides/utilities.md)
-- **Next:** [Minify and protect a FletBox build](../guides/minification-and-protection.md) — Appendix A
+- **Next:** [Clean UI](../guides/clean-ui.md) — Chapter 12
 - **Index:** [Guides index](../guides/README.md) · [The FletBox Book](../README.md)
 
 You are reading **Chapter 11 · The CLI**.

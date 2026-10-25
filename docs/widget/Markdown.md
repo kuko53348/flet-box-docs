@@ -84,6 +84,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
@@ -158,6 +161,10 @@ const guide = Markdown({
 - CSS into each other.
 - Rendered HTML is sanitized before insert; allowDangerousHtml stays false by default
 - for untrusted input.
+- Inline code writes the palette's readable red, so 12px words clear 4.5:1 on the code
+- plate in both themes.
+- A link takes the palette's readable blue, because in light `primary` is the page's
+- own ink and the link would vanish into the sentence.
 
 ## Related widgets
 

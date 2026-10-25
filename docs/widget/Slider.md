@@ -64,6 +64,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
@@ -120,6 +123,7 @@ const price = Slider({
 
 - onChanged fires continuously while dragging; use onChangeEnd for the value to commit, such as a filter request.
 - Set step to snap to meaningful increments instead of every integer.
+- On a vertical slider, width is the rail's length and height its thickness.
 
 ## Accessibility
 
@@ -129,6 +133,7 @@ const price = Slider({
 
 - Dragging the track or thumb updates the value and fires onChanged; releasing fires onChangeEnd once.
 - The returned element exposes value, min, max, step, setValue() and getValue(), and disconnects its ResizeObserver on unmount.
+- During a drag the fill follows the pointer with no easing; the 0.1s ease belongs to a value that changes by itself, from a key press or setValue().
 
 ## Related widgets
 

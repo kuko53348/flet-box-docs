@@ -70,6 +70,9 @@ Every widget also accepts these shared props — see [common props](COMMON_PROPS
 | `borderRadius` | `number \| string` | Rounds the corners of the widget. |
 | `elevation` | `number` | Shadow depth. Higher values lift the widget off the page. |
 | `shadow` | `string` | Raw CSS `box-shadow` value, for a custom shadow. |
+| `filter` | `string` | Raw CSS `filter` value applied to the widget itself, e.g. `blur(4px)`. |
+| `backdropFilter` | `string` | Raw CSS `backdrop-filter` value: what sits behind the widget is blurred through it, which is what makes a translucent card frosted glass. |
+| `maskImage` | `string` | Raw CSS `mask-image` value, used to fade a widget out at its edges instead of cutting it. |
 | `opacity` | `number` | Opacity from 0 (invisible) to 1 (fully opaque). |
 | `visible` | `boolean` | Whether the widget is rendered and visible. |
 | `disabled` | `boolean` | Disables interaction and shows the non-interactive state. |
@@ -124,6 +127,7 @@ const password = Input({
 
 - Match type to the data (email, password, search) so mobile keyboards adapt.
 - Set validation and showValidationMessage to get inline feedback without extra code.
+- The trailing controls are Icon glyphs from the Material face the app links in its own index.html, drawn in the theme's secondary ink. An emoji in that slot ignores the colour, the font and the size the field sets.
 
 ## Accessibility
 
@@ -134,6 +138,7 @@ const password = Input({
 
 - onChange fires on every keystroke; onEnter fires when the user presses Enter.
 - clearable and passwordToggle add trailing controls that manage the value for you.
+- passwordToggle swaps visibility for visibility_off and moves the button's accessible name with the state.
 
 ## Related widgets
 

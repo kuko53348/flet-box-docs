@@ -30,7 +30,7 @@ Each category is the next chapter of the reading path:
 | [Visual effects](visual-effects.md) | `applyShimmer`, `applyGlow`, `applyPulse`, `injectKeyframes` |
 | [Widget introspection](introspection.md) | `getWidgetProps`, `getWidgetProp`, `stringifyWidgetProps` |
 | [Input validation](validation.md) | `TextInputValidator` rules |
-| [Animation helpers](animation.md) | `animate`, `fadeIn`, `pulse` + `AnimatedBox` and friends |
+| [Animation helpers](animation.md) | `slideIn`, `popIn`, `shake`, `animate`, `fadeIn`, `pulse`, springs and `EASING_NAMES`, `setMotionMode` + `AnimatedBox` and friends |
 
 ## Styling helpers (CSS in JS)
 
@@ -98,7 +98,7 @@ Helpers for shaping collections and generating data.
 
 - `parseMarkdown(md)`, `parseInlineMarkdown(md)` — reserved placeholders that pass text through unchanged (real rendering is `markdownToWidgets`/`parseInlineToWidgets`).
 - `markdownToWidgets(md)` / `parseMarkdownToWidgets(md)` — markdown string → widgets (alias names for the same function).
-- `tokenize(code)`, `generateHighlightedHtml(code)`, `highlightColors` — syntax highlighting.
+- `tokenize(code)`, `generateHighlightedHtml(code, palette?)`, `highlightColors` — syntax highlighting (light and dark token maps; the highlighter picks one from the active theme).
 - `escapeHtml(text)` — escape untrusted text before inserting it as HTML.
 
 ## Visual effects

@@ -11,8 +11,9 @@ const infoPlistPath = path.join(nativeAppDir, "Info.plist");
 const launchScreenPath = path.join(nativeAppDir, "Base.lproj", "LaunchScreen.storyboard");
 const logoPath = path.join(projectRoot, "assets", "logo.png");
 
-// Brand background, the same #1a1a2e as theme-color in index.html and manifest.json.
-const background = { r: 26, g: 26, b: 46 };
+// Brand background, the same #131c2e as theme-color in index.html, manifest.json
+// and capacitor.config.json — the dark palette's `surface`.
+const background = { r: 19, g: 28, b: 46 };
 const backgroundComponent = (value) => Number((value / 255).toFixed(6));
 
 const requireExists = async (target) => {

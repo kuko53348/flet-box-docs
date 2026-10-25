@@ -26,7 +26,9 @@ const densities = [
   ["xxhdpi", 144],
   ["xxxhdpi", 192],
 ];
-const background = { r: 26, g: 26, b: 46 };
+// Brand background, the same #131c2e as theme-color in index.html, manifest.json
+// and capacitor.config.json — the dark palette's `surface`.
+const background = { r: 19, g: 28, b: 46 };
 
 for (const [density, size] of densities) {
   const directory = path.join(androidRes, `mipmap-${density}`);
@@ -64,7 +66,15 @@ const backgroundColor = /(<color name="ic_launcher_background">)#(?:[A-Fa-f0-9]{
 if (!backgroundColor.test(xml)) {
   throw new Error(`Invalid adaptive icon background resource: ${backgroundPath}`);
 }
-await writeFile(backgroundPath, xml.replace(backgroundColor, "$1#1a1a2e$2"));
+// One brand value, two shapes: the RGB the icon layers composite with and the
+// hex the adaptive-icon background resource is written as. Naming both from the
+// same constant is what stops the launcher plate drifting from the app's bars.
+const toHex = ({ r, g, b }) =>
+  "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
+await writeFile(
+  backgroundPath,
+  xml.replace(backgroundColor, `$1${toHex(background)}$2`),
+);
 
 // SPLASH SCREENS
 // The launch theme (AppTheme.NoActionBarLaunch) shows @drawable/splash while the

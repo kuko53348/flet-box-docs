@@ -7,7 +7,6 @@
 import {
   runApp,
   Button,
-  Column,
   Container,
   Drawer,
   DrawerItem,
@@ -17,13 +16,16 @@ import {
   BottomNavigation,
   Row,
   Text,
+  Tooltip,
   colors,
   getCurrentPath,
+  getTheme,
   goTo,
+  toggleTheme,
   useQueryParams,
 } from "flet-box";
 
-import { applyTheme } from "./theme.js";
+import { registerBrand } from "./theme.js";
 import { getCategory } from "./database/catalog.js";
 import {
   APP_VERSION,
@@ -96,6 +98,24 @@ const backTarget = () => {
   return null;
 };
 
+// The theme button is rebuilt with the AppBar on every navigation, so its glyph
+// and its tooltip always name the theme the reader would get, not the one they
+// are already in.
+const themeAction = () =>
+  Tooltip({
+    text: getTheme() === "dark" ? "Switch to light theme" : "Switch to dark theme",
+    child: Icon({
+      name: getTheme() === "dark" ? "light_mode" : "dark_mode",
+      size: 22,
+      height: 40,
+      width: 40,
+      color: colors.text,
+      cursor: "pointer",
+      "aria-label": getTheme() === "dark" ? "Switch to light theme" : "Switch to dark theme",
+      onClick: toggleTheme,
+    }),
+  });
+
 const appBar = () => {
   const back = backTarget();
   return AppBar({
@@ -115,11 +135,15 @@ const appBar = () => {
           }),
         }),
     actions: [
+      themeAction(),
       Icon({
         name: "code",
         size: 22,
+        height: 40,
+        width: 40,
         color: colors.textSecondary,
         cursor: "pointer",
+        "aria-label": "View FletBox on GitHub",
         onclick: () => openExternal(GITHUB_URL),
       }),
     ],
@@ -149,10 +173,6 @@ const bottomBar = () =>
   });
 
 // ---------- Drawer ----------
-// Deep teal for the drawer's accent surfaces: `colors.primary` is too bright
-// for white text (2.3:1), and this keeps the same identity at 5.9:1.
-const DRAWER_ACCENT = "#0a6f78";
-
 // The Drawer is appended to <body> (not to the scaffold subtree), so the
 // scaffold cannot dispose it for us. Keep the latest instance in a module
 // variable and tear it down fully before building a new one on re-render.
@@ -167,100 +187,88 @@ const teardownDrawer = (drawer) => {
   drawer.destroy();
 };
 
+// The panel is painted from the palette, so its header, its items and its
+// footer all move together when the theme changes. `Drawer` already clears the
+// notch and the home indicator with the panel's own safe-area padding, so these
+// paddings are the design's own breathing room and add no `env()` of their own.
 const drawerHeader = () =>
   Container({
     width: "100%",
-    padding: "calc(20px + env(safe-area-inset-top, 0px)) 20px 20px 20px",
-    backgroundColor: DRAWER_ACCENT,
-    child: Column({
-      gap: 10,
-      children: [
-        Row({
-          gap: 10,
-          alignItems: "center",
-          children: [
-            Container({
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              backgroundColor: "rgba(255,255,255,0.18)",
-              alignItems: "center",
-              justifyContent: "center",
-              child: Icon({ name: "auto_awesome", size: 22, color: "#ffffff" }),
-            }),
-            Text({ text: "FletBox", weight: "bold", size: 20, color: "#ffffff" }),
-          ],
-        }),
-        Text({
-          text: "Documentation & guides",
-          size: 12,
-          color: "rgba(255, 255, 255, 0.78)",
-        }),
-        Text({
-          text: `Framework v${FRAMEWORK_VERSION}`,
-          size: 11,
-          color: "rgba(255, 255, 255, 0.62)",
-        }),
-      ],
-    }),
+    padding: "24px 16px 16px 16px",
+    gap: 12,
+    backgroundColor: colors.surface,
+    borderBottom: `1px solid ${colors.border}`,
+    children: [
+      Row({
+        gap: 12,
+        alignItems: "center",
+        children: [
+          Container({
+            width: 40,
+            height: 40,
+            borderRadius: 12,
+            backgroundColor: colors.primaryBg,
+            alignItems: "center",
+            justifyContent: "center",
+            child: Icon({ name: "auto_awesome", size: 22, color: colors.primary }),
+          }),
+          Text({ text: "FletBox", weight: "bold", size: 18, color: colors.text }),
+        ],
+      }),
+      Text({
+        text: "Documentation & guides",
+        size: 12,
+        color: colors.textSecondary,
+      }),
+      Text({
+        text: `Framework v${FRAMEWORK_VERSION}`,
+        size: 12,
+        color: colors.textSecondary,
+      }),
+    ],
   });
 
 const drawerBody = () => [
-  DrawerItem({
-    icon: "home",
-    label: "Home",
-    route: "/",
-    unselectedColor: "#ffffff",
-    selectedColor: "#ffffff",
-  }),
+  DrawerItem({ icon: "home", label: "Home", route: "/" }),
   DrawerItem({
     icon: "menu_book",
     label: "Documentation",
     route: "/documentation",
-    unselectedColor: "#ffffff",
-    selectedColor: "#ffffff",
   }),
-  DrawerItem({
-    icon: "info",
-    label: "About",
-    route: "/about",
-    unselectedColor: "#ffffff",
-    selectedColor: "#ffffff",
-  }),
-  DrawerItem({
-    icon: "code",
-    label: "Developer",
-    route: "/developer",
-    unselectedColor: "#ffffff",
-    selectedColor: "#ffffff",
-  }),
+  DrawerItem({ icon: "info", label: "About", route: "/about" }),
+  DrawerItem({ icon: "code", label: "Developer", route: "/developer" }),
 ];
 
 const drawerFooter = () =>
   Container({
     width: "100%",
-    padding: "12px 16px calc(12px + env(safe-area-inset-bottom, 0px)) 16px",
+    padding: "12px 16px 16px 16px",
+    gap: 8,
     borderTop: `1px solid ${colors.border}`,
-    child: Column({
-      gap: 8,
-      children: [
-        Button({
-          text: "View on GitHub",
-          icon: "code",
-          bgColor: DRAWER_ACCENT,
-          color: "#ffffff",
-          fullWidth: true,
-          padding: "10px 16px",
-          onPress: () => openExternal(GITHUB_URL),
-        }),
-        Text({
-          text: `Docs app v${APP_VERSION} · by ${DEVELOPER.handle}`,
-          size: 11,
-          align: "center",
-          color: "rgba(255, 255, 255, 0.62)",
-        }),
-      ],
-    }),
+    children: [
+      Button({
+        text: "View on GitHub",
+        icon: "code",
+        variant: "outlined",
+        fullWidth: true,
+        padding: "8px 16px",
+        onPress: () => openExternal(GITHUB_URL),
+      }),
+      Button({
+        text: getTheme() === "dark" ? "Light theme" : "Dark theme",
+        icon: getTheme() === "dark" ? "light_mode" : "dark_mode",
+        variant: "outlined",
+        fullWidth: true,
+        padding: "8px 16px",
+        onPress: toggleTheme,
+      }),
+      Text({
+        text: `Docs app v${APP_VERSION} · by ${DEVELOPER.handle}`,
+        size: 12,
+        align: "center",
+        color: colors.textSecondary,
+      }),
+    ],
   });
 
 const buildDrawer = () => {
@@ -292,5 +300,8 @@ const App = () =>
     }),
   });
 
-applyTheme();
+// Register the brand before the first render: `runApp` reads the OS preference
+// off the palettes, so a brand registered after boot would only appear on the
+// next theme change.
+registerBrand();
 runApp(App, "root");

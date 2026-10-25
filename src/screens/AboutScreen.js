@@ -84,7 +84,7 @@ export const AboutScreen = () =>
       text: `Docs app v${APP_VERSION} · Built with FletBox`,
       size: 11.5,
       align: "center",
-      color: colors.textDisabled,
+      color: colors.textSecondary,
     }),
   ]);
 

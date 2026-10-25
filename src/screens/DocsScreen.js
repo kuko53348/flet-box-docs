@@ -145,7 +145,7 @@ const emptyState = (title, subtitle) =>
       gap: 6,
       alignItems: "center",
       children: [
-        Icon({ name: "search_off", size: 28, color: colors.textDisabled }),
+        Icon({ name: "search_off", size: 28, color: colors.textSecondary }),
         Text({ text: title, weight: "bold", size: 15, color: colors.text }),
         Text({ text: subtitle, size: 12, color: colors.textSecondary, align: "center" }),
       ],

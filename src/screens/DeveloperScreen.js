@@ -17,18 +17,23 @@ import {
   section,
 } from "../components/ui.js";
 
-// Initials avatar used as the identity card's leading node. The accent is
-// deepened so the white initials keep contrast; the bright primary is not.
+// Initials avatar used as the identity card's leading node. It is the palette's
+// own plate and ink, so the initials keep their contrast in both themes.
 const avatar = (initials) =>
   Container({
     width: 46,
     height: 46,
     borderRadius: 15,
-    backgroundColor: "#0a6f78",
+    backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    child: Text({ text: initials, weight: "bold", size: 18, color: "#ffffff" }),
+    child: Text({
+      text: initials,
+      weight: "bold",
+      size: 18,
+      color: colors.onPrimary,
+    }),
   });
 
 export const DeveloperScreen = () =>
@@ -48,8 +53,17 @@ export const DeveloperScreen = () =>
                   Column({
                     gap: 3,
                     children: [
-                      Text({ text: DEVELOPER.handle, weight: "bold", size: 16, color: "#ffffff" }),
-                      Text({ text: DEVELOPER.role, size: 12, color: "#ffffff" }),
+                      Text({
+                        text: DEVELOPER.handle,
+                        weight: "bold",
+                        size: 16,
+                        color: colors.text,
+                      }),
+                      Text({
+                        text: DEVELOPER.role,
+                        size: 12,
+                        color: colors.textSecondary,
+                      }),
                     ],
                   }),
                 ],
@@ -58,7 +72,7 @@ export const DeveloperScreen = () =>
                 text: DEVELOPER.bio,
                 size: 13,
                 lineHeight: 1.6,
-                color: "#ffffff",
+                color: colors.textSecondary,
               }),
             ],
           }),
@@ -106,7 +120,7 @@ export const DeveloperScreen = () =>
       text: `Maintained by ${DEVELOPER.handle}`,
       size: 11.5,
       align: "center",
-      color: colors.textDisabled,
+      color: colors.textSecondary,
     }),
   ]);
 

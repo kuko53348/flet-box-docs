@@ -3,7 +3,6 @@
 
 import { Button, Column, Text, colors, goTo } from "flet-box";
 import { card, iconChip, page } from "../components/ui.js";
-import { onPrimary } from "../theme.js";
 
 export const NotFoundScreen = () =>
   page([
@@ -31,7 +30,6 @@ export const NotFoundScreen = () =>
             text: "Back to home",
             icon: "home",
             bgColor: colors.primary,
-            color: onPrimary,
             padding: "11px 20px",
             onPress: () => goTo("/"),
           }),

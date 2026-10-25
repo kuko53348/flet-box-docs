@@ -4,7 +4,6 @@
 import { Button, Container, Icon, Row, Text, colors, goTo } from "flet-box";
 import { ALL_DOCS, CATEGORIES } from "../database/catalog.js";
 import { APP_VERSION, FRAMEWORK_VERSION, GITHUB_URL } from "../constants.js";
-import { onPrimary } from "../theme.js";
 import {
   intro,
   openExternal,
@@ -29,7 +28,6 @@ export const HomeScreen = () =>
           text: "Get started",
           icon: "rocket_launch",
           bgColor: colors.primary,
-          color: onPrimary,
           padding: "10px 18px",
           onPress: () => openCategory("start"),
         }),
@@ -112,7 +110,7 @@ export const HomeScreen = () =>
       text: `Made with FletBox · Docs app v${APP_VERSION}`,
       size: 11.5,
       align: "center",
-      color: colors.textDisabled,
+      color: colors.textSecondary,
     }),
   ]);
 

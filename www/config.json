@@ -1,9 +1,9 @@
 {
-  "version": "1.0.3",
-  "hash": "eec77184fa28272cc9b47598e304c978c7362b4416cb682eda908ded7b595a06",
-  "builtAt": "2026-10-20T15:17:15.981Z",
+  "version": "1.0.4",
+  "hash": "7810383d66f73d5b3fe7c53bbfe73a59304b9031eb53a78b304a66f4cad9a68f",
+  "builtAt": "2026-10-25T19:58:40.055Z",
   "bundle": "src/app.js",
-  "size": 179827,
+  "size": 192152,
   "assets": [],
   "minNativeVersion": "0.0.0",
   "update": {

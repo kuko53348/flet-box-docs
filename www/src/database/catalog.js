@@ -200,6 +200,8 @@ export const CATEGORIES = [
       { name: "Mobile & platforms", path: "docs/guides/mobile-and-platforms.md", hint: "Capacitor, Android, iOS" },
       { name: "Minification & protection", path: "docs/guides/minification-and-protection.md", hint: "Production hardening" },
       { name: "Compatibility", path: "docs/guides/compatibility.md", hint: "Browser support" },
+      { name: "Clean UI", path: "docs/guides/clean-ui.md", hint: "The design rules flet-box check-ui enforces" },
+      { name: "Accessibility", path: "docs/guides/accessibility.md", hint: "Focus ring, roles, keyboard overlays" },
     ],
   },
   {

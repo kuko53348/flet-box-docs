@@ -2,10 +2,12 @@
   "name": "FletBox Docs",
   "short_name": "FletBox Docs",
   "description": "Documentation for FletBox, a zero-dependency declarative UI framework for vanilla JavaScript.",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay"],
+  "display_override": [
+    "window-controls-overlay"
+  ],
   "theme_color": "#0b1120",
   "background_color": "#0b1120",
   "orientation": "any",

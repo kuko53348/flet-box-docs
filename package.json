@@ -1,9 +1,38 @@
 {
   "name": "flet-box-docs",
-  "version": "1.0.3",
+  "version": "1.0.4",
+  "description": "The FletBox Book as an app: the framework's full documentation rendered by its own Markdown widget, with a catalog, cross-document navigation, a light/dark toggle, an offline cache, and Capacitor wrappers for Android and iOS.",
+  "homepage": "https://github.com/kuko53348/flet-box-docs#readme",
+  "bugs": {
+    "url": "https://github.com/kuko53348/flet-box-docs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuko53348/flet-box-docs.git"
+  },
+  "license": "MIT",
+  "author": "Maenys Javier Quesada Reyes",
   "type": "module",
+  "files": [
+    "docs/",
+    "src/",
+    "scripts/",
+    "assets/",
+    "index.html",
+    "manifest.json",
+    "service-worker.js",
+    "run.sh",
+    "capacitor.config.json",
+    "fletbox.config.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
     "dev": "bash run.sh",
+    "sync-docs": "rsync -a --exclude .DS_Store ../flet-box/docs/ docs/",
     "build": "node scripts/check-version.mjs && flet-box createBundle www && node scripts/copy-docs.mjs www && node scripts/spa-fallback.mjs www",
     "check-version": "node scripts/check-version.mjs",
     "native:version": "node scripts/sync-native-versions.mjs",
@@ -25,7 +54,7 @@
     "@capacitor/android": "^8.5.2",
     "@capacitor/core": "^8.5.2",
     "@capacitor/ios": "^8.5.2",
-    "flet-box": "^1.0.0"
+    "flet-box": "^1.1.1"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",

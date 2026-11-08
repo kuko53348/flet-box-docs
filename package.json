@@ -1,6 +1,6 @@
 {
   "name": "flet-box-docs",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The FletBox Book as an app: the framework's full documentation rendered by its own Markdown widget, with a catalog, cross-document navigation, a light/dark toggle, an offline cache, and Capacitor wrappers for Android and iOS.",
   "homepage": "https://github.com/kuko53348/flet-box-docs#readme",
   "bugs": {

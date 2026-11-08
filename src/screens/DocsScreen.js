@@ -75,7 +75,7 @@ const categoryGrid = () =>
               gap: 12,
               alignItems: "center",
               children: [
-                iconChip(cat.icon, colors.primary, 44),
+                iconChip(cat.icon, 44),
                 Column({
                   flex: 1,
                   gap: 2,

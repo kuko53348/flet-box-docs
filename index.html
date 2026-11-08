@@ -21,13 +21,15 @@
     <meta property="og:description" content="Declarative, zero-dependency UI framework in vanilla JS — ship web, Android and iOS from one codebase.">
     <meta property="og:type" content="website">
 
-    <!-- The static boot brand is the dark palette's `surface`, and it is the one
-         value the whole shell shares: `manifest.json`, the Capacitor splash and
-         both icon scripts repeat it. It cannot follow the reader's theme because
-         it is read before any module runs — the engine rewrites `theme-color` to
-         the live `surface` on every theme change, and the boot value is only the
-         frame in between. Same rule as the generated app's shell. -->
-    <meta name="theme-color" content="#131c2e">
+    <!-- The static boot panel is the framework dark palette's `surface`, and it is
+         the one value the whole shell shares: `manifest.json`, the Capacitor splash
+         and both icon scripts repeat it. It cannot follow the reader's theme
+         because it is read before any module runs — the engine rewrites
+         `theme-color` to the live `surface` on every theme change, and the boot
+         value is only the frame in between. The site's teal is an accent, not a
+         panel, so it appears in the app and nowhere here. Same rule as the
+         generated app's shell. -->
+    <meta name="theme-color" content="#18181b">
 
     <style>
         * {
@@ -44,13 +46,15 @@
         /* Only the dark answer is worth hard-coding: the page ink and the panel
            colors come from the palette once the app boots, and the brief moment
            before that is the reader's own OS setting — the same test the engine's
-           boot applies when nothing has been chosen yet. A light reader gets a
-           light canvas; a dark reader gets no white flash. */
+           boot applies when nothing has been chosen yet. A light reader gets the
+           framework's white page; a dark reader gets no white flash, and gets the
+           dark palette's `background` rather than its `surface`, because this is
+           the canvas the app's root paints over, not a bar. */
         @media (prefers-color-scheme: dark) {
 
             html,
             body {
-                background-color: #131c2e;
+                background-color: #09090b;
             }
         }
     </style>

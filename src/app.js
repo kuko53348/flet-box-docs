@@ -16,16 +16,18 @@ import {
   BottomNavigation,
   Row,
   Text,
+  ThemePicker,
   Tooltip,
   colors,
   getCurrentPath,
   getTheme,
   goTo,
+  listAccents,
   toggleTheme,
   useQueryParams,
 } from "flet-box";
 
-import { registerBrand } from "./theme.js";
+import { applyBrand } from "./theme.js";
 import { getCategory } from "./database/catalog.js";
 import {
   APP_VERSION,
@@ -262,6 +264,24 @@ const drawerFooter = () =>
         padding: "8px 16px",
         onPress: toggleTheme,
       }),
+      // Five families, not twelve: this is a documentation site, so the choice is
+      // "which brand do you want to read these pages in", and a row of twelve
+      // squares in a 300px drawer is a color chart. The picker repaints live and
+      // stores the answer itself, so it does not wait for anything to be saved.
+      Text({
+        text: "Accent color",
+        size: 12,
+        align: "center",
+        color: colors.textSecondary,
+      }),
+      ThemePicker({
+        label: "Accent color",
+        accents: listAccents().filter((family) =>
+          ["teal", "neutral", "blue", "rose", "orange"].includes(family.id),
+        ),
+        size: 40,
+        justifyContent: "center",
+      }),
       Text({
         text: `Docs app v${APP_VERSION} · by ${DEVELOPER.handle}`,
         size: 12,
@@ -300,8 +320,9 @@ const App = () =>
     }),
   });
 
-// Register the brand before the first render: `runApp` reads the OS preference
-// off the palettes, so a brand registered after boot would only appear on the
-// next theme change.
-registerBrand();
+// Paint the brand before the first render: `runApp` reads the OS preference off the
+// palettes and applies whatever accent is active, so a brand registered after boot
+// would only appear on the next theme change. It is a preference, not a storage
+// write — a reader who has already picked a family in the drawer keeps theirs.
+applyBrand();
 runApp(App, "root");

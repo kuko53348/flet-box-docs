@@ -12,7 +12,6 @@ export const CATEGORIES = [
     id: "start",
     title: "Start here",
     icon: "rocket_launch",
-    color: "#6366f1",
     description: "Begin your journey: what FletBox is and your first app.",
     items: [
       { name: "Overview", path: "docs/overview.md", hint: "What FletBox is" },
@@ -29,7 +28,6 @@ export const CATEGORIES = [
     id: "layout",
     title: "Layout & Containers",
     icon: "dashboard",
-    color: "#0ea5e9",
     description: "Boxes that hold and arrange other widgets on screen.",
     items: [
       { name: "Container", path: "docs/widget/Container.md", hint: "A styled box for grouping and layout" },
@@ -47,7 +45,6 @@ export const CATEGORIES = [
     id: "navigation",
     title: "Navigation",
     icon: "menu",
-    color: "#8b5cf6",
     description: "Scaffolds, bars, drawers and tabs to move around an app.",
     items: [
       { name: "Scaffold", path: "docs/widget/Scaffold.md", hint: "Screen structure: bar, drawer, body" },
@@ -65,7 +62,6 @@ export const CATEGORIES = [
     id: "content",
     title: "Basic content",
     icon: "text_fields",
-    color: "#14b8a6",
     description: "Show text, icons, images and small visual markers.",
     items: [
       { name: "Text", path: "docs/widget/Text.md", hint: "Words, titles and paragraphs" },
@@ -80,7 +76,6 @@ export const CATEGORIES = [
     id: "inputs",
     title: "Inputs & actions",
     icon: "touch_app",
-    color: "#f59e0b",
     description: "Let the user type, choose, toggle and press.",
     items: [
       { name: "Button", path: "docs/widget/Button.md", hint: "A pressable action" },
@@ -91,6 +86,8 @@ export const CATEGORIES = [
       { name: "Slider", path: "docs/widget/Slider.md", hint: "Pick a value along a range" },
       { name: "Dropdown", path: "docs/widget/Dropdown.md", hint: "Choose from a collapsible list" },
       { name: "Rating", path: "docs/widget/Rating.md", hint: "Show or collect a star rating" },
+      { name: "ThemePicker", path: "docs/widget/ThemePicker.md", hint: "Choose the screen's accent color" },
+      { name: "Menu", path: "docs/widget/Menu.md", hint: "A kebab trigger with an anchored action menu" },
       { name: "FloatingActionButton", path: "docs/widget/FloatingActionButton.md", hint: "A primary floating action" },
     ],
   },
@@ -98,7 +95,6 @@ export const CATEGORIES = [
     id: "feedback",
     title: "Feedback & overlays",
     icon: "notifications",
-    color: "#ec4899",
     description: "Dialogs, sheets, snackbars, tooltips and progress.",
     items: [
       { name: "AlertDialog", path: "docs/widget/AlertDialog.md", hint: "A blocking confirmation dialog" },
@@ -116,7 +112,6 @@ export const CATEGORIES = [
     id: "data",
     title: "Data & rich content",
     icon: "bar_chart",
-    color: "#10b981",
     description: "Tables, charts, code, markdown, trees and carousels.",
     items: [
       { name: "DataTable", path: "docs/widget/DataTable.md", hint: "A structured data table" },
@@ -136,7 +131,6 @@ export const CATEGORIES = [
     id: "media",
     title: "Media & drag-drop",
     icon: "play_circle",
-    color: "#ef4444",
     description: "Audio, video, and drag-and-drop building blocks.",
     items: [
       { name: "Audio", path: "docs/widget/Audio.md", hint: "Play audio" },
@@ -151,7 +145,6 @@ export const CATEGORIES = [
     id: "tools",
     title: "Tools",
     icon: "construction",
-    color: "#f97316",
     description: "Pre-built helper functions so you never leave the framework.",
     items: [
       { name: "Tools index", path: "docs/tools/README.md", hint: "All utilities at a glance" },
@@ -174,7 +167,6 @@ export const CATEGORIES = [
     id: "services",
     title: "Services",
     icon: "cloud",
-    color: "#06b6d4",
     description: "Storage layers and the HTTP client — the outside world.",
     items: [
       { name: "Services index", path: "docs/services/README.md", hint: "Choose the right service" },
@@ -188,7 +180,6 @@ export const CATEGORIES = [
     id: "guides",
     title: "Guides",
     icon: "menu_book",
-    color: "#84cc16",
     description: "Task-oriented walkthroughs for real-world usage.",
     items: [
       { name: "Guides index", path: "docs/guides/README.md", hint: "All guides" },
@@ -208,7 +199,6 @@ export const CATEGORIES = [
     id: "cli",
     title: "CLI",
     icon: "terminal",
-    color: "#64748b",
     description: "The command-line tool: create, run and bundle projects.",
     items: [
       { name: "CLI reference", path: "docs/cli/README.md", hint: "Every command and flag" },
@@ -218,7 +208,6 @@ export const CATEGORIES = [
     id: "server",
     title: "Server",
     icon: "storage",
-    color: "#a855f7",
     description: "The optional backend toolkit (Express, SQLite, Redis).",
     items: [
       { name: "Server index", path: "docs/server/README.md", hint: "Backend overview" },
@@ -233,7 +222,6 @@ export const CATEGORIES = [
     id: "reference",
     title: "Reference",
     icon: "description",
-    color: "#78716c",
     description: "Architecture, shared props, contributing and agent notes.",
     items: [
       { name: "Architecture", path: "docs/arquitectura.md", hint: "How the framework is built" },
@@ -246,7 +234,6 @@ export const CATEGORIES = [
     id: "ads",
     title: "Ads",
     icon: "campaign",
-    color: "#2563eb",
     description: "AdSense and AdMob integrations for FletBox.",
     items: [
       { name: "AdMob", path: "docs/widget/AdMob.md", hint: "Capacitor AdMob banner/interstitial/rewarded" },
@@ -257,7 +244,6 @@ export const CATEGORIES = [
     id: "animations",
     title: "Animations & Effects",
     icon: "auto_awesome",
-    color: "#a855f7",
     description: "Animated UI primitives and visual effects.",
     items: [
       { name: "AnimatedBox", path: "docs/widget/AnimatedBox.md", hint: "Animate transform, opacity and color" },
@@ -269,12 +255,14 @@ export const CATEGORIES = [
 ];
 
 // Flat list of every document, tagged with its category — used by global search.
+// A category carries no color of its own: every accent on screen comes from
+// `colors.primary`, so the category cards change with the theme like everything
+// else and the catalog holds data, not paint.
 export const ALL_DOCS = CATEGORIES.flatMap((cat) =>
   cat.items.map((item) => ({
     ...item,
     categoryId: cat.id,
     categoryTitle: cat.title,
-    categoryColor: cat.color,
     categoryIcon: cat.icon,
   })),
 );

@@ -2,7 +2,7 @@
   "appId": "com.fletbox.flet.box.docs",
   "appName": "flet-box-docs",
   "webDir": "www",
-  "backgroundColor": "#131c2e",
+  "backgroundColor": "#18181b",
   "server": {
     "androidScheme": "https",
     "iosScheme": "https"
@@ -11,8 +11,8 @@
     "SystemBars": {
       "insetsHandling": "native",
       "initialViewportFitValueHint": "cover",
-      "backgroundColor": "#131c2e",
-      "navigationBarColor": "#131c2e",
+      "backgroundColor": "#18181b",
+      "navigationBarColor": "#18181b",
       "statusBarStyle": "LIGHT",
       "navigationBarStyle": "LIGHT"
     }

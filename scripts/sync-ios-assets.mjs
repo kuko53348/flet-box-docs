@@ -11,9 +11,12 @@ const infoPlistPath = path.join(nativeAppDir, "Info.plist");
 const launchScreenPath = path.join(nativeAppDir, "Base.lproj", "LaunchScreen.storyboard");
 const logoPath = path.join(projectRoot, "assets", "logo.png");
 
-// Brand background, the same #131c2e as theme-color in index.html, manifest.json
-// and capacitor.config.json — the dark palette's `surface`.
-const background = { r: 19, g: 28, b: 46 };
+// Splash and icon background, the same #18181b as theme-color in index.html,
+// manifest.json and capacitor.config.json — the framework dark palette's
+// `surface`, which is the panel the app boots into. The site's teal is an accent
+// (buttons, icons, links) and a flattened icon has no accent to carry: the logo
+// glyph keeps its own colors on a panel the app really paints.
+const background = { r: 24, g: 24, b: 27 };
 const backgroundComponent = (value) => Number((value / 255).toFixed(6));
 
 const requireExists = async (target) => {

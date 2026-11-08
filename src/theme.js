@@ -1,95 +1,43 @@
 // theme.js
-// The docs app's brand, registered onto the framework's two palettes.
+// The docs app's brand, and why it is an accent rather than a palette.
 //
-// `registerPalette` is the only entry point an app has for its own colors: it
-// merges these tokens into the named palette and repaints when that palette is
-// the one on screen. It never writes the theme preference, so light or dark is
-// still decided by the reader — `runApp` boots `applySystemTheme()` and
-// `watchSystemTheme()`, and the AppBar/drawer toggle calls `setTheme`. An app
-// that called `setTheme("dark")` here would overwrite that choice on every load.
+// `registerPalette` answers what a theme *is*: the page, the ink, the hairlines,
+// the gray ladder. This app claims none of that — every surface is the
+// framework's own light and dark palette, so an upgrade moves the site the way it
+// moves every other app. The one thing it decides is the hue its buttons, icons
+// and links wear, and that is exactly what the accent layer owns: `primary`,
+// `onPrimary` and `primaryBg`.
 //
-// Only what the brand claims is listed. The alert tints, the deep plates, the
-// focus ring and the glass tokens stay framework values, so an upgrade moves
-// this app's alerts and ring with every other app instead of keeping a local copy.
+// So the brand arrives as one call instead of a table of hexes. Three things
+// follow from that:
+//   - the family is measured before it ships — the label on the fill, the fill as
+//     text and as a glyph, its wash under page ink and secondary ink, and the
+//     wash's lift off the page, seven numbers per theme, re-measured by the
+//     framework's own `tests/regression.test.js` — so nothing here has to
+//     re-prove them with a comment;
+//   - the reader can change it. The drawer's `ThemePicker` paints another family
+//     and stores that choice, and `applyAccentPreference` never overwrites one;
+//   - light and dark stay the reader's answer. `runApp` boots `applySystemTheme()`
+//     and `watchSystemTheme()`, the AppBar and drawer toggles call `setTheme`, and
+//     an app that called `setTheme("dark")` here would erase that on every load.
 //
-// Both palettes answer the same token names, and every pair below is measured
-// with the WCAG ratio it ships (see the numbers on each line): text is ink on
-// the page, `onPrimary` is ink on the `primary` plate.
+// A brand the twelve families do not carry is registered, not typed:
+// `registerAccent` with an id, a label and a `light`/`dark` pair — one hex per
+// theme, or a five-stop ramp — beside this call, and the id below points at it.
 
-import { registerPalette } from "flet-box";
+import { applyAccentPreference } from "flet-box";
 
-// Light: the deep end of the teal, so one value works both ways — 5.90:1 with
-// white on it as a plate, and 5.49:1 written as ink on the page. The soft tint
-// keeps the page ink at 16.5:1 and the brand ink at 5.2:1.
-const light = {
-  primary: "#0a6f78",
-  onPrimary: "#ffffff",
-  primaryBg: "#e6f2f4",
-  background: "#f4f7fa",
-  surface: "#ffffff",
-  card: "#ffffff",
-  text: "#0b1120",
-  textSecondary: "#475569",
-  textDisabled: "#8b98ab",
-  border: "#c8d2e0",
-  divider: "#e2e8f0",
-  gray50: "#f8fafc",
-  gray100: "#eef2f7",
-  gray200: "#e2e8f0",
-  gray300: "#cbd5e1",
-  gray400: "#94a3b8",
-  gray500: "#64748b",
-  gray600: "#475569",
-  gray700: "#334155",
-  gray800: "#1e293b",
-  gray900: "#0b1120",
-  overlay: "rgba(11, 17, 32, 0.55)",
-  shadow: "rgba(11, 17, 32, 0.08)",
-};
-
-// Dark: the bright teal, which is too light to write words in on a white page
-// and is exactly right here — 7.05:1 as ink on this page, and its plate takes
-// the page's own near-black ink at 7.10:1. Content text is white and hierarchy
-// comes from opacity, so nothing drifts to blue-grey: 0.72 answers 9.95:1 on the
-// page and 9.29:1 on the card, and 0.5 still clears AA at 5.4:1.
-const dark = {
-  primary: "#00afbc",
-  onPrimary: "#04121a",
-  primaryBg: "#0e2a33",
-  background: "#0b1120",
-  surface: "#131c2e",
-  card: "#131c2e",
-  text: "#ffffff",
-  textSecondary: "rgba(255, 255, 255, 0.72)",
-  textDisabled: "rgba(255, 255, 255, 0.5)",
-  border: "#2e3f58",
-  divider: "#223049",
-  gray50: "#131c2e",
-  gray100: "#1b2740",
-  gray200: "#263349",
-  gray300: "#3a4c68",
-  gray400: "#7286a0",
-  gray500: "#9badc4",
-  gray600: "#c3d0e0",
-  gray700: "#e8edf5",
-  gray800: "#f2f6fb",
-  gray900: "#ffffff",
-  overlay: "rgba(2, 6, 15, 0.72)",
-  shadow: "rgba(0, 0, 0, 0.45)",
-};
-
-// Registers both palettes. Call this before `runApp`: the boot reads the OS
-// preference off `palettes`, so a palette registered after the first render
-// would paint the framework's neutrals and only become the brand on the next
-// theme change.
-export const registerBrand = () => {
-  registerPalette("light", light);
-  registerPalette("dark", dark);
-};
+// Teal: `#134e4a` on a light page, `#2dd4bf` on a dark one — the two stops the
+// engine paints for the family. Call this before `runApp`, like the palette
+// registration it replaces: the first screen should not open in the framework's
+// own brand and change color a frame later.
+export const applyBrand = () => applyAccentPreference("teal");
 
 // The static shell — `<meta theme-color>` in index.html, `manifest.json`,
 // `capacitor.config.json` and both `scripts/sync-*-*.mjs` — is painted before any
-// module runs, so it cannot read a palette. All five carry the dark `surface`
-// literal, `#131c2e`, and the engine rewrites `theme-color` to the live `surface`
-// on every theme change: the boot color is what the reader sees for a frame, the
-// sync is what they see after. Change `dark.surface` and change those five.
+// module runs, so it cannot read a palette. All five carry the framework dark
+// palette's `surface`, `#18181b` (RGB 24, 24, 27), which is the panel the app
+// boots into; the engine rewrites `theme-color` to the live `surface` on every
+// theme change, so the boot value is only the frame in between. No accent lives in
+// the shell: a shell color is a surface, and this app has no surface the
+// framework does not already ship.

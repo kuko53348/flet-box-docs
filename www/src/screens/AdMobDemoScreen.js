@@ -12,7 +12,6 @@ import {
   colors,
 } from "flet-box";
 import { card, page } from "../components/ui.js";
-import { onPrimary } from "../theme.js";
 
 // The native AdMob plugin only exists inside a Capacitor shell. A static
 // import of the bare specifier would break the app on the web (the browser
@@ -98,7 +97,6 @@ export const AdMobDemoScreen = () => {
         text: "Show interstitial",
         iconRight: "ads_click",
         bgColor: colors.primary,
-        color: onPrimary,
         padding: "12px 20px",
         fullWidth: true,
         onPress: runAd(

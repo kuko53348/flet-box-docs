@@ -12,7 +12,7 @@ export const NotFoundScreen = () =>
         gap: 16,
         alignItems: "center",
         children: [
-          iconChip("explore_off", colors.primary, 84),
+          iconChip("explore_off", 84),
           Text({
             text: "Page not found",
             weight: "bold",

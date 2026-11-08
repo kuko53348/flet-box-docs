@@ -54,8 +54,8 @@ export const HomeScreen = () =>
               cursor: "pointer",
               padding: "10px 14px",
               borderRadius: 14,
-              backgroundColor: `${colors.primary}14`,
-              border: `1px solid ${colors.primary}55`,
+              backgroundColor: colors.primaryBg,
+              border: `1px solid ${colors.border}`,
               onClick: () => openCategory(cat.id),
               child: Row({
                 gap: 8,

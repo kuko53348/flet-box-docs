@@ -22,17 +22,21 @@ export const openExternal = (url) => {
   window.open(url, target, "noopener,noreferrer");
 };
 
-// An icon inside a tinted rounded chip.
-export const iconChip = (name, color = colors.primary, size = 40) =>
+// An icon inside a tinted rounded chip. The tint is `primaryBg`, the token the
+// framework ships for exactly this: a brand-tinted plate that is not the brand
+// at full strength. It is the fill, the glyph is `primary`, and both move together
+// when the theme changes — which a hand-written `${primary}1f` alpha hex cannot,
+// because a hex alpha is the same translucency on a white page and on a black one.
+export const iconChip = (name, size = 40) =>
   Container({
     width: size,
     height: size,
     borderRadius: size / 3,
-    backgroundColor: `${color}1f`,
+    backgroundColor: colors.primaryBg,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    child: Icon({ name, color, size: Math.round(size * 0.55) }),
+    child: Icon({ name, color: colors.primary, size: Math.round(size * 0.55) }),
   });
 
 // Uniform page wrapper: identical padding and vertical rhythm everywhere.
@@ -60,14 +64,14 @@ export const banner = ({ icon, iconNode, title, text, actions } = {}) =>
     padding: 20,
     gap: 14,
     borderRadius: 18,
-    backgroundColor: `${colors.primary}12`,
-    border: `1px solid ${colors.primary}40`,
+    backgroundColor: colors.primaryBg,
+    border: `1px solid ${colors.border}`,
     children: [
       Row({
         gap: 14,
         alignItems: "center",
         children: [
-          iconNode || iconChip(icon, colors.primary, 46),
+          iconNode || iconChip(icon, 46),
           Column({
 
             gap: 3,
@@ -137,7 +141,7 @@ export const rowCard = ({ icon, title, subtitle, onPress, trailing = "chevron_ri
       gap: 12,
       alignItems: "center",
       children: [
-        iconChip(icon, colors.primary, 38),
+        iconChip(icon, 38),
         Column({
           flex: 1,
           gap: 2,
@@ -166,8 +170,8 @@ export const tag = (text) =>
   Container({
     padding: "8px 14px",
     borderRadius: 999,
-    backgroundColor: `${colors.primary}14`,
-    border: `1px solid ${colors.primary}44`,
+    backgroundColor: colors.primaryBg,
+    border: `1px solid ${colors.border}`,
     child: Text({ text, size: 12.5, weight: "600", color: colors.primary }),
   });
 
